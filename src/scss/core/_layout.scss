@@ -1,0 +1,75 @@
+@-ms-viewport {
+    width: device-width;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    position: relative;
+
+    width: 100%;
+    max-width: $container-max-width;
+    margin: auto;
+
+    font-family: Proxima-Nova-Alt-Extrabold, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+
+    .container-fluid {
+        width: 100%;
+        padding: 0 var(--gap);
+        margin: 0 auto;
+        @include md {
+            padding: 0 calc(var(--gap) / 2);
+        }
+    }
+
+    .container {
+        width: 100%;
+        padding: 0 calc(var(--gap) / 2);
+        margin: 0 auto;
+        max-width: 1200px;
+    }
+
+    @media (max-width: $xs-min) {
+        .container {
+            max-width: 100%;
+        }
+    }
+    @media (max-width: $sm-min) {
+        .container {
+            max-width: 540px;
+        }
+    }
+
+    // @media (max-width: $md-min) {
+    //     .container {
+    //         max-width: 720px;
+    //     }
+    // }
+    @media (max-width: $lg-min) {
+        .container {
+            max-width: 960px;
+        }
+    }
+    @media (max-width: $xl-min) {
+        .container {
+            max-width: 11400px;
+        }
+    }
+    @media (max-width: $xxl-min) {
+        .container {
+            max-width: 1200px;
+        }
+    }
+}
