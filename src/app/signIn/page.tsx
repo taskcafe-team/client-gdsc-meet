@@ -16,6 +16,12 @@ import Bgtop from '@/assets/images/SignIn-Top1.png';
 import Bgbottom from '@/assets/images/SignInBottom.png';
 import BgT1 from '@/assets/images/bg-t2.png';
 import { useTheme } from 'next-themes';
+import { AuthService } from '@/api/http-rest/auth';
+import { IUser } from '@/model/User';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux.hook';
+
+import { AppDispatch } from '@/redux/store';
+import { AUTH_DETAIL } from '@/redux/auth/action';
 interface IValidator {
   _UserName: string | null | undefined;
   _Password: string | null | undefined;
@@ -31,11 +37,14 @@ const page: React.FC = (props) => {
   });
   const refContent = useRef<HTMLDivElement | null>(null);
   const { theme } = useTheme();
-
+  const dispatch = useAppDispatch();
+  const a =  useAppSelector(state => state.auth)
+  console.log(a)
   const handleGoogle = () => {};
   const handleFacebook = () => {};
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+     dispatch(AUTH_DETAIL({ username: '999', password: '9999' }));
     try {
       setValidator({
         _UserName: Validator.validateEmail({ email: User.UserName }),
@@ -45,7 +54,7 @@ const page: React.FC = (props) => {
         // log is here
       } else if (UValidator._Password) {
       } else {
-        //code here
+        
       }
     } catch (error) {}
   };
@@ -54,7 +63,7 @@ const page: React.FC = (props) => {
     const timeoutId = setTimeout(() => {
       if (refContent.current) {
         refContent.current.classList.remove('opacity-0');
-        refContent.current.classList.add('opacity-100')
+        refContent.current.classList.add('opacity-100');
       }
     }, 200);
 
@@ -63,9 +72,12 @@ const page: React.FC = (props) => {
     };
   }, []);
   return (
-    <div  >
+    <div>
       <Header className="relative z-100 w-[60%] max-lg:w-full" />
-      <main  ref={refContent}  className=" opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
+      <main
+        ref={refContent}
+        className=" opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
+      >
         <form action="" className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0">
           <h2
             className="
@@ -76,7 +88,7 @@ const page: React.FC = (props) => {
           <div className="Form__group px-2 mb-2">
             <Input
               id="UserName"
-              type='email'
+              type="email"
               value={User.UserName}
               onChange={(e: any) =>
                 setUser({
@@ -97,7 +109,7 @@ const page: React.FC = (props) => {
             <Input
               id="Password"
               value={User.Password}
-              type='password'
+              type="password"
               onChange={(e: any) =>
                 setUser({
                   ...User,

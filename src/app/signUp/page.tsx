@@ -172,7 +172,7 @@ const page: React.FC = (props) => {
             </button>
           </div>
           <Link
-            href={'/signUp'}
+            href={'/signIn'}
             className="flex gap-2 my-4 mx-auto justify-center w-full py-4 ml-2 text-xl text-[1.7rem]  max-sm:text-xl text-gray-500 dark:text-gray-30  "
           >
             <span>if you are not have account</span>

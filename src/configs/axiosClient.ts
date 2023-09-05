@@ -1,16 +1,18 @@
 import axios from 'axios';
 import qs from 'qs';
+import { apiEndpoint } from './apiEndpoint';
+import { headers } from 'next/dist/client/components/headers';
 
 function getLocalAccessToken() {
-  const accessToken = window.localStorage.getItem('meet:accessToken');
-  return accessToken;
+  const accessToken = localStorage.getItem('meet:accessToken');
+  return accessToken ? accessToken : "";
 }
 
 function getLocalRefreshToken() {
-  const refreshToken = window.localStorage.getItem('meet:refreshToken');
+  const refreshToken = localStorage.getItem('meet:refreshToken');
   return refreshToken;
 }
-
+// update sau
 function refreshToken() {
   return axiosClient.post('/auth/refreshtoken', {
     refreshToken: getLocalRefreshToken(),
@@ -18,10 +20,9 @@ function refreshToken() {
 }
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_URL_SEVICER,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'x-api-token ' + getLocalAccessToken(),
   },
   paramsSerializer: function (params) {
     return qs.stringify(params, { arrayFormat: 'brackets' });
@@ -31,6 +32,10 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config: any) => {
     // custom lai lam sau
+    config.headers = {
+      ...config.headers,
+      Authorization: 'x-api-token' + getLocalAccessToken(),
+    };
     return {
       ...config,
     };
@@ -42,12 +47,12 @@ axiosClient.interceptors.request.use(
 
 axiosClient.interceptors.response.use(
   (res) => {
-    return res;
+    return res.data;
   },
   async (err: any) => {
     try {
       const originalConfig = err.config;
-      if (originalConfig.url !== '/auth/signin' && err.response) {
+      if (originalConfig.url !== apiEndpoint.loginWithEmail && err.response) {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;

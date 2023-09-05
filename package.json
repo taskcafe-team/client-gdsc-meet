@@ -46,6 +46,7 @@
     "react-loading-skeleton": "^3.3.1",
     "react-redux": "^8.0.7",
     "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2",
     "sass": "^1.63.4",
     "scss": "^0.2.4",
     "server-only": "^0.0.1",
