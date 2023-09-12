@@ -16,48 +16,112 @@ import Bgtop from '@/assets/images/SignIn-Top1.png';
 import Bgbottom from '@/assets/images/SignInBottom.png';
 import BgT1 from '@/assets/images/bg-t2.png';
 import { useTheme } from 'next-themes';
-import { AuthService } from '@/api/http-rest/auth';
-import { IUser } from '@/model/User';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux.hook';
 
-import { AppDispatch } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux.hook';
 import { AUTH_DETAIL } from '@/redux/auth/action';
-interface IValidator {
-  _UserName: string | null | undefined;
-  _Password: string | null | undefined;
+import { AuthService } from '@/api/http-rest/auth';
+import useToastily from '@/hooks/useToastily';
+import { useRouter } from 'next/navigation';
+import { authLoading } from '@/redux/auth';
+import { browser } from 'process';
+
+interface IUser {
+  UserName: string;
+  Password: string;
 }
+const inituser: IUser = {
+  UserName: '',
+  Password: '',
+};
+const validationSchema = Yup.object().shape({
+  UserName: Yup.string().email('Invalid email address').required('Required'),
+  Password: Yup.string()
+    .min(8, 'Password must be 8 characters long')
+    .matches(/[0-9]/, 'Password requires a number')
+    .matches(/[a-z]/, 'Password requires a lowercase letter')
+    .matches(/[A-Z]/, 'Password requires an uppercase letter')
+    .matches(/[^\w]/, 'Password requires a symbol')
+    .required('Required'),
+});
 const page: React.FC = (props) => {
-  const [User, setUser] = useState({
-    UserName: '',
-    Password: '',
-  });
-  const [UValidator, setValidator] = useState<IValidator>({
-    _UserName: null,
-    _Password: null,
-  });
+  const [loading, setLoading] = React.useState(false);
+  const showToast = useToastily();
   const refContent = useRef<HTMLDivElement | null>(null);
-  const { theme } = useTheme();
   const dispatch = useAppDispatch();
-  const a =  useAppSelector(state => state.auth)
-  console.log(a)
-  const handleGoogle = () => {};
+  const router = useRouter();
+  const handleGoogle = () => {
+    // Mở một tab mới với URL đăng nhập
+
+    const loginTab = window.open(
+      'http://localhost:8080/auth/google/login',
+      '_blank',
+      'width:500,height:500'
+    );
+  
+    // if (loginTab != null) {
+    //   loginTab.focus();
+
+    //   // Lắng nghe sự kiện khi tab đã tải xong
+    //   loginTab.addEventListener('load', () => {
+    //     // Đợi một khoảng thời gian (ví dụ: 2 giây) để đảm bảo đăng nhập thành công
+    //     setTimeout(() => {
+    //       // Điều hướng đến URL sau khi đăng nhập thành công
+    //       loginTab.location.href = 'http://localhost:8080/auth/google/verify';
+
+    //       // Lắng nghe sự kiện khi tab đã tải xong URL mới
+    //       loginTab.addEventListener('load', () => {
+    //         // Truy cập dữ liệu trả về từ tab
+    //         const responseData = loginTab.document.body.textContent;
+    //         console.log('Data:', responseData);
+
+    //         // Ở đây, bạn có thể xử lý dữ liệu theo nhu cầu của bạn
+
+    //         // Đóng tab sau khi hoàn thành
+    //         loginTab.close();
+    //       });
+    //     }, 2000); // Đợi 2 giây
+    //   });
+    // }
+  };  
   const handleFacebook = () => {};
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-     dispatch(AUTH_DETAIL({ username: '999', password: '9999' }));
-    try {
-      setValidator({
-        _UserName: Validator.validateEmail({ email: User.UserName }),
-        _Password: Validator.validatePassword({ password: User.Password }),
-      });
-      if (UValidator._UserName) {
-        // log is here
-      } else if (UValidator._Password) {
-      } else {
-        
+  const formik = useFormik({
+    initialValues: inituser,
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        await setLoading(true);
+        console.log(values);
+        console.log(values.UserName.length, values.Password.length);
+        const initUser = await AuthService.EmailLogin({
+          username: values.UserName,
+          password: values.Password,
+        });
+
+        if (inituser) {
+          const { accessToken, refreshToken } = initUser;
+          console.log(initUser);
+          dispatch(AUTH_DETAIL({ accessTokent: accessToken, refreshToken: refreshToken }));
+          showToast({
+            content: 'Login success',
+            type: 'success',
+          });
+          router.push('/');
+        } else {
+          showToast({
+            content: 'Erors',
+            type: 'error',
+          });
+        }
+        await setLoading(false);
+      } catch (error) {
+        showToast({
+          content: 'Erors 2',
+          type: 'error',
+        });
+        await setLoading(false);
       }
-    } catch (error) {}
-  };
+    },
+  });
   // animation start
   React.useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -78,7 +142,11 @@ const page: React.FC = (props) => {
         ref={refContent}
         className=" opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
       >
-        <form action="" className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0">
+        <form
+          onSubmit={formik.handleSubmit}
+          action=""
+          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0"
+        >
           <h2
             className="
                max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
@@ -89,61 +157,69 @@ const page: React.FC = (props) => {
             <Input
               id="UserName"
               type="email"
-              value={User.UserName}
-              onChange={(e: any) =>
-                setUser({
-                  ...User,
-                  UserName: e.target.value,
-                })
-              }
+              value={formik.values.UserName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               // icon={<BiUser />}
               key={'input-userName'}
               placeholder="UserName"
               className=" rounded-sm border-b-2  "
             />
             <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {UValidator._UserName && <span>{UValidator._UserName}</span>}
+              {formik.touched.UserName && formik.errors.UserName ? (
+                <span>{formik.errors.UserName}</span>
+              ) : null}
             </p>
           </div>
           <div className="Form__group px-2 mb-2">
             <Input
               id="Password"
-              value={User.Password}
               type="password"
-              onChange={(e: any) =>
-                setUser({
-                  ...User,
-                  Password: e.target.value,
-                })
-              }
+              value={formik.values.Password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               // icon={<BiKey />}
-              key={'password'}
+              key={'Password'}
               placeholder="Password"
               className="rounded-sm border-b-2  "
             />
             <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {UValidator._Password && <span>{UValidator._Password}</span>}
+              {formik.touched.Password && formik.errors.Password ? (
+                <span>{formik.errors.Password}</span>
+              ) : null}
             </p>
           </div>
           <div className="pt-5">
             <Button
               type="submit"
-              onClick={handleSubmit}
-              className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
+              className="max-sm:w-full w-full  flex items-center justify-center gap-10  bg-primary text-white"
             >
-              Sign Now
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5  bg-white text-white rounded-sm"
+                  viewBox="0 0 24 24"
+                ></svg>
+              ) : (
+                <span>Sign Now</span>
+              )}
             </Button>
           </div>
-          <div className="flex items-center justify-center  text-gray-500 p-8">-or-</div>
+          <div className="flex items-start justify-start  text-gray-500 p-8">
+            <Link href={'/forgotPassword'}>Forgot password ?</Link>
+          </div>
+          <div className="flex items-center justify-center  text-gray-500 ">-or-</div>
           <div className="flex gap-5 justify-center items-center   ">
-            <button className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full">
+            <div
+              className="flex justify-center items-center cursor-pointer gap-5 text-gray-500  px-10 py-3 w-full"
+              onClick={handleGoogle}
+            >
               <Image src={google} width={30} alt="Google" />
               <p>Google</p>
-            </button>
-            <button className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full ">
+            </div>
+            <div className="flex justify-center items-center cursor-pointer  gap-5 text-gray-500  px-10 py-3 w-full ">
               <Image src={facebook} width={30} alt="Google" />
               <p>Facebook</p>
-            </button>
+            </div>
           </div>
           <Link
             href={'/signUp'}

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+
 import { BiDialpad } from 'react-icons/bi';
 interface IInput {
   id?: string;
@@ -8,8 +9,10 @@ interface IInput {
   type?: string;
   placeholder?: string;
   className?: string;
-}
-export const Input: React.FC<IInput> = ({className, placeholder, id, value, onChange, icon, type }) => {
+  onBlur?: any
+};
+
+export const Input: React.FC<IInput> = ({className, placeholder, id, value, onChange, icon, type, onBlur } ) => {
   return (
     <div className={`Connect__Group flex items-center max-sm:w-full ${className}`}>
       {icon && <div className="mx-8">{icon}</div>}
@@ -21,6 +24,7 @@ export const Input: React.FC<IInput> = ({className, placeholder, id, value, onCh
         type={type ? type : 'text'}
         placeholder={placeholder}
         className="block outline-none px-4 py-4 w-full rounded-md max-sm:w-full"
+        onBlur={onBlur}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { AuthService } from '@/api/http-rest/auth';
+
 import { IMeet, IUser } from '@/model/User';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { stat } from 'fs';

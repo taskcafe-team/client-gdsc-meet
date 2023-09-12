@@ -11,162 +11,208 @@ import { Validator } from '@/utils/Validator';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
-
+import { useRouter } from 'next/navigation';
 import Bgtop from '@/assets/images/SignIn-Top1.png';
 import Bgbottom from '@/assets/images/SignInBottom.png';
 import BgT1 from '@/assets/images/Saly-6.png';
 import { useTheme } from 'next-themes';
+import { AuthService } from '@/api/http-rest/auth';
+import { toast } from 'react-toastify';
+import useToastily from '@/hooks/useToastily';
 
-interface IValidator {
-  _UserName: string | null | undefined;
-  _Password: string | null | undefined;
-  _RePassword: string | null | undefined;
+
+interface IUser {
+  UserName: string | null | undefined;
+  Password: string | null | undefined;
+  Repassword: string | null | undefined;
 }
+
+const inituser: IUser = {
+  UserName: '',
+  Password: '',
+  Repassword: '',
+};
 const page: React.FC = (props) => {
-  const [User, setUser] = useState({
-    UserName: '',
-    Password: '',
-    Repassword: '',
-  });
-  const [UValidator, setValidator] = useState<IValidator>({
-    _UserName: null,
-    _Password: null,
-    _RePassword: null,
-  });
+ 
+  const router = useRouter();
+  const showToast = useToastily();
+  const [loading, setLoading] = React.useState(false);
   const refContent = React.useRef<HTMLDivElement | null>(null);
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      setValidator({
-        _UserName: Validator.validateEmail({ email: User.UserName }),
-        _Password: Validator.validatePassword({ password: User.Password }),
-        _RePassword: Validator.validateConfirmPassword({
-          password: User.Password,
-          confirmPassword: User.Repassword,
-        }),
-      });
-      if (UValidator._UserName) {
-        // log is here
-      } else if (UValidator._Password) {
-      } else if (UValidator._RePassword) {
+
+  const validationSchema = Yup.object().shape({
+    UserName: Yup.string().email('Invalid email address').required('Required'),
+    Password: Yup.string()
+      .min(8, 'Password must be 8 characters long')
+      .matches(/[0-9]/, 'Password requires a number')
+      .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .matches(/[A-Z]/, 'Password requires an uppercase letter')
+      .matches(/[^\w]/, 'Password requires a symbol')
+      .required('Required'),
+    Repassword: Yup.string()
+    .required("Please re-type your password")
+    // use oneOf to match one of the values inside the array.
+    // use "ref" to get the value of passwrod.
+    .oneOf([Yup.ref("Password")], "Passwords does not match"),
+  });
+
+  // animation start
+  const formik = useFormik({
+    initialValues: inituser,
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      if (
+        values.UserName?.length == 0 ||
+        values.Password?.length == 0 ||
+        values.Repassword?.length == 0
+      ) {
+        showToast({
+          content: 'Erors',
+          type: 'error',
+        });
       } else {
-        //code here
-      }
-    } catch (error) {}
-  };
-    // animation start
-    React.useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        if (refContent.current) {
-          refContent.current.classList.remove('opacity-0');
-          refContent.current.classList.add('opacity-100')
+        const initUser = await AuthService.register({
+          email: values.UserName as string,
+          password: values.Password as string,
+        });
+        if (initUser) {
+          showToast({
+            content: 'success',
+            type: 'success',
+          });
+          router.push('/signIn');
+        } else {
+          showToast({
+            content: 'Erors',
+            type: 'error',
+          });
         }
-      }, 200);
-  
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }, []);
-    
+      }
+    },
+  });
+  console.log(formik.touched.Password, formik.errors.Password);
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (refContent.current) {
+        refContent.current.classList.remove('opacity-0');
+        refContent.current.classList.add('opacity-100');
+      }
+    }, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
+ 
   return (
     <div className="SignIn relative  h-[100vh] overflow-hidden">
-    <Image
-      src={Bgtop}
-      alt="backgroud"
-      className="max-lg:hidden object-fill  absolute top-[-50px] right-[-65px] z-2 w-[56vh] "
-    ></Image>
-    <Image
-      src={Bgbottom}
-      alt="backgroud"
-      className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[-40px] z-2 "
-    ></Image>
-    <Image
-      src={BgT1}
-      alt="backgroud"
-      className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[-3vh] z-3 w-[100vh] h-[100vh] "
-    ></Image>
+      <Image
+        src={Bgtop}
+        alt="backgroud"
+        className="max-lg:hidden object-fill  absolute top-[-50px] right-[-65px] z-2 w-[56vh] "
+      ></Image>
+      <Image
+        src={Bgbottom}
+        alt="backgroud"
+        className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[-40px] z-2 "
+      ></Image>
+      <Image
+        src={BgT1}
+        alt="backgroud"
+        className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[-3vh] z-3 w-[100vh] h-[100vh] "
+      ></Image>
 
-    <Header className="relative z-100 w-[60%] max-lg:w-full" />
-    <main ref={refContent} className="opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
-      <form action="" className='w-[100%] min-w-[420px] max-w-[500px] md:mx-0'>
-        <h2
-          className="
-             max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
+      <Header className="relative z-100 w-[60%] max-lg:w-full" />
+      <main
+        ref={refContent}
+        className="opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
+      >
+        <form
+          onSubmit={formik.handleSubmit}
+          action=""
+          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0"
         >
-          Sign Up
-        </h2>
-        <div className="Form__group px-2 mb-2">
+          <h2
+            className="
+             max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
+          >
+            Sign Up
+          </h2>
+          <div className="Form__group px-2 mb-2">
             <Input
               id="UserName"
-              value={User.UserName}
-              onChange={(e: any) =>
-                setUser({
-                  ...User,
-                  UserName: e.target.value,
-                })
-              }
+              value={formik.values.UserName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               // icon={<BiUser />}
               key={'input-userName'}
               placeholder="UserName"
               className=" rounded-sm border-b-2  "
             />
             <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {UValidator._UserName && <span>{UValidator._UserName}</span>}
+              {formik.touched.UserName && formik.errors.UserName ? (
+                <span>{formik.errors.UserName}</span>
+              ) : null}
             </p>
           </div>
           <div className="Form__group px-2 mb-2">
             <Input
               id="Password"
-              value={User.Password}
-              onChange={(e: any) =>
-                setUser({
-                  ...User,
-                  Password: e.target.value,
-                })
-              }
+              type="password"
+              value={formik.values.Password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               // icon={<BiKey />}
-              key={'password'}
+              key={'Password'}
               placeholder="Password"
               className="rounded-sm border-b-2  "
             />
             <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {UValidator._Password && <span>{UValidator._Password}</span>}
+              {formik.touched.Password && formik.errors.Password ? (
+                <span>{formik.errors.Password}</span>
+              ) : null}
             </p>
           </div>
           <div className="Form__group px-2 mb-2">
             <Input
-              id="RePassword"
-              type='password'
-              value={User.Password}
-              onChange={(e: any) =>
-                setUser({
-                  ...User,
-                  Repassword: e.target.value,
-                })
-              }
+              id="Repassword"
+              type="password"
+              value={formik.values.Repassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               // icon={<BiKey />}
-              key={'password'}
+              key={'RePassword'}
               placeholder="Re Password"
               className="rounded-sm border-b-2  "
             />
             <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {UValidator._Password && <span>{UValidator._Password}</span>}
+              {formik.touched.Repassword && formik.errors.Repassword ? (
+                <span>{formik.errors.Repassword}</span>
+              ) : null}
             </p>
           </div>
           <div className="pt-5">
-            <Button type="submit" onClick={handleSubmit} className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white">
+            <Button
+              // s
+              type="submit"
+              loading={loading}
+              className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
+            >
               Sign Now
             </Button>
           </div>
-          <div className="flex items-center justify-center  text-gray-500 p-8">
-            -or-
-          </div>
+          <div className="flex items-center justify-center  text-gray-500 p-8">-or-</div>
           <div className="flex gap-5 justify-center items-center   ">
-            <button className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full">
+            <button
+              type="button"
+              className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full"
+            >
               <Image src={google} width={30} alt="Google" />
               <p>Google</p>
             </button>
-            <button className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full ">
+            <button
+              type="button"
+              className="flex justify-center items-center  gap-5 text-gray-500  px-10 py-3 w-full "
+            >
               <Image src={facebook} width={30} alt="Google" />
               <p>Facebook</p>
             </button>
@@ -178,9 +224,9 @@ const page: React.FC = (props) => {
             <span>if you are not have account</span>
             <span className="text-primary font-bold ">create Account</span>
           </Link>
-      </form>
-    </main>
-  </div>
+        </form>
+      </main>
+    </div>
   );
 };
 

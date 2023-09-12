@@ -4,37 +4,37 @@ export class Validator {
         return null;
       }
       if (name.length === 0) {
-        return 'Tên không được để trống';
+        return 'Name cannot be blank';
       }
   
       return null;
     }
   
-    static validateEmail({ email }: { email?: string }): string | null {
+    static validateEmail({ email }: { email?: string |null}): string | null {
       if (email == null) {
         return null;
       }
       const emailRegExp = new RegExp(
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$/
       );
-  
+        
       if (email.length === 0) {
-        return 'Email không được để trống';
+        return 'Email cannot be blank !';
       } else if (!emailRegExp.test(email)) {
-        return 'Vui lòng nhập đúng email của bạn!';
+        return 'Please enter your correct email !';
       }
-  
+      
       return null;
     }
   
-    static validatePassword({ password }: { password?: string }): string | null {
+    static validatePassword({ password }: { password?: string |null}): string | null {
       if (password == null) {
         return null;
       }
       if (password.length === 0) {
-        return 'Mật khẩu không được để trống!';
+        return 'Password can not be blank!';
       } else if (password.length < 6) {
-        return 'Mật khẩu cần ít nhất 6 kí tự!';
+        return 'Password needs at least 6 characters!';
       }
   
       return null;
@@ -51,11 +51,11 @@ export class Validator {
         return null;
       }
       if (confirmPassword.length === 0) {
-        return 'Mật khẩu không được để trống!';
+        return 'Confirm Password can not be blank !';
       } else if (confirmPassword.length < 6) {
-        return 'Mật khẩu cần ít nhất 6 kí tự!';
+        return 'Password needs at least 6 characters !';
       } else if (password !== confirmPassword) {
-        return 'Mật khẩu xác nhận không giống với mật khẩu bạn đã nhập!';
+        return 'The confirmation password is not the same as the password you entered!';
       }
   
       return null;
