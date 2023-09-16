@@ -1,13 +1,11 @@
 'use client';
 import { Input } from '@/components/Input';
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import React, { useState } from 'react';
+import React from 'react';
 import google from '@assets/images/icons8-google-48.png';
 import facebook from '@assets/images/icons8-facebook-48.png';
-import { BiKey, BiUser } from 'react-icons/bi';
 import Button from '@/components/Button';
-import { Validator } from '@/utils/Validator';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
@@ -15,16 +13,13 @@ import { useRouter } from 'next/navigation';
 import Bgtop from '@/assets/images/SignIn-Top1.png';
 import Bgbottom from '@/assets/images/SignInBottom.png';
 import BgT1 from '@/assets/images/Saly-6.png';
-import { useTheme } from 'next-themes';
 import { AuthService } from '@/api/http-rest/auth';
-import { toast } from 'react-toastify';
 import useToastily from '@/hooks/useToastily';
 
-
 interface IUser {
-  UserName: string | null | undefined;
-  Password: string | null | undefined;
-  Repassword: string | null | undefined;
+  UserName: string;
+  Password: string;
+  Repassword: string;
 }
 
 const inituser: IUser = {
@@ -32,13 +27,13 @@ const inituser: IUser = {
   Password: '',
   Repassword: '',
 };
+
 const page: React.FC = (props) => {
- 
   const router = useRouter();
   const showToast = useToastily();
   const [loading, setLoading] = React.useState(false);
   const refContent = React.useRef<HTMLDivElement | null>(null);
-
+  // validate input
   const validationSchema = Yup.object().shape({
     UserName: Yup.string().email('Invalid email address').required('Required'),
     Password: Yup.string()
@@ -49,27 +44,16 @@ const page: React.FC = (props) => {
       .matches(/[^\w]/, 'Password requires a symbol')
       .required('Required'),
     Repassword: Yup.string()
-    .required("Please re-type your password")
-    // use oneOf to match one of the values inside the array.
-    // use "ref" to get the value of passwrod.
-    .oneOf([Yup.ref("Password")], "Passwords does not match"),
+      .required('Please re-type your password')
+      .oneOf([Yup.ref('Password')], 'Passwords does not match'),
   });
 
-  // animation start
   const formik = useFormik({
     initialValues: inituser,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      if (
-        values.UserName?.length == 0 ||
-        values.Password?.length == 0 ||
-        values.Repassword?.length == 0
-      ) {
-        showToast({
-          content: 'Erors',
-          type: 'error',
-        });
-      } else {
+      try {
+        setLoading(true);
         const initUser = await AuthService.register({
           email: values.UserName as string,
           password: values.Password as string,
@@ -86,10 +70,18 @@ const page: React.FC = (props) => {
             type: 'error',
           });
         }
+      } catch (error) {
+        showToast({
+          content: 'Erors',
+          type: 'error',
+        });
+      } finally {
+        setLoading(false);
       }
     },
   });
-  console.log(formik.touched.Password, formik.errors.Password);
+
+  // animation
   React.useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (refContent.current) {
@@ -102,7 +94,7 @@ const page: React.FC = (props) => {
       clearTimeout(timeoutId);
     };
   }, []);
- 
+
   return (
     <div className="SignIn relative  h-[100vh] overflow-hidden">
       <Image
@@ -120,7 +112,6 @@ const page: React.FC = (props) => {
         alt="backgroud"
         className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[-3vh] z-3 w-[100vh] h-[100vh] "
       ></Image>
-
       <Header className="relative z-100 w-[60%] max-lg:w-full" />
       <main
         ref={refContent}

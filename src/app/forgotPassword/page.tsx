@@ -7,7 +7,7 @@ import { useFormik } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 interface IUser {
-  UserName: string ;
+  UserName: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -19,24 +19,24 @@ const inituser: IUser = {
 const page: React.FC = (props) => {
   const [flag, setFlag] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-   const showToast = useToastily();
+  const showToast = useToastily();
   const formik = useFormik({
     initialValues: inituser,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      await setLoading(true)
-      if(values.UserName?.length == 0){
+      await setLoading(true);
+      if (values.UserName?.length == 0) {
         return;
       }
-      const initUser = await AuthService.forgotPassword({email:values.UserName})
-      if(initUser){
-        showToast({content:'Send email success',type:'success'});
+      const initUser = await AuthService.forgotPassword({ email: values.UserName });
+      if (initUser) {
+        showToast({ content: 'Send email success', type: 'success' });
         setFlag(true);
-      }else{
-        showToast({content:'Please double-check your email.',type:'error'});
+      } else {
+        showToast({ content: 'Please double-check your email.', type: 'error' });
         setFlag(false);
       }
-      await setLoading(false)
+      await setLoading(false);
     },
   });
 
@@ -68,7 +68,6 @@ const page: React.FC = (props) => {
                 key={'input-userName'}
                 placeholder="Your email..."
                 className=" rounded-sm border-b-2  "
-                
               />
               <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
                 {formik.touched.UserName && formik.errors.UserName ? (
@@ -78,7 +77,7 @@ const page: React.FC = (props) => {
             </div>
             <div className="pt-5">
               <Button
-              loading={loading}
+                loading={loading}
                 type="submit"
                 className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
               >

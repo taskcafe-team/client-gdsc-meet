@@ -1,124 +1,145 @@
 'use client';
-
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useSearchParams } from 'next/navigation';
+import { AuthService } from '@/api/http-rest/auth';
 import Button from '@/components/Button';
 import { Input } from '@/components/Input';
 import useToastily from '@/hooks/useToastily';
-import { useFormik } from 'formik';
-import React from 'react';
-import * as Yup from 'yup';
+
 interface IUser {
-  Password: string | null | undefined;
-  Repassword: string | null | undefined;
+  Password: string;
+  Repassword: string;
 }
 
 const validationSchema = Yup.object().shape({
-//   Password: Yup.string()
-//   .min(8, 'Password must be 8 characters long')
-//   .matches(/[0-9]/, 'Password requires a number')
-//   .matches(/[a-z]/, 'Password requires a lowercase letter')
-//   .matches(/[A-Z]/, 'Password requires an uppercase letter')
-//   .matches(/[^\w]/, 'Password requires a symbol')
-//   .required('Required'),
+  Password: Yup.string()
+    .min(8, 'Password must be 8 characters long')
+    .matches(/[0-9]/, 'Password requires a number')
+    .matches(/[a-z]/, 'Password requires a lowercase letter')
+    .matches(/[A-Z]/, 'Password requires an uppercase letter')
+    .matches(/[^\w]/, 'Password requires a symbol')
+    .required('Required'),
 
-// Repassword: Yup.string()
-//   .required('required')
-//   .oneOf(
-//     [Yup.ref('password'), null] as (string | null | any)[],
-//     'Xác nhận mật khẩu phải giống mật khẩu',
-//   ),
+  Repassword: Yup.string()
+    .required('Required')
+    .oneOf([Yup.ref('Password')], 'Passwords do not match'),
 });
-const inituser: IUser = {
+
+const initUser: IUser = {
   Password: '',
   Repassword: '',
 };
-const page: React.FC = (props) => {
-  const [flag, setFlag] = React.useState(false);
+
+const ResetPasswordPage: React.FC = () => {
+  const [flag, setFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const page = useSearchParams();
+  const token = page.get('token');
   const showToast = useToastily();
+
   const formik = useFormik({
-    initialValues: inituser,
+    initialValues: initUser,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setFlag(true)
-      
+      try {
+        setLoading(true);
+        if (!token) {
+          showToast({
+            content: 'Token is null',
+            type: 'error',
+          });
+          return;
+        }
+        const resetResult = await AuthService.resetPassword({
+          token: token,
+        });
+
+        if (resetResult) {
+          showToast({
+            content: 'Reset password success',
+            type: 'success',
+          });
+          setFlag(true);
+        } else {
+          showToast({
+            content: 'Error resetting password',
+            type: 'error',
+          });
+          setFlag(false);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        setFlag(false);
+      }
     },
   });
 
   return (
     <div>
-      <main className="w=[100%] h=[100vh] flex items-center justify-center">
-        {flag == false ? (
+      <main className="w-full h-screen flex items-center justify-center">
+        {!flag ? (
           <form
             onSubmit={formik.handleSubmit}
             action=""
-            className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md "
+            className="w-full min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md"
           >
-            <h2
-              className="
-                 max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
-            >
+            <h2 className="max-w-[570px] text-7xl my-20 max-lg:max-w-none text-start leading-tight py-2">
               Forgot password
             </h2>
-            {/* <div className="flex items-start justify-start py-8">
-              <span>Reconfirm Your Password</span>
-            </div> */}
             <div className="Form__group px-2 mb-2">
-            <Input
-              id="Password"
-              type="password"
-              value={formik.values.Password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              // icon={<BiKey />}
-              key={'Password'}
-              placeholder="Password"
-              className="rounded-sm border-b-2  "
-            />
-            <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {formik.touched.Password && formik.errors.Password ? (
-                <span>{formik.errors.Password}</span>
-              ) : null}
-            </p>
-          </div>
-          <div className="Form__group px-2 mb-2">
-            <Input
-              id="Repassword"
-              type="password"
-              value={formik.values.Repassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              // icon={<BiKey />}
-              key={'New password'}
-              placeholder="New password"
-              className="rounded-sm border-b-2  "
-            />
-            <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-              {formik.touched.Repassword && formik.errors.Repassword ? (
-                <span>{formik.errors.Repassword}</span>
-              ) : null}
-            </p>
-          </div>
+              <Input
+                id="Password"
+                type="password"
+                value={formik.values.Password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                key="Password"
+                placeholder="Password"
+                className="rounded-sm border-b-2"
+              />
+              <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
+                {formik.touched.Password && formik.errors.Password ? (
+                  <span>{formik.errors.Password}</span>
+                ) : null}
+              </p>
+            </div>
+            <div className="Form__group px-2 mb-2">
+              <Input
+                id="Repassword"
+                type="password"
+                value={formik.values.Repassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                key="Repassword"
+                placeholder="New password"
+                className="rounded-sm border-b-2"
+              />
+              <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
+                {formik.touched.Repassword && formik.errors.Repassword ? (
+                  <span>{formik.errors.Repassword}</span>
+                ) : null}
+              </p>
+            </div>
             <div className="pt-5">
               <Button
+                loading={loading}
                 type="submit"
-                className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
+                className="max-sm:w-full w-full flex items-center justify-center bg-primary text-white"
               >
                 Send now
               </Button>
             </div>
           </form>
         ) : (
-          <div className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md ">
-            <h2
-              className="
-               max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
-            >
+          <div className="w-full min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md">
+            <h2 className="max-w-[570px] text-7xl my-20 max-lg:max-w-none text-start leading-tight py-2">
               Send Email
             </h2>
             <div className="flex flex-col gap-5">
-              <p>
-                {`Please check your Gmail inbox at for any new messages or
-                notifications.`}
-              </p>
+              <p>{`Please check your Gmail inbox for any new messages or notifications.`}</p>
               <p>Thank you!</p>
             </div>
 
@@ -133,4 +154,5 @@ const page: React.FC = (props) => {
     </div>
   );
 };
-export default page;
+
+export default ResetPasswordPage;

@@ -49,39 +49,39 @@ const page: React.FC = (props) => {
   const refContent = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const handleGoogle = () => {
-    // Mở một tab mới với URL đăng nhập
-
-    const loginTab = window.open(
+  const handleGoogle = async() => {
+    const win = window.open(
       'http://localhost:8080/auth/google/login',
       '_blank',
-      'width:500,height:500'
+      'width=500,height=500'
     );
+
+    win?.addEventListener('message', function (event:any) {
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+      
+      if (event.origin === 'http://localhost:8080' && event.data) {
+        const result = event.data;
+        // Kiểm tra xem có phải kết quả thành công từ API không
+        if (result.code === 200) {
+          // Lắng nghe sự thay đổi của URL để lấy giá trị từ API verify
+          
+          window.addEventListener('hashchange', function () {
+            // Lấy giá trị từ URL sau khi API đã điều hướng
+            const verifyURL = win?.location.href;
+            console.log('URL mới:', verifyURL);
   
-    // if (loginTab != null) {
-    //   loginTab.focus();
+            // Gọi hàm để xử lý kết quả từ API verify
+          });
+        } else {
+          console.error('Kết quả không thành công từ API login:', result.message);
+        }
+      }
+    }, true);
 
-    //   // Lắng nghe sự kiện khi tab đã tải xong
-    //   loginTab.addEventListener('load', () => {
-    //     // Đợi một khoảng thời gian (ví dụ: 2 giây) để đảm bảo đăng nhập thành công
-    //     setTimeout(() => {
-    //       // Điều hướng đến URL sau khi đăng nhập thành công
-    //       loginTab.location.href = 'http://localhost:8080/auth/google/verify';
-
-    //       // Lắng nghe sự kiện khi tab đã tải xong URL mới
-    //       loginTab.addEventListener('load', () => {
-    //         // Truy cập dữ liệu trả về từ tab
-    //         const responseData = loginTab.document.body.textContent;
-    //         console.log('Data:', responseData);
-
-    //         // Ở đây, bạn có thể xử lý dữ liệu theo nhu cầu của bạn
-
-    //         // Đóng tab sau khi hoàn thành
-    //         loginTab.close();
-    //       });
-    //     }, 2000); // Đợi 2 giây
-    //   });
-    // }
+    win?.postMessage('google', win?.opener)
+    
+  
+   
   };  
   const handleFacebook = () => {};
   const formik = useFormik({
