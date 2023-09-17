@@ -1,0 +1,33 @@
+*{
+//   transition:  all 0.1s ease-in;
+}
+.title{
+    @apply my-[20px]  text-black dark:text-white leading-tight text-7xl
+}
+
+.title-1{
+    @apply my-[20px]  text-black dark:text-white leading-tight text-5xl
+}
+
+.description{
+    @apply max-w-[570px] text-gray-500 text-[20px] font-normal
+}
+
+.shadow--box{
+    @apply rounded-2xl shadow-xl border
+}
+
+.header--active{
+    transform: translateX(100%);
+}
+
+.bg{
+    @apply bg-white dark:bg-black 
+}
+.text-title{
+    @apply text-cltext text-white opacity-100
+}
+
+.text-description{
+
+}

@@ -1,0 +1,185 @@
+/* ------------------ General ----------------- */
+@mixin br($radius) {
+    border-radius: $radius;
+    background-clip: padding-box;
+}
+
+@mixin overtext($lines) {
+    display: -webkit-inline-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+@mixin customscroll($width: 5px, $bgTrack: #000, $bgThumb: #ddd) {
+    &::-webkit-scrollbar {
+        width: $width;
+    }
+    &::-webkit-scrollbar-track {
+        background: $bgTrack;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: $bgThumb;
+    }
+}
+
+/* ------------------- Size ------------------- */
+@mixin size($option, $width: null, $height: null) {
+    @if $option == w {
+        width: $width;
+    } @else if $option == h {
+        height: $height;
+    } @else if $option == wh {
+        width: $width;
+        height: $height;
+    } @else {
+        width: $width;
+        height: $width;
+    }
+}
+
+/* ------------------- Text ------------------- */
+
+/* ----------------- Animation ---------------- */
+@mixin keyframes($animation-name) {
+    @-webkit-keyframes #{$animation-name} {
+        @content;
+    }
+    @-moz-keyframes #{$animation-name} {
+        @content;
+    }
+    @-ms-keyframes #{$animation-name} {
+        @content;
+    }
+    @-o-keyframes #{$animation-name} {
+        @content;
+    }
+    @keyframes #{$animation-name} {
+        @content;
+    }
+}
+
+@mixin animation($str) {
+    animation: #{$str};
+    -webkit-animation: #{$str};
+    -moz-animation: #{$str};
+    -ms-animation: #{$str};
+    -o-animation: #{$str};
+}
+@mixin transform($args) {
+    transform: $args;
+    -webkit-transform: $args;
+    -moz-transform: $args;
+    -ms-transform: $args;
+    -o-transform: $args;
+}
+
+@mixin transform-origin($args) {
+    transform-origin: $args;
+    -webkit-transform-origin: $args;
+    -moz-transform-origin: $args;
+    -ms-transform-origin: $args;
+    -o-transform-origin: $args;
+}
+@mixin transition-delay($args) {
+    transition-delay: $args;
+    -webkit-transition-delay: $args;
+    -moz-transition-delay: $args;
+    -ms-transition-delay: $args;
+    -o-transition-delay: $args;
+}
+
+@mixin transition($args) {
+    transition: $args;
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    -ms-transition: $args;
+    -o-transition: $args;
+}
+
+/* ---------------- Responsive ---------------- */
+@mixin xxl {
+    @media screen and (max-width: $xxl-max) {
+        @content;
+    }
+}
+@mixin xl {
+    @media screen and (max-width: $xl-max) {
+        @content;
+    }
+}
+@mixin lg {
+    @media screen and (max-width: $lg-max) {
+        @content;
+    }
+}
+@mixin md {
+    @media screen and (max-width: $xl-max) {
+        @content;
+    }
+}
+@mixin sm {
+    @media screen and (max-width: $sm-max) {
+        @content;
+    }
+}
+@mixin xs {
+    @media screen and (max-width: $xs-max) {
+        @content;
+    }
+}
+@mixin xxs {
+    @media screen and (max-width: $xxs-max) {
+        @content;
+    }
+}
+
+/* ----------- Responsive Landscape ----------- */
+@mixin xlX {
+    @media screen and (max-width: $xl-max) and (orientation: landscape) {
+        @content;
+    }
+}
+@mixin mdX {
+    @media screen and (max-width: $md-max) and (orientation: landscape) {
+        @content;
+    }
+}
+@mixin smX {
+    @media screen and (max-width: $sm-max) and (orientation: landscape) {
+        @content;
+    }
+}
+@mixin xsX {
+    @media screen and (max-width: $xs-max) and (orientation: landscape) {
+        @content;
+    }
+}
+@mixin xxsX {
+    @media screen and (max-width: $xxs-max) and (orientation: landscape) {
+        @content;
+    }
+}
+
+/* ---------------- Responsive ---------------- */
+@mixin maxW($args) {
+    @media (max-width: $args) {
+        @content;
+    }
+}
+@mixin minW($args) {
+    @media (min-width: $args) {
+        @content;
+    }
+}
+@mixin minH($args) {
+    @media (min-height: $args) {
+        @content;
+    }
+}
+@mixin maxH($args) {
+    @media (max-height: $args) {
+        @content;
+    }
+}
