@@ -12,7 +12,6 @@ const Button: React.FC<IButton> = ({ children, className, loading = false, ...re
   return (
     <button
       className={`flex items-center justify-center rounded-lg gap-2
-       
         hover:opacity-90
         px-6 py-4 font-bold text-xm cursor-pointer
         relative

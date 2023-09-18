@@ -13,7 +13,7 @@ const StartMeeting: React.FC = (props) => {
       router.push(`/rooms/${roomID}`);
     };
   return (
-    <Button className='max-md:w-full bg-primary  text-white' onClick={() => startMeeting()}>
+    <Button className=' max-md:w-full bg-primary  text-white' onClick={() => startMeeting()}>
       <BiMeteor width={30} height={30} fontSize={20} />
       New meeting
     </Button>

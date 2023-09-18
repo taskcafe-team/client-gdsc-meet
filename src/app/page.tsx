@@ -22,6 +22,7 @@ import { Console } from 'console';
 import Image from 'next/image';
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(moment());
+
   const { theme } = useTheme();
   const refContent = useRef<HTMLDivElement | null>(null);
 
@@ -71,11 +72,12 @@ export default function Home() {
         className="opacity-0 transition-opacity contianer absolute z-100 top-0 left-0  w-[60%] max-lg:w-full"
       >
         {/* <Header/> */}
-        <Header />
-        <main className="py-[16px] px-[53px] ">
+        <Header 
+        />
+        <main className="py-[16px] px-[53px]  max-sm:py-[20px] max-sm:px-[20px]">
           <h1
             className="
-               max-w-[570px] text-7xl my-[20px] max-md:max-w-none text-start leading-tight py-2 "
+               max-w-[570px] text-7xl my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-4xl"
           >
             Meetings and video calling for everyone.
           </h1>

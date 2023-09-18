@@ -49,40 +49,41 @@ const page: React.FC = (props) => {
   const refContent = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const handleGoogle = async() => {
+  const handleGoogle = async () => {
     const win = window.open(
       'http://localhost:8080/auth/google/login',
       '_blank',
-      'width=500,height=500'
+      'width=500,height=500',
     );
 
-    win?.addEventListener('message', function (event:any) {
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-      
-      if (event.origin === 'http://localhost:8080' && event.data) {
-        const result = event.data;
-        // Kiểm tra xem có phải kết quả thành công từ API không
-        if (result.code === 200) {
-          // Lắng nghe sự thay đổi của URL để lấy giá trị từ API verify
-          
-          window.addEventListener('hashchange', function () {
-            // Lấy giá trị từ URL sau khi API đã điều hướng
-            const verifyURL = win?.location.href;
-            console.log('URL mới:', verifyURL);
-  
-            // Gọi hàm để xử lý kết quả từ API verify
-          });
-        } else {
-          console.error('Kết quả không thành công từ API login:', result.message);
-        }
-      }
-    }, true);
+    win?.addEventListener(
+      'message',
+      function (event: any) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 
-    win?.postMessage('google', win?.opener)
-    
-  
-   
-  };  
+        if (event.origin === 'http://localhost:8080' && event.data) {
+          const result = event.data;
+          // Kiểm tra xem có phải kết quả thành công từ API không
+          if (result.code === 200) {
+            // Lắng nghe sự thay đổi của URL để lấy giá trị từ API verify
+
+            window.addEventListener('hashchange', function () {
+              // Lấy giá trị từ URL sau khi API đã điều hướng
+              const verifyURL = win?.location.href;
+              console.log('URL mới:', verifyURL);
+
+              // Gọi hàm để xử lý kết quả từ API verify
+            });
+          } else {
+            console.error('Kết quả không thành công từ API login:', result.message);
+          }
+        }
+      },
+      true,
+    );
+
+    win?.postMessage('google', win?.opener);
+  };
   const handleFacebook = () => {};
   const formik = useFormik({
     initialValues: inituser,
@@ -191,17 +192,10 @@ const page: React.FC = (props) => {
           </div>
           <div className="pt-5">
             <Button
-              type="submit"
-              className="max-sm:w-full w-full  flex items-center justify-center gap-10  bg-primary text-white"
+              className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
+              loading={loading}
             >
-              {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5  bg-white text-white rounded-sm"
-                  viewBox="0 0 24 24"
-                ></svg>
-              ) : (
-                <span>Sign Now</span>
-              )}
+              <span>Sign Now</span>
             </Button>
           </div>
           <div className="flex items-start justify-start  text-gray-500 p-8">
