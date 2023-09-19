@@ -1,7 +1,7 @@
 import { IUser } from '@/model/User';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { stat } from 'fs';
-import { AUTH_DETAIL, AUTH_LOGOUT } from './action';
+import { AUTH_DETAIL, AUTH_LOGOUT, AUTH_RELOGIN } from './action';
 
 export interface IInitAuth {
   loading: boolean;
@@ -34,6 +34,17 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(AUTH_LOGOUT.fulfilled, (state, action) => {
+        state.isLogin = false;
+        state.loading = false;
+      })
+      .addCase(AUTH_RELOGIN.fulfilled,(state, action)=>{
+        state.isLogin = true;
+        state.loading = false;
+      })
+      .addCase(AUTH_RELOGIN.pending,(state, action)=>{
+        state.loading = true;
+      })
+      .addCase(AUTH_RELOGIN.rejected,(state, action)=>{
         state.isLogin = false;
         state.loading = false;
       })

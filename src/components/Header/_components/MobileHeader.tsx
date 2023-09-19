@@ -14,7 +14,7 @@ export const MobileHeader = () => {
     <div className='hidden max-sm:block'>
       <nav
         ref={refHeader}
-        className="Header__mobile hidden header--active shadow max-sm:flex hidden flex-col dark:bg-black  p-8 fixed right-0 top-0 bottom-0 z-888 bg-white w-[300px] h-[100vh]"
+        className="Header__mobile hidden header--active shadow max-sm:flex flex-col dark:bg-black  p-8 fixed right-0 top-0 bottom-0 z-888 bg-white w-[300px] h-[100vh]"
       >
         <BiX
           onClick={handleToggle}

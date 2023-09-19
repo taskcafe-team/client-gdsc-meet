@@ -1,12 +1,12 @@
 import axios from 'axios';
 import qs from 'qs';
 import { apiEndpoint } from '../api/http-rest/auth/apiEndpoint';
-import { headers } from 'next/dist/client/components/headers';
-import { log } from 'console';
+
 
 function getLocalAccessToken() {
   const accessToken = localStorage.getItem('meet:accessToken');
-  return accessToken ? accessToken : "";
+  console.log(accessToken);
+  return accessToken ?JSON.parse(accessToken): "";
 }
 
 function getLocalRefreshToken() {
@@ -35,7 +35,7 @@ axiosClient.interceptors.request.use(
     // custom lai lam sau
     config.headers = {
       ...config.headers,
-      Authorization: 'x-api-token' + getLocalAccessToken(),
+      'x-api-token':getLocalAccessToken(),
     };
     console.log(config);
     return {

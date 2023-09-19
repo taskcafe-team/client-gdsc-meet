@@ -6,7 +6,10 @@ import Theme from '@/Theme/Theme';
 import Footer from '@/components/Footer';
 import '@livekit/components-styles';
 import '@livekit/components-styles/prefabs';
+import 'react-toastify/dist/ReactToastify.css';
 import '@/scss/style.scss';
+import { ToastContainer } from 'react-toastify';
+import AuthProvider from '@/container/AuthProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -18,9 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <Theme> 
-          <Providers>{children}</Providers>
-        </Theme>
+        <Providers>
+          <Theme>
+            <AuthProvider>{children}</AuthProvider>
+            <ToastContainer />
+          </Theme>
+        </Providers>
       </body>
     </html>
   );

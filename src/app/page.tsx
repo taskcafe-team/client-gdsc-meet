@@ -20,6 +20,9 @@ import BgDarktop from '@/assets/images/bgDark-top.png';
 import BgDarkBottom from '@/assets/images/bgDark-bottom.png';
 import { Console } from 'console';
 import Image from 'next/image';
+import { useAppSelector } from '@/hooks/redux.hook';
+import { authDetail } from '@/redux/auth';
+import { userDetail } from '@/redux/users';
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(moment());
 
@@ -43,7 +46,9 @@ export default function Home() {
       clearTimeout(timeoutId);
     };
   }, []);
-
+  const isLogin = useAppSelector(authDetail);
+  const UDetail = useAppSelector(userDetail);
+  console.log(isLogin,UDetail);
   return (
     <div
       className={`Home  h-[100vh]  w-full bg-primary relative overflow-hidden   ${
