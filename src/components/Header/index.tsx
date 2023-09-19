@@ -18,6 +18,8 @@ import {
   BiPlus,
   BiChevronsLeft,
   BiCaretLeft,
+  BiCross,
+  BiChevronLeft,
 } from 'react-icons/bi';
 import ThemeBox from './_components/ThemeBox';
 import UserBox from './_components/UserBox';
@@ -50,13 +52,11 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
           alt="DTUMeet logo"
           className="w-[75px] h-[75px] object-cover max-lg:w-[45px] max-lg:h-[45px]"
         ></Image>
-        <h1 className="text-cltext  opacity-100 text-[30px] max-lg:text-[15px] font-bold">
+        <h1 className="text-cltext  opacity-100 text-[45px] max-lg:text-[15px] font-bold">
           DTU Meet
         </h1>
       </Link>
-      <nav className="flex  items-center gap-6 max-lg:hidden"  onClick={(e) => {
-          setTriggerTogger(!triggerToggle);
-        }}>
+      <nav className="flex  items-center gap-6 max-lg:hidden"  >
         <div className="text-gray-700 font-roboto text-4xl font-normal dark:text-white transition">
           {currentTime.format('HH:mm ddd, DD MMM')}
         </div>
@@ -122,9 +122,22 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
           alt="DTUMeet logo"
           className="w-[75px] h-[75px] object-cover max-lg:w-[45px] max-lg:h-[45px]"
         ></Image> */}
-        <h1 className="text-cltext  opacity-100 text-[30px] max-lg:text-[15px] font-bold">
+        <div className='flex items-center'>
+        
+        <div
+          onClick={(e) => {
+            setTriggerTogger(!triggerToggle);
+          }}
+          className="text-gray-700  text-6xl    flex items-center justify-center"
+        >
+          <BiChevronLeft className="  " />
+        </div>
+        <h1 className="text-cltext text-8xl opacity-100 text-[30px] max-lg:text-[15px] font-bold">
           DTU Meet
         </h1>
+        </div>
+        
+
       </Link>
         <div className="text-gray-700 font-roboto text-[15px]  dark:text-white transition font-bold ">
           <Link href={'/Question'} className="flex gap-3 items-center ">
@@ -150,14 +163,7 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
             <p>Sign In</p>
           </Link>
         </div>
-        <div
-          onClick={(e) => {
-            setTriggerTogger(!triggerToggle);
-          }}
-          className="text-white text-4xl absolute top-[1%] left-[-7%] p-1 rounded-[100vh] bg-red-600 flex items-center justify-center"
-        >
-          <BiCaretLeft className="  " />
-        </div>
+        
         <div className="text-gray-700 font-roboto text-4xl font-normal ">
           <ThemeButton></ThemeButton>
         </div>

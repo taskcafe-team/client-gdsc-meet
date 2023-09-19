@@ -77,7 +77,7 @@ export default function Home() {
         <main className="py-[16px] px-[53px]  max-sm:py-[20px] max-sm:px-[20px]">
           <h1
             className="
-               max-w-[570px] text-7xl my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-4xl"
+               max-w-[570px] text-7xl my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-6xl"
           >
             Meetings and video calling for everyone.
           </h1>
@@ -90,7 +90,7 @@ export default function Home() {
             <p className="">or</p>
             <Connect />
           </div>
-          <hr className="w-[70%] bg-[#C8C8C8]  my-[30px] " />
+          <hr className="w-[70%] bg-[#C8C8C8]  my-[30px] max-sm:w-full " />
 
           <Link href={'/'} className="text-gray-500 text-[20px] font-normal">
             <span className="text-primary mr-2">Learn more</span>

@@ -120,7 +120,7 @@ const page: React.FC = (props) => {
         <form
           onSubmit={formik.handleSubmit}
           action=""
-          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0"
+          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 max-sm:p-10"
         >
           <h2
             className="

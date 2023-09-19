@@ -141,12 +141,12 @@ const page: React.FC = (props) => {
       <Header className="relative z-100 w-[60%] max-lg:w-full" />
       <main
         ref={refContent}
-        className=" opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
+        className="max-sm:p-10 opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
       >
         <form
           onSubmit={formik.handleSubmit}
           action=""
-          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0"
+          className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 max-sm:p-10 "
         >
           <h2
             className="

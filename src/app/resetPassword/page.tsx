@@ -79,7 +79,7 @@ const ResetPasswordPage: React.FC = () => {
 
   return (
     <div>
-      <main className="w-full h-screen flex items-center justify-center">
+      <main className="w-full h-screen flex items-center justify-center max-sm:items-start">
         {!flag ? (
           <form
             onSubmit={formik.handleSubmit}
@@ -87,7 +87,7 @@ const ResetPasswordPage: React.FC = () => {
             className="w-full min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md"
           >
             <h2 className="max-w-[570px] text-7xl my-20 max-lg:max-w-none text-start leading-tight py-2">
-              Forgot password
+              Reset password
             </h2>
             <div className="Form__group px-2 mb-2">
               <Input
