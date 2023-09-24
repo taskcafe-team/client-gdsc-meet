@@ -97,7 +97,7 @@ export const PreJoinCustom = ({
     };
     console.log('new', newUserChoices);
     setUserChoices(newUserChoices);
-    setIsValid(handleValidation(newUserChoices));
+    setIsValid(handleValidation(newUserChoices as any));
   }, [
     username,
     videoEnabled,
@@ -109,9 +109,9 @@ export const PreJoinCustom = ({
 
   function handleSubmit(event : React.FormEvent) {
     event.preventDefault();
-    if (handleValidation(userChoices)) {
+    if (handleValidation(userChoices as any)) {
       if (typeof onSubmit === 'function') {
-        onSubmit(userChoices);
+        onSubmit(userChoices as any);
       }
     } else {
       console.log('Validation failed with: ', userChoices);
