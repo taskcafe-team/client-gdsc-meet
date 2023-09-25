@@ -1,9 +1,5 @@
-import { Providers } from '@/redux/providers';
 import { Inter } from 'next/font/google';
-import Header from '@/components/Header';
-import Theme from '@/Theme/Theme';
 
-import Footer from '@/components/Footer';
 import '@livekit/components-styles';
 import '@livekit/components-styles/prefabs';
 import '@/scss/style.scss';
@@ -15,7 +11,5 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>{children}</>
-  );
+  return <div>{children}</div>;
 }

@@ -25,12 +25,12 @@ const page: NextPage = (context: any) => {
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
   console.log('Pre  ', preJoinChoices);
   return (
-    <>
+    <div>
       <Head>
         <title>DTU meet</title>
       </Head>
 
-      <main >
+      <main>
         {roomName && !Array.isArray(roomName) && preJoinChoices ? (
           <ActiveRoom
             roomName={roomName}
@@ -40,7 +40,7 @@ const page: NextPage = (context: any) => {
             }}
           ></ActiveRoom>
         ) : (
-          <div style={{ placeItems: 'center', height: '100%' }} >
+          <div style={{ placeItems: 'center', height: '100%', width: '100wh' }}>
             <PreJoin
               onError={(err) => console.log('error while setting up prejoin', err)}
               defaults={{
@@ -48,6 +48,8 @@ const page: NextPage = (context: any) => {
                 videoEnabled: true,
                 audioEnabled: true,
               }}
+              data-lk-theme="default"
+              style={{ height: '100dvh', width: '100dwh' }}
               onSubmit={(values) => {
                 console.log('Joining with: ', values);
                 setPreJoinChoices(values);
@@ -56,10 +58,9 @@ const page: NextPage = (context: any) => {
           </div>
         )}
       </main>
-    </>
+    </div>
   );
 };
-
 
 type ActiveRoomProps = {
   userChoices: LocalUserChoices;
@@ -90,11 +91,7 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
       }
     })();
   }, []);
- 
-   // Wait for userChoices and hq to be available before rendering LiveKitRoom
-  //  if (!userChoices || !hq) {
-  //   return <Loading />;
-  // }
+
   const roomOptions = useMemo((): RoomOptions => {
     return {
       videoCaptureDefaults: {
@@ -128,6 +125,8 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
           video={userChoices.videoEnabled}
           audio={userChoices.audioEnabled}
           onDisconnected={onLeave}
+          data-lk-theme="default"
+          style={{ height: '100dvh' }}
         >
           <VideoConference chatMessageFormatter={formatChatMessageLinks} />
           <DebugMode logLevel={LogLevel.info} />
