@@ -139,7 +139,7 @@ const page: React.FC = (props) => {
   return (
     <div>
       <Header className="relative z-100 w-[60%] max-lg:w-full" />
-      <main
+      <div
         ref={refContent}
         className="max-sm:p-10 opacity-0 transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center"
       >
@@ -223,7 +223,7 @@ const page: React.FC = (props) => {
             <span className="text-primary font-bold ">create Account</span>
           </Link>
         </form>
-      </main>
+      </div>
     </div>
   );
 };

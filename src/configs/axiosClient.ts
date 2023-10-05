@@ -5,8 +5,8 @@ import { apiEndpoint } from '../api/http-rest/auth/apiEndpoint';
 
 function getLocalAccessToken() {
   const accessToken = localStorage.getItem('meet:accessToken');
-  console.log(accessToken);
-  return accessToken ?JSON.parse(accessToken): "";
+  
+  return accessToken ? JSON.parse(accessToken) : "";
 }
 
 function getLocalRefreshToken() {

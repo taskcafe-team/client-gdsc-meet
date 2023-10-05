@@ -33,8 +33,8 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
           src={logo}
           alt="DTUMeet logo"
           className="w-[75px] h-[75px] object-cover max-lg:w-[45px] max-lg:h-[45px]"
-        ></Image>
-        <h1 className="text-cltext  opacity-100 text-[45px] max-lg:text-[15px] font-bold">
+        />
+        <h1 className="text-cltext  opacity-100 text-[45px] max-lg:text-[25px] font-bold">
           DTU Meet
         </h1>
       </Link>

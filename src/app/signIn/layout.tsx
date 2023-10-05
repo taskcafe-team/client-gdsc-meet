@@ -1,13 +1,7 @@
-
+import Bgtop from '@/assets/images/SignInTr.svg';
+import Bgbottom from '@/assets/images/SignIn-BT.svg';
+import BgT1 from '@/assets/images/PS-1.svg';
 import Image from 'next/image';
-import Header from '@/components/Header';
-import BgDarktop from '@/assets/images/bgDark-top.png';
-import Bgtop from '@/assets/images/SignIn-Top1.png';
-import Bgbottom from '@/assets/images/SignInBottom.png';
-import BgT1 from '@/assets/images/bg-t2.png';
-import '@livekit/components-styles';
-import '@livekit/components-styles/prefabs';
-
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,7 +24,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         alt="backgroud"
         className="max-lg:hidden object-fill  absolute bottom-[-35px] left-[17vh] z-3 w-[72vh] h-[100vh] "
       ></Image>
-
       {children}
     </div>
   );

@@ -4,8 +4,16 @@ import Button from '@/components/Button';
 import { Input } from '@/components/Input';
 import useToastily from '@/hooks/useToastily';
 import { useFormik } from 'formik';
-import React from 'react';
+import Image from 'next/image';
+import React, { useRef } from 'react';
 import * as Yup from 'yup';
+import Bg from '@assets/images/FortgotBg3.svg';
+import BgDark from '@assets/images/FortgotBgDark3.svg';
+import BgT1 from '@/assets/images/PS-1.svg';
+import BgTL from '@/assets/images/FortgotBg44.svg';
+import { useTheme } from 'next-themes';
+import { DefaultLoading } from '@/components/Loading';
+import Header from '@/components/Header';
 interface IUser {
   UserName: string;
 }
@@ -20,6 +28,8 @@ const page: React.FC = (props) => {
   const [flag, setFlag] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const showToast = useToastily();
+  const { theme } = useTheme();
+  const refContent = useRef<HTMLDivElement | null>(null);
   const formik = useFormik({
     initialValues: inituser,
     validationSchema: validationSchema,
@@ -40,75 +50,118 @@ const page: React.FC = (props) => {
     },
   });
 
+  // Animation loading
+  if (!theme) {
+    return <DefaultLoading />;
+  }
+  // animation start
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (refContent.current) {
+        refContent.current.classList.remove('opacity-0');
+        refContent.current.classList.add('opacity-100');
+      }
+    }, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
   return (
-    <div>
-      <main className="w=[100%] h=[100vh] flex items-center justify-center">
-        {flag == false ? (
-          <form
-            onSubmit={formik.handleSubmit}
-            action=""
-            className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md "
-          >
-            <h2
-              className="
-                 max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
+    <div
+      className={`Home h-[100vh] w-full bg-primary backdrop-blur-30 relative overflow-hidden max-lg:overflow-auto  max-lg:bg-none ${
+        theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
+      }`}
+    >
+      <Image
+        priority={true}
+        src={theme === 'light' ? Bg : BgDark}
+        alt="backgroud"
+        className="max-lg:hidden  object-contain absolute left-[-15%] top-[-50px]  w-[120%] max-w-[110%] z-2  "
+      ></Image>
+      <Image
+        priority={true}
+        src={BgT1}
+        alt="backgroud"
+        className="max-lg:hidden object-fill  absolute bottom-[-15%] right-[12%] z-3 w-[40%] "
+      ></Image>
+      <Image
+        priority={true}
+        src={BgTL}
+        alt="backgroud"
+        className="max-lg:hidden object-fill  absolute bottom-[-10%] right-[-10%] z-3 w-[40%] "
+      ></Image>
+      <div className="relative z-3  w-[60%] max-lg:w-full ">
+        <Header />
+        <div
+          className="opacity-0 transition-opacity max-lg:flex max-lg:items-center justify-center"
+          ref={refContent}
+        >
+          {flag == false ? (
+            <form
+              onSubmit={formik.handleSubmit}
+              action=""
+              className="  w-[500px] border border-solid max-lg:ml-0  ml-[20%] mt-10 p-[30px] max-lg:p-[10px]  bg-white bg-opacity-50 backdrop-blur-lg rounded drop-shadow-lg"
             >
-              Forgot password
-            </h2>
-            <div className="flex items-start justify-start py-8">
-              <span>Email address</span>
-            </div>
-            <div className="Form__group px-2 mb-2">
-              <Input
-                id="UserName"
-                value={formik.values.UserName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                // icon={<BiUser />}
-                key={'input-userName'}
-                placeholder="Your email..."
-                className=" rounded-sm border-b-2  "
-              />
-              <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
-                {formik.touched.UserName && formik.errors.UserName ? (
-                  <span>{formik.errors.UserName}</span>
-                ) : null}
-              </p>
-            </div>
-            <div className="pt-5">
+              <h2
+                className="
+                 max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2"
+              >
+                Forgot password
+              </h2>
+              <div className="Form__group px-2 mb-2">
+                <Input
+                  id="UserName"
+                  value={formik.values.UserName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  // icon={<BiUser />}
+                  key={'input-userName'}
+                  placeholder="Your email..."
+                  className=" rounded-sm border-b-2  "
+                />
+                <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
+                  {formik.touched.UserName && formik.errors.UserName ? (
+                    <span>{formik.errors.UserName}</span>
+                  ) : null}
+                </p>
+              </div>
+              <div className="pt-5">
+                <Button
+                  loading={loading}
+                  type="submit"
+                  className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
+                >
+                  Send now
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className=" w-[500px] border border-solid   ml-[20%] mt-10 p-[30px]  bg-white bg-opacity-50 backdrop-blur-lg rounded drop-shadow-lg ">
+              <h2
+                className="
+                   max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2"
+              >
+                Send email
+              </h2>
+              <div className="flex flex-col gap-5 my-2">
+                <p>
+                  {`Please check your Gmail inbox at ${formik.values.UserName} for any new messages or
+                  notifications.`}
+                </p>
+                <p>Thank you!</p>
+              </div>
               <Button
-                loading={loading}
+                onClick={() => setFlag(false)}
                 type="submit"
                 className="max-sm:w-full w-full  flex items-center justify-center  bg-primary text-white"
               >
-                Send now
+                Click if no Gmail yet!!
               </Button>
             </div>
-          </form>
-        ) : (
-          <div className="w-[100%] min-w-[420px] max-w-[500px] md:mx-0 shadow p-10 rounded-md ">
-            <h2
-              className="
-               max-w-[570px] text-7xl my-[20px] max-lg:max-w-none text-start leading-tight py-2 "
-            >
-              Send Email
-            </h2>
-            <div className="flex flex-col gap-5">
-              <p>
-                {`Please check your Gmail inbox at ${formik.values.UserName} for any new messages or
-                notifications.`}
-              </p>
-              <p>Thank you!</p>
-            </div>
-
-            <div className="mt-5" onClick={() => setFlag(false)}>
-              <span className="text-primary font-bold underline cursor-pointer">
-                Click if no Gmail yet!!
-              </span>
-            </div>
-          </div>
-        )}
-      </main>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
