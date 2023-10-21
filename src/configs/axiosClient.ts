@@ -14,7 +14,7 @@ function getLocalRefreshToken() {
   return refreshToken;
 }
 // update sau
-function refreshToken() {
+export function refreshToken() {
   return axiosClient.post('/auth/access-token', {
     refreshToken: getLocalRefreshToken(),
   });

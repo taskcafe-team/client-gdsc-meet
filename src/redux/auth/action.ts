@@ -33,6 +33,7 @@ export const AUTH_RELOGIN = createAsyncThunk(
 export const AUTH_LOGOUT = createAsyncThunk('auth/AUTH_LOGOUT', async () => {
   try {
     localStorage.removeItem('meet:accessToken');
+    localStorage.removeItem('meet:refreshToken');
     // Return the user data and tokens
   } catch (error) {
     // Handle errors and reject the promise if needed

@@ -1,29 +1,29 @@
 'use client';
 import Loading from '@/app/loading';
-import { PreJoinCustom } from '@/components/PreJoin';
+
 import { DebugMode } from '@/lib/Debug';
 import {
   LiveKitRoom,
-  PreJoin,
   LocalUserChoices,
   useToken,
   VideoConference,
   formatChatMessageLinks,
 } from '@livekit/components-react';
 import { LogLevel, RoomOptions, VideoPresets } from 'livekit-client';
-
+import {PreJoin} from '@components/PreJoin'
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 const page: NextPage = (context: any) => {
   const router = useRouter();
-
+  const { theme } = useTheme();
   const { name: roomName } = context.params;
-  console.log(context.params);
+
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
-  console.log('Pre  ', preJoinChoices);
+
   return (
     <div>
       <Head>
@@ -40,7 +40,7 @@ const page: NextPage = (context: any) => {
             }}
           ></ActiveRoom>
         ) : (
-          <div style={{ placeItems: 'center', height: '100%', width: '100wh' }}>
+          <div className={`bg-[#111111] h-[100vh] flex items-center justify-center`}>
             <PreJoin
               onError={(err) => console.log('error while setting up prejoin', err)}
               defaults={{
@@ -49,7 +49,6 @@ const page: NextPage = (context: any) => {
                 audioEnabled: true,
               }}
               data-lk-theme="default"
-              style={{ height: '100dvh', width: '100dwh' }}
               onSubmit={(values) => {
                 console.log('Joining with: ', values);
                 setPreJoinChoices(values);
@@ -85,7 +84,6 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
         const resp = await fetch(`/get_lk_token?room=${roomName}&username=${'aaaa'}`);
         const data = await resp.json();
         setToken(data.token);
-        console.log(data.token);
       } catch (e) {
         console.error(e);
       }
@@ -111,7 +109,6 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
       dynacast: true,
     };
   }, [userChoices, hq]);
-  console.log('opinion', roomOptions);
   if (token === '') {
     return <Loading />;
   }

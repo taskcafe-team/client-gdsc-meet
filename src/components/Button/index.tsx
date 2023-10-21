@@ -16,8 +16,8 @@ const Button: React.FC<IButton> = ({ children, className, loading = false, ...re
         px-6 py-4 font-bold text-xm cursor-pointer
         relative
         ${className ? className : ''}`}
-      {...rest} // Spread các props còn lại vào thẻ button
-    >
+      {...rest}
+    > 
       {children}
       <div className="absolute right-0">
         {loading ? (

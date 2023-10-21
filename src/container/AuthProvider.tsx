@@ -10,6 +10,7 @@ const AuthProvider =({ children }: { children: React.ReactNode }) => {
   React.useEffect(()=>{
     const handleUser = async()=>{
        const user = await UserService.getUserDetail();
+       console.log(user);
        
        if(user){
         if(!isLogin){

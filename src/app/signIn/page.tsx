@@ -59,7 +59,7 @@ const page: React.FC = (props) => {
     win?.addEventListener(
       'message',
       function (event: any) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+  
 
         if (event.origin === 'http://localhost:8080' && event.data) {
           const result = event.data;
@@ -70,7 +70,7 @@ const page: React.FC = (props) => {
             window.addEventListener('hashchange', function () {
               // Lấy giá trị từ URL sau khi API đã điều hướng
               const verifyURL = win?.location.href;
-              console.log('URL mới:', verifyURL);
+             
 
               // Gọi hàm để xử lý kết quả từ API verify
             });
@@ -100,7 +100,6 @@ const page: React.FC = (props) => {
 
         if (inituser) {
           const { accessToken, refreshToken } = initUser;
-          console.log(initUser);
           dispatch(AUTH_DETAIL({ accessTokent: accessToken, refreshToken: refreshToken }));
           showToast({
             content: 'Login success',

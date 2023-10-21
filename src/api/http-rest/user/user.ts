@@ -5,9 +5,7 @@ export class UserService {
   static getUserDetail() {
     return axiosClient
       .get(apiEndpoint.getDetail)
-      .then((response: any) => {
-        console.log(response);
-        
+      .then((response: any) => {     
         return response.code == 200 ? response.data : null;
       })
       .catch((error) => {

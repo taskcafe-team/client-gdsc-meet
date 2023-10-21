@@ -9,7 +9,6 @@ export class AuthService {
         password:password,
       })
       .then((response) => {
-        console.log(response);
         return response.data;
       })
       .catch((error) => {
@@ -58,7 +57,6 @@ export class AuthService {
         params: { email: email },
       })
       .then((response: any) => {
-        console.log(response)
         return response.code == 200 ? response.data : null;
       })
       .catch((error) => {

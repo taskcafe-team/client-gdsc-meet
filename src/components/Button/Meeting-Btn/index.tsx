@@ -9,7 +9,6 @@ const StartMeeting: React.FC = (props) => {
     const router = useRouter();
     const startMeeting = () => {
       const roomID = generateRoomId();
-      console.log('room is', roomID);
       router.push(`/rooms/${roomID}`);
     };
   return (

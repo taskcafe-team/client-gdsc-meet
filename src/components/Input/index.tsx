@@ -9,10 +9,22 @@ interface IInput {
   type?: string;
   placeholder?: string;
   className?: string;
-  onBlur?: any
-};
+  onBlur?: any;
+  disabled?: boolean;
+}
 
-export const Input: React.FC<IInput> = ({className, placeholder, id, value, onChange, icon, type, onBlur } ) => {
+export const Input: React.FC<IInput> = ({
+  className,
+  placeholder,
+  id,
+  value,
+  onChange,
+  icon,
+  type,
+  onBlur,
+  disabled,
+  ...rest
+}) => {
   return (
     <div className={`Connect__Group flex items-center max-sm:w-full ${className}`}>
       {icon && <div className="mx-8">{icon}</div>}
@@ -25,6 +37,8 @@ export const Input: React.FC<IInput> = ({className, placeholder, id, value, onCh
         placeholder={placeholder}
         className="block outline-none px-4 py-4 w-full rounded-md max-sm:w-full"
         onBlur={onBlur}
+        disabled={disabled}
+        {...rest}
       />
     </div>
   );

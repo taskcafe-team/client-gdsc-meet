@@ -31,11 +31,11 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
       <Link href={'/'} className="flex items-center">
         <Image
           src={logo}
-          alt="DTUMeet logo"
+          alt="DTUMeet"
           className="w-[75px] h-[75px] object-cover max-lg:w-[45px] max-lg:h-[45px]"
         />
         <h1 className="text-cltext  opacity-100 text-[45px] max-lg:text-[25px] font-bold">
-          DTU Meet
+          GDSC Meet
         </h1>
       </Link>
       <nav className="flex  items-center gap-6 max-lg:hidden">

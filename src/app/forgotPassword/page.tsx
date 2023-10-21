@@ -94,14 +94,19 @@ const page: React.FC = (props) => {
       <div className="relative z-3  w-[60%] max-lg:w-full ">
         <Header />
         <div
-          className="opacity-0 transition-opacity max-lg:flex max-lg:items-center justify-center"
+          className="opacity-0 mt-10 transition-opacity max-lg:flex max-lg:items-center justify-center"
           ref={refContent}
         >
           {flag == false ? (
             <form
               onSubmit={formik.handleSubmit}
               action=""
-              className="  w-[500px] border border-solid max-lg:ml-0  ml-[20%] mt-10 p-[30px] max-lg:p-[10px]  bg-white bg-opacity-50 backdrop-blur-lg rounded drop-shadow-lg"
+              className="  w-[500px] border border-solid max-lg:ml-0
+                ml-[20%] mt-10 p-[30px] max-lg:p-[20px] 
+                 bg-white bg-opacity-50 backdrop-blur-lg 
+                 rounded drop-shadow-lg 
+                 max-lg:backdrop-blur-0 max-lg:border-none max-lg:bg-opacity-0 
+                 "
             >
               <h2
                 className="
@@ -118,7 +123,7 @@ const page: React.FC = (props) => {
                   // icon={<BiUser />}
                   key={'input-userName'}
                   placeholder="Your email..."
-                  className=" rounded-sm border-b-2  "
+                  className=" "
                 />
                 <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2">
                   {formik.touched.UserName && formik.errors.UserName ? (

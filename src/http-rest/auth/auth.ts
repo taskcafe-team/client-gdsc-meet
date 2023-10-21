@@ -1,4 +1,4 @@
-import axiosClient from '../../../configs/axiosClient';
+import axiosClient from '@/configs/axiosClient';
 import { apiEndpoint } from './apiEndpoint';
 
 export class AuthService {
@@ -6,10 +6,9 @@ export class AuthService {
     return axiosClient
       .post(apiEndpoint.loginWithEmail, {
         email: username,
-        password:password,
+        password: password,
       })
-      .then((response) => {
-        console.log(response);
+      .then((response: any) => {
         return response.data;
       })
       .catch((error) => {
@@ -54,33 +53,11 @@ export class AuthService {
 
   static forgotPassword({ email }: { email: string }) {
     return axiosClient
-      .get(`${apiEndpoint.forgotPassword}`,{
+      .get(`${apiEndpoint.forgotPassword}`, {
         params: { email: email },
       })
       .then((response: any) => {
-        console.log(response)
-        return response.code == 200 ? response.data : null;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  static resetPassword({ token }: { token: string }) {
-    return axiosClient
-      .post(apiEndpoint.resetPassword, {
-        token,
-      })
-      .then((response: any) => {
-        return response.code == 200 ? response.data : null;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  static reAccessToken({ token }: { token: string }) {
-    return axiosClient
-      .get(`${apiEndpoint.reAccessToken}?refreshToken=${token}`)
-      .then((response: any) => {
+        console.log(response);
         return response.code == 200 ? response.data : null;
       })
       .catch((error) => {

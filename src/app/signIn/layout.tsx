@@ -3,7 +3,7 @@ import Bgbottom from '@/assets/images/SignIn-BT.svg';
 import BgT1 from '@/assets/images/PS-1.svg';
 import Image from 'next/image';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="SignIn relative  h-[100vh] overflow-hidden">
       <Image

@@ -212,8 +212,8 @@ const page: React.FC = (props) => {
             href={'/signIn'}
             className="flex gap-2 my-4 mx-auto justify-center w-full py-4 ml-2 text-xl text-[1.7rem]  max-sm:text-xl text-gray-500 dark:text-gray-30  "
           >
-            <span>if you are not have account</span>
-            <span className="text-primary font-bold ">create Account</span>
+            <span>if you already have an account</span>
+            <span className="text-primary font-bold ">Login</span>
           </Link>
         </form>
       </main>
