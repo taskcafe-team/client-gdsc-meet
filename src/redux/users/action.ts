@@ -1,4 +1,4 @@
-import { IUser } from '@/model/User';
+import { IUser } from '@/model/IUser';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 // Thunk to simulate signing in

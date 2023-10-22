@@ -14,11 +14,17 @@ import BgBottom from '@/assets/images/HomeLightBr.svg';
 import BgDarktop from '@/assets/images/HomeDarkTl1.svg';
 import BgDarkBottom from '@/assets/images/bgDark-bottom.png';
 import BGMobile from '@/assets/images/HomeMobile1.svg';
-import { refreshToken } from '@/configs/axiosClient';
+
+import { RoomService } from '@/api/http-rest/room';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux.hook';
+import { MEET_ADD, meetDetail } from '@/redux/meet';
 export default function Home() {
   const { theme } = useTheme();
   const refContent = useRef<HTMLDivElement | null>(null);
-
+  const dispatch = useAppDispatch()
+  const RoomDetail = useAppSelector(meetDetail)
+  console.log("Dtail",RoomDetail);
+  
   // Animation loading
   if (!theme) {
     return <DefaultLoading />;
@@ -38,6 +44,15 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(()=>{
+    const fetch = async ()=>{
+      const data = await RoomService.createRoom();
+      dispatch(MEET_ADD(data.data))
+    
+      console.log(data);
+    }
+    fetch();
+  },[])
   return (
     <div
       className={`Home h-[100vh] w-full bg-primary backdrop-blur-30 relative overflow-hidden max-lg:overflow-auto  max-lg:bg-none ${

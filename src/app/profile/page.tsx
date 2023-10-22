@@ -16,24 +16,27 @@ import { Input } from '@/components/Input';
 import useToastily from '@/hooks/useToastily';
 import { useFormik } from 'formik';
 import TabInfo from './components/TabInfo';
+import { userDetail } from '@/redux/users';
 
 const listTab = [
   { key: 1, icon: <BiUser />, lable: 'Profile', component: <TabInfo /> },
-  { key: 2, icon: <BiFoodMenu />, lable: 'Fouder', component: <TabInfo /> },
+  { key: 2, icon: <BiFoodMenu />, lable: 'Folder', component: <TabInfo /> },
 ];
 const DEFAULT = 1;
 const profilePage: React.FC = (props) => {
   // Private routes
-  // const auth = usePrivateRoute();
+  const isLogin = usePrivateRoute();
+ 
   const router = useRouter();
   const { theme } = useTheme();
+  const dispatch = useAppDispatch();
   const [TabKey, setTabKey] = useState<number>(DEFAULT);
   const [loading, setLoading] = React.useState(false);
   const showToast = useToastily();
   if (!theme) {
     return <DefaultLoading />;
   }
-  const dispatch = useAppDispatch();
+  
   const handleSignOut = useCallback(() => {
     dispatch(AUTH_LOGOUT());
     router.push('/');

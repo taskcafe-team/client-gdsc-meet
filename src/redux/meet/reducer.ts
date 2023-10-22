@@ -1,15 +1,16 @@
 
-import { IMeet, IUser } from '@/model/User';
+import { IUser } from '@/model/IUser';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { stat } from 'fs';
 import { MEET_ADD, MEET_DELETE } from './action';
+import { IRoom } from '@/model/IRoom';
 
-export interface IInitMeetList {
+export interface IInitMeet {
   loading: boolean,
-  payload:IMeet | null,
+  payload: null|IRoom,
 }
 
-export const initialState: IInitMeetList = {
+export const initialState: IInitMeet = {
   loading: false,
   payload:null,
 };

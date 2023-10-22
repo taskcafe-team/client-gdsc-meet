@@ -6,5 +6,5 @@ import { AnyAction, ThunkDispatch, combineReducers } from '@reduxjs/toolkit';
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 type AppState = ReturnType<typeof combineReducers>;
 type TypedDispatch<T> = ThunkDispatch<T, any, AnyAction>;
-export const useAppDispatch = () => useDispatch<TypedDispatch<AppState>>();
+export const useAppDispatch = () => useDispatch<TypedDispatch<AppState|any>>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

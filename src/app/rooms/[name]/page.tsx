@@ -10,20 +10,27 @@ import {
   formatChatMessageLinks,
 } from '@livekit/components-react';
 import { LogLevel, RoomOptions, VideoPresets } from 'livekit-client';
-import {PreJoin} from '@components/PreJoin'
+import { PreJoin } from '@components/PreJoin';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { useAppSelector } from '@/hooks/redux.hook';
+import { userDetail } from '@/redux/users';
+import { RoomService } from '@/api/http-rest/room';
+import { IRoom } from '@/model/IRoom';
 
 const page: NextPage = (context: any) => {
   const router = useRouter();
   const { theme } = useTheme();
   const { name: roomName } = context.params;
-
+  const user = useAppSelector(userDetail);
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
-
+  const fullName: string = useMemo(
+    () => `${user?.firstname ?? ''} ${user?.lastname ?? ''} MinhNHa`.trim(),
+    [user],
+  );
   return (
     <div>
       <Head>
@@ -44,7 +51,7 @@ const page: NextPage = (context: any) => {
             <PreJoin
               onError={(err) => console.log('error while setting up prejoin', err)}
               defaults={{
-                username: '',
+                username: fullName.trim() ?? '',
                 videoEnabled: true,
                 audioEnabled: true,
               }}
@@ -78,17 +85,14 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
   console.log({
     userChoices: userChoices,
   });
-  useEffect(() => {
-    (async () => {
-      try {
-        const resp = await fetch(`/get_lk_token?room=${roomName}&username=${'aaaa'}`);
-        const data = await resp.json();
-        setToken(data.token);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, []);
+ 
+  useEffect(()=>{
+    const fetch= async()=>{
+      const fetchToken = await RoomService.getRoomAccessToken(roomName);
+      setToken(fetchToken?.data?.token)
+    }
+    fetch()
+  },[])
 
   const roomOptions = useMemo((): RoomOptions => {
     return {
@@ -109,9 +113,11 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
       dynacast: true,
     };
   }, [userChoices, hq]);
+
   if (token === '') {
     return <Loading />;
   }
+
   return (
     <>
       {liveKitUrl && (

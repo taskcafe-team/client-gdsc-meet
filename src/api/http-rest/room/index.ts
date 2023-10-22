@@ -1,2 +1,2 @@
 export * from './apiEndpoint';
-export * from './auth';
+export * from './room';

@@ -1,4 +1,4 @@
-import { IUser } from '@/model/User';
+import { IUser } from '@/model/IUser';
 import { createSlice } from '@reduxjs/toolkit';
 import { USER_DETAIL } from './action';
 

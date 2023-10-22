@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Input } from '@/components/Input';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -8,20 +8,16 @@ import Button from '@/components/Button';
 import Image from 'next/image';
 import Avatar from '@/assets/images/bg-t1.png';
 import { IoMdClose } from 'react-icons/io';
-import '@scss/components/TabInfo.scss'
+import '@scss/components/TabInfo.scss';
+import { userDetail } from '@/redux/users';
+import { useAppSelector } from '@/hooks/redux.hook';
 interface Iinfo {
   firstname: string;
   lastname: string;
   address: string;
   numberPhone: string;
+  email: string;
 }
-
-const initialValues: Iinfo = {
-  firstname: '',
-  lastname: '',
-  address: '',
-  numberPhone: '',
-};
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required('First name is required'),
@@ -66,7 +62,19 @@ const TabInfo: React.FC = () => {
     info: false,
     room: false,
   });
+  const auth = useAppSelector(userDetail);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const initialValues: Iinfo = useMemo(
+    () => ({
+      firstname: auth?.firstname ?? '',
+      lastname: auth?.lastname ?? '',
+      address: '',
+      numberPhone: '',
+      email: auth?.email ?? '',
+    }),
+    [auth],
+  );
+  console.log('auth', auth);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -142,6 +150,18 @@ const TabInfo: React.FC = () => {
           </div>
           <div className="Form__group px-2 mb-2">
             <Input
+              id="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Email"
+              className="rounded-sm border-b-2"
+              disabled={true}
+            />
+            <p className="error text-red-600 text-lg min-h-[20px] mx-6 my-2"></p>
+          </div>
+          <div className="Form__group px-2 mb-2">
+            <Input
               id="firstname"
               value={formik.values.firstname}
               onChange={formik.handleChange}
@@ -172,7 +192,7 @@ const TabInfo: React.FC = () => {
               ) : null}
             </p>
           </div>
-          <div className="Form__group px-2 mb-2">
+          {/* <div className="Form__group px-2 mb-2">
             <Input
               id="address"
               value={formik.values.address}
@@ -203,10 +223,10 @@ const TabInfo: React.FC = () => {
                 <span>{formik.errors.numberPhone}</span>
               ) : null}
             </p>
-          </div>
+          </div> */}
         </form>
         <div className="Tabinfo-room">
-          <div className="from__header flex items-center py-6 px-1 justify-between">
+          <div className="from__header flex items-center pb-6 px-1 justify-between">
             <h2 className="text-5xl max-lg:max-w-none text-start leading-tight">Room name</h2>
             {submitState.room ? (
               <Button onClick={handleStateRoom}>

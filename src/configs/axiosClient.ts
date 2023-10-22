@@ -2,19 +2,17 @@ import axios from 'axios';
 import qs from 'qs';
 import { apiEndpoint } from '../api/http-rest/auth/apiEndpoint';
 
-
 function getLocalAccessToken() {
   const accessToken = localStorage.getItem('meet:accessToken');
-  
-  return accessToken ? JSON.parse(accessToken) : "";
+  return accessToken ? JSON.parse(accessToken) : null;
 }
 
 function getLocalRefreshToken() {
   const refreshToken = localStorage.getItem('meet:refreshToken');
-  return refreshToken;
+  return refreshToken ? JSON.parse(refreshToken) : null;
 }
 // update sau
-export function refreshToken() {
+function refreshToken() {
   return axiosClient.post('/auth/access-token', {
     refreshToken: getLocalRefreshToken(),
   });
@@ -33,9 +31,11 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config: any) => {
     // custom lai lam sau
+    console.log(getLocalAccessToken());
+
     config.headers = {
       ...config.headers,
-      'x-api-token':getLocalAccessToken(),
+      'x-api-token': getLocalAccessToken() ?? '',
     };
     console.log(config);
     return {
@@ -54,9 +54,9 @@ axiosClient.interceptors.response.use(
   async (err: any) => {
     try {
       console.log(err);
-      
+
       const originalConfig = err.config;
-      if (originalConfig.url !== apiEndpoint.loginWithEmail && err.response) {
+      if (originalConfig?.url !== apiEndpoint.loginWithEmail && err.response) {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
