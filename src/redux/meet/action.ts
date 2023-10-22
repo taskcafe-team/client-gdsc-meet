@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 
 export const MEET_ADD = createAsyncThunk('auth/MEET_ADD', async (payload: IRoom) => {
   // You can perform your logic here, such as making an API request
-  const response = await RoomService.createRoom();
-  return response.data;
+
+  return payload;
 });
 
 export const MEET_DELETE = createAsyncThunk('auth/MEET_DELETE', async (payload: any) => {

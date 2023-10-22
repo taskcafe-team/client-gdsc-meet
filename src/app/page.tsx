@@ -21,10 +21,10 @@ import { MEET_ADD, meetDetail } from '@/redux/meet';
 export default function Home() {
   const { theme } = useTheme();
   const refContent = useRef<HTMLDivElement | null>(null);
-  const dispatch = useAppDispatch()
-  const RoomDetail = useAppSelector(meetDetail)
-  console.log("Dtail",RoomDetail);
+  const dispatch = useAppDispatch();
+  const RoomDetail = useAppSelector(meetDetail);
   
+
   // Animation loading
   if (!theme) {
     return <DefaultLoading />;
@@ -44,15 +44,7 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(()=>{
-    const fetch = async ()=>{
-      const data = await RoomService.createRoom();
-      dispatch(MEET_ADD(data.data))
-    
-      console.log(data);
-    }
-    fetch();
-  },[])
+
   return (
     <div
       className={`Home h-[100vh] w-full bg-primary backdrop-blur-30 relative overflow-hidden max-lg:overflow-auto  max-lg:bg-none ${

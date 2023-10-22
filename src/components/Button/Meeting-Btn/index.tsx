@@ -18,8 +18,9 @@ const StartMeeting: React.FC = () => {
   
   const startMeeting = useCallback(async () => {
     try {
-        dispatch(MEET_ADD as any);
-        router.push(`/rooms/${room?.friendlyId}`);
+        const initRoom = await RoomService.createRoom();
+        dispatch(MEET_ADD(initRoom.data) as any);
+        router.push(`/rooms/${initRoom.data?.friendlyId}`);
       
     } catch (error) {
       console.error('An error occurred:', error);

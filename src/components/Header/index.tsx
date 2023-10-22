@@ -18,11 +18,8 @@ import Avatar from '@/assets/images/bg-t1.png';
 function Header({ type, className, ...rest }: { type?: string; className?: string }) {
   const [triggerToggle, setTriggerTogger] = useState(false);
   const { theme } = useTheme();
-  const isLoading = useAppSelector(authLoading);
   const isLogin = useAppSelector(authDetail);
   const UDetail = useAppSelector(userDetail);
-  console.log('s');
-
   return (
     <header
       className={`px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px]`}
@@ -33,7 +30,7 @@ function Header({ type, className, ...rest }: { type?: string; className?: strin
           src={logo}
           alt="DTUMeet"
           className="w-[75px] h-[75px] object-cover max-lg:w-[45px] max-lg:h-[45px]"
-        />
+        ></Image>
         <h1 className="text-cltext  opacity-100 text-[45px] max-lg:text-[25px] font-bold">
           GDSC Meet
         </h1>
