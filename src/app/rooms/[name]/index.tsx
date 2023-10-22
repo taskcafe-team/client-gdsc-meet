@@ -24,7 +24,8 @@ const index: React.FC = () => {
         setNameRoom('');
       }
     } catch (err) {
-      console.log(err);
+     console.log(err);
+     
     }
   }, [nameRoom]);
   return (

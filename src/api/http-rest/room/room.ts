@@ -6,7 +6,7 @@ export class RoomService {
     return axiosClient.get(apiEndpoint.createRoom);
   };
 
-  static getUserDetail(friendlyId: string) {
+  static getRoomDetail(friendlyId: string) {
     return axiosClient.get(apiEndpoint.detailRoom({ friendlyId }));
   }
 

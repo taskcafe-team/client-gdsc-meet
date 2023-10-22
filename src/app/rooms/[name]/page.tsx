@@ -57,7 +57,6 @@ const page: NextPage = (context: any) => {
               }}
               data-lk-theme="default"
               onSubmit={(values) => {
-                console.log('Joining with: ', values);
                 setPreJoinChoices(values);
               }}
             ></PreJoin>
@@ -82,17 +81,14 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
   const region = searchParams.get('region');
   const hq = searchParams.get('hq');
   const liveKitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
-  console.log({
-    userChoices: userChoices,
-  });
- 
-  useEffect(()=>{
-    const fetch= async()=>{
+
+  useEffect(() => {
+    const fetch = async () => {
       const fetchToken = await RoomService.getRoomAccessToken(roomName);
-      setToken(fetchToken?.data?.token)
-    }
-    fetch()
-  },[])
+      setToken(fetchToken?.data?.token);
+    };
+    fetch();
+  }, []);
 
   const roomOptions = useMemo((): RoomOptions => {
     return {

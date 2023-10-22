@@ -19,7 +19,6 @@ const StartMeeting: React.FC = () => {
   const startMeeting = useCallback(async () => {
     try {
         dispatch(MEET_ADD as any);
-         // No need to cast 'as any'
         router.push(`/rooms/${room?.friendlyId}`);
       
     } catch (error) {

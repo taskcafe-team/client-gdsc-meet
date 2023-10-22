@@ -11,12 +11,23 @@ import {
 import { useRouter } from 'next/router';
 import { DebugMode } from '../../lib/Debug';
 import { decodePassphrase } from '../../lib/client-utils';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { RoomService } from '@/api/http-rest/room';
+import Loading from '../loading';
 
 export default function CustomRoomConnection() {
-  const router = useRouter();
-  const { liveKitUrl, token } = router.query;
-
+  const liveKitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
+  const searchParams = useSearchParams();
+  const roomName = searchParams.get('nameroom');
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    const fetch = async () => {
+      const fetchToken = await RoomService.getRoomAccessToken(`${roomName}`);
+      setToken(fetchToken?.data?.token);
+    };
+    fetch();
+  }, []);
   const e2eePassphrase =
     typeof window !== 'undefined' && decodePassphrase(window.location.hash.substring(1));
   const worker =
@@ -56,10 +67,10 @@ export default function CustomRoomConnection() {
   }, []);
 
   if (typeof liveKitUrl !== 'string') {
-    return <h2>Missing LiveKit URL</h2>;
+    return <Loading/>;
   }
   if (typeof token !== 'string') {
-    return <h2>Missing LiveKit token</h2>;
+    return <Loading/>;
   }
 
   return (
