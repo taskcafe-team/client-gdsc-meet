@@ -26,7 +26,7 @@ const DEFAULT = 1;
 const profilePage: React.FC = (props) => {
   // Private routes
   const isLogin = usePrivateRoute();
- 
+
   const router = useRouter();
   const { theme } = useTheme();
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ const profilePage: React.FC = (props) => {
   if (!theme) {
     return <DefaultLoading />;
   }
-  
+
   const handleSignOut = useCallback(() => {
     dispatch(AUTH_LOGOUT());
     router.push('/');
@@ -59,8 +59,9 @@ const profilePage: React.FC = (props) => {
             <div className="profile__body flex">
               <div className="profile-sidebar w-[20%] p-3">
                 {listTab &&
-                  listTab.map((tab) => (
+                  listTab.map((tab, index) => (
                     <div
+                      key={`Tab${index}`}
                       onClick={() => setTabKey(tab.key)}
                       className={`relative profile-sidebar__item text-4xl p-4 flex rounded-md font-bold cursor-pointer text-black dark:text-white `}
                     >
@@ -77,7 +78,7 @@ const profilePage: React.FC = (props) => {
                 <div
                   className={`relative profile-sidebar__item text-4xl p-4 flex rounded-md font-bold cursor-pointer text-black dark:text-white `}
                 >
-                  <div className="flex items-center gap-2"   onClick={handleSignOut}>
+                  <div className="flex items-center gap-2" onClick={handleSignOut}>
                     <BiLogOut />
                     <p>Logout</p>
                   </div>

@@ -15,8 +15,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { RoomService } from '@/api/http-rest/room';
 import Loading from '../loading';
+import usePrivateRoute from '@/hooks/usePrivateRoute';
 
 export default function CustomRoomConnection() {
+  const isLogin = usePrivateRoute();
   const liveKitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
   const searchParams = useSearchParams();
   const roomName = searchParams.get('nameroom');

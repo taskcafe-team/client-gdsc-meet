@@ -20,15 +20,17 @@ import { useAppSelector } from '@/hooks/redux.hook';
 import { userDetail } from '@/redux/users';
 import { RoomService } from '@/api/http-rest/room';
 import { IRoom } from '@/model/IRoom';
+import usePrivateRoute from '@/hooks/usePrivateRoute';
 
 const page: NextPage = (context: any) => {
+  const isLogin = usePrivateRoute();
   const router = useRouter();
   const { theme } = useTheme();
   const { name: roomName } = context.params;
   const user = useAppSelector(userDetail);
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
   const fullName: string = useMemo(
-    () => `${user?.firstname ?? ''} ${user?.lastname ?? ''} MinhNHa`.trim(),
+    () => `${user?.firstname ?? ''} ${user?.lastname ?? ''}`.trim(),
     [user],
   );
   return (

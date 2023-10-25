@@ -1,11 +1,11 @@
-'use client';
+"use client";
 import { AuthService } from '@/api/http-rest/auth';
 import Button from '@/components/Button';
 import { Input } from '@/components/Input';
 import useToastily from '@/hooks/useToastily';
 import { useFormik } from 'formik';
 import Image from 'next/image';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import Bg from '@assets/images/FortgotBg3.svg';
 import BgDark from '@assets/images/FortgotBgDark3.svg';
@@ -25,8 +25,8 @@ const inituser: IUser = {
   UserName: '',
 };
 const page: React.FC = (props) => {
-  const [flag, setFlag] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [flag, setFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
   const showToast = useToastily();
   const { theme } = useTheme();
   const refContent = useRef<HTMLDivElement | null>(null);
@@ -55,7 +55,7 @@ const page: React.FC = (props) => {
     return <DefaultLoading />;
   }
   // animation start
-  React.useEffect(() => {
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (refContent.current) {
         refContent.current.classList.remove('opacity-0');

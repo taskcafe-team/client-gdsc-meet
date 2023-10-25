@@ -74,7 +74,7 @@ const TabInfo: React.FC = () => {
     }),
     [auth],
   );
-  console.log('auth', auth);
+
 
   const formik = useFormik({
     initialValues: initialValues,
