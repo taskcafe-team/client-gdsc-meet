@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    // "paths": {
+    //   "@contexts/*": ["src/contexts/*"],
+    //   "@view/*": ["src/view/*"],
+    //   "@access/*": ["src/access/*"],
+    //   "@src/*": ["src/*"]
+    // },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

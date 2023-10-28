@@ -1,8 +1,9 @@
-import React, { Suspense } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { Suspense } from "react";
+import { BrowserRouter, Routes } from "react-router-dom";
 
-import { Router } from "./router";
 import Providers from "./contexts/providers";
+import { getRoutes } from "./views/routes/routes";
+import { CircularProgress } from "@mui/material";
 
 export const Loading = () => {
   return (
@@ -15,7 +16,7 @@ export const Loading = () => {
         alignItems: "center",
       }}
     >
-      Loading
+      <CircularProgress />
     </div>
   );
 };
@@ -25,7 +26,7 @@ function App() {
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Providers>
-          <Router />
+          <Routes>{getRoutes()}</Routes>
         </Providers>
       </Suspense>
     </BrowserRouter>
