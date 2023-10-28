@@ -10,13 +10,15 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
-import { useAppSelector } from "src/contexts";
+import CallIcon from "@mui/icons-material/Call";
+import { useAppSelector } from "../../../contexts/hooks";
+
+import img from "@assets/images/icons/facebook.svg";
 
 const MainContent = styled(Box)(
   () => `
     width: 100%;
-    display: flex;
+    display: flex;s
     flex: 1;
     flex-direction: column;
   `,
@@ -40,11 +42,7 @@ export default function HomePage() {
       <TopWrapper>
         <Container maxWidth="md">
           <Box textAlign="center">
-            <img
-              alt="Oline Meeting Images"
-              height={180}
-              src={"../../../access/images/OnlineMeetingIllustration.jpg"}
-            />
+            <img alt="Oline Meeting Images" height={180} src={img.toString()} />
             <Typography variant="h3" sx={{ my: 2 }}>
               Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
             </Typography>
@@ -54,8 +52,8 @@ export default function HomePage() {
               fontWeight="normal"
               sx={{ mb: 4 }}
             >
-              Chúng tôi đã thiết kế lại Google Meet — dịch vụ tổ chức cuộc họp
-              kinh doanh với độ bảo mật cao — để cung cấp miễn phí cho mọi
+              Chúng tôi đã thiết kế lại Google Meet - dịch vụ tổ chức cuộc họp
+              kinh doanh với độ bảo mật cao - để cung cấp miễn phí cho mọi
               người.
             </Typography>
           </Box>
@@ -67,20 +65,20 @@ export default function HomePage() {
                   placeholder="Input meeting id..."
                   endAdornment={
                     <InputAdornment position="end">
-                      <Button variant="contained">Join Meeting</Button>
+                      <Button variant="contained" size="small">
+                        Join Meeting
+                      </Button>
                     </InputAdornment>
                   }
                   startAdornment={
                     <InputAdornment position="start">
-                      <SearchTwoToneIcon />
+                      <CallIcon />
                     </InputAdornment>
                   }
                 />
               </FormControl>
               <Divider sx={{ my: 4 }}>OR</Divider>
-              <Button href="/" variant="outlined">
-                Create Meeting
-              </Button>
+              <Button variant="outlined">Create Meeting</Button>
             </Box>
           </Container>
         </Container>

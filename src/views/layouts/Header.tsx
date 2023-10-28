@@ -1,4 +1,4 @@
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from "react";
 import {
   AppBar,
@@ -18,11 +18,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 
 import { useAppSelector } from "../../contexts/hooks";
+import { AUTH_LOGIN_URL } from "../routes/routesContants";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages: string[] = [];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Header() {
+  const navigate = useNavigate();
   const [btnLoginLoading, setBtnLoginLoading] = useState(false);
 
   const isLogin = useAppSelector((s) => s.auth.payload.isLogin);
@@ -49,9 +51,7 @@ function Header() {
   };
 
   const handleLoginClick = useCallback(async () => {
-    setBtnLoginLoading(true);
-    redirect("/login");
-    console.log("Login clicked");
+    navigate(AUTH_LOGIN_URL);
   }, [isLogin]);
 
   return (

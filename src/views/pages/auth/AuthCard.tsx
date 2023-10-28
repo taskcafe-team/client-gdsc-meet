@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 
 export default function AuthCard({ children }: { children: ReactNode }) {
   return (
-    <Box sx={{ maxWidth: { xs: 450, lg: 600 }, margin: { xs: 2.5, md: 3 } }}>
+    <Box sx={{ maxWidth: { xs: 400 }, margin: { xs: 3 } }}>
       <Box>{children}</Box>
     </Box>
   );

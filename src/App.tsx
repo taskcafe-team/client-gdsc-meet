@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useCallback } from "react";
 import { BrowserRouter, Routes } from "react-router-dom";
 
 import Providers from "./contexts/providers";
@@ -22,11 +22,13 @@ export const Loading = () => {
 };
 
 function App() {
+  const getR = useCallback(getRoutes, []);
+
   return (
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Providers>
-          <Routes>{getRoutes()}</Routes>
+          <Routes>{getR()}</Routes>
         </Providers>
       </Suspense>
     </BrowserRouter>

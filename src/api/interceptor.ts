@@ -1,7 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { getLocalStorageItem } from "../utils/localStorageUtils";
 
-//------------- Xử lý request -------------//
 export const apiRequestInterceptor = (config: AxiosRequestConfig) => {
   config.headers = config.headers ?? {};
 
@@ -12,7 +11,6 @@ export const apiRequestInterceptor = (config: AxiosRequestConfig) => {
   return { ...config, timer: performance.now() };
 };
 
-//------------- Xử lý response -------------//
 export const apiSuccessResponseInterceptor = (
   response: AxiosResponse,
 ): AxiosResponse["data"] => {

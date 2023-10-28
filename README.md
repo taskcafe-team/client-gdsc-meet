@@ -1,1 +1,1 @@
-"@mui/styled-engine": "@mui/styled-engine-sc@^6.0.0-alpha.3"
+"start:dev": "webpack serve --config=webpack.config.js",

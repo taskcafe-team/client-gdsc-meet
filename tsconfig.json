@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
     "baseUrl": "./",
     "paths": {
-      "contexts/*": ["src/contexts/*"],
-      "view/*": ["src/view/*"],
-      "assets/*": ["src/assets/*"],
-      "src/*": ["src/*"]
+      "@assets/*": ["src/assets/*"],
+      "@api/*": ["src/api/*"],
+      "@context/*": ["src/context/*"],
+      "@views/*": ["src/views/*"],
+      "@src/*": ["src/*"]
     },
+    "module": "esnext",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -16,13 +20,15 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx", "webpack.config.ts", "src/custom.d.ts"],
+  "exclude": ["node_modules"],
+  "plugins": ["@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
+  "settings": { "import/resolver": { "typescript": {} } },
+  "rules": {}
 }

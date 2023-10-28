@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from "react";
 import { ToastContainer, toast, ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAppSelector } from "src/contexts";
+import { useAppSelector } from "@src/contexts/hooks";
 
 interface ToastProps {
   content: string;

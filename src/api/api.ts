@@ -1,25 +1,32 @@
-import type { AxiosInstance, AxiosRequestConfig } from "axios";
-import axios from "axios";
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  CreateAxiosDefaults,
+} from "axios";
 import qs from "qs";
 
 import { REQUEST_TIMEOUT_MS } from "./apiConstants";
 import { apiRequestInterceptor } from "./interceptor";
+import { Agent } from "https";
 
-export const apiRequestConfig = {
-  baseURL: `${process.env.NEXT_PUBLIC_URL_SEVICER}`,
+export const apiRequestConfig: CreateAxiosDefaults<any> = {
+  baseURL: `${"https://gdsc-meet.us.to:5000"}`,
   timeout: REQUEST_TIMEOUT_MS,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
+  httpAgent: new Agent({
+    rejectUnauthorized: false,
+  }),
 };
 
-const axiosInstance: AxiosInstance = axios.create();
+const axiosInstance: AxiosInstance = axios.create(apiRequestConfig);
 
 const requestInterceptors = [apiRequestInterceptor];
 requestInterceptors.forEach((interceptor) => {
   axiosInstance.interceptors.request.use(interceptor as any);
 });
 
-axiosInstance.interceptors.response.use();
+// axiosInstance.interceptors.response.use();
 
 class Api {
   static async get(
@@ -28,7 +35,7 @@ class Api {
     config: AxiosRequestConfig = {},
   ) {
     const _url = url + qs.stringify(queryParams, { arrayFormat: "brackets" });
-    return axiosInstance.get(_url, { ...apiRequestConfig, ...config });
+    return axiosInstance.get(_url, { ...config });
   }
 
   static async post(
@@ -38,7 +45,7 @@ class Api {
     config: AxiosRequestConfig = {},
   ) {
     const _url = url + qs.stringify(queryParams, { arrayFormat: "brackets" });
-    return axiosInstance.post(_url, body, { ...apiRequestConfig, ...config });
+    return axiosInstance.post(_url, body, { ...config });
   }
 
   static async put(
@@ -48,7 +55,7 @@ class Api {
     config: AxiosRequestConfig = {},
   ) {
     const _url = url + qs.stringify(queryParams, { arrayFormat: "brackets" });
-    return axiosInstance.put(_url, body, { ...apiRequestConfig, ...config });
+    return axiosInstance.put(_url, body, { ...config });
   }
 
   static async patch(
@@ -58,7 +65,7 @@ class Api {
     config: AxiosRequestConfig = {},
   ) {
     const _url = url + qs.stringify(queryParams, { arrayFormat: "brackets" });
-    return axiosInstance.patch(_url, body, { ...apiRequestConfig, ...config });
+    return axiosInstance.patch(_url, body, { ...config });
   }
 
   static async delete(
@@ -67,7 +74,7 @@ class Api {
     config: AxiosRequestConfig = {},
   ) {
     const _url = url + qs.stringify(queryParams, { arrayFormat: "brackets" });
-    return axiosInstance.delete(_url, { ...apiRequestConfig, ...config });
+    return axiosInstance.delete(_url, { ...config });
   }
 }
 

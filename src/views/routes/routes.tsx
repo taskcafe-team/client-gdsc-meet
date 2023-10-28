@@ -1,6 +1,6 @@
 import { ReactNode, lazy } from "react";
 import { Route, RouteProps } from "react-router-dom";
-import { BASE_URL } from "./routesContants";
+import { AUTH_LOGIN_URL, BASE_URL } from "./routesContants";
 
 const HomePage = lazy(() => import("../pages/home/HomePage"));
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
@@ -21,8 +21,8 @@ const routes: CustomRouteProps[] = [
     loader: undefined,
   },
   {
-    path: "login",
-    element: getDefaultLayout(<LoginPage />),
+    path: AUTH_LOGIN_URL,
+    element: <LoginPage />,
     loader: undefined,
   },
 ];
