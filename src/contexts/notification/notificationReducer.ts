@@ -16,9 +16,9 @@ const noitificationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(noitificationSet, (state) => {
-        state.payload.message = state.payload.message;
-        state.payload.code = state.payload.code;
+      .addCase(noitificationSet, (state, action) => {
+        state.payload.message = action.payload.message;
+        state.payload.code = action.payload.code;
         state.payload.timestamp =
           state.payload.timestamp || new Date("2012-02-26").getTime();
       })

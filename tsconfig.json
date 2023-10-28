@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    // "paths": {
-    //   "@contexts/*": ["src/contexts/*"],
-    //   "@view/*": ["src/view/*"],
-    //   "@access/*": ["src/access/*"],
-    //   "@src/*": ["src/*"]
-    // },
+    "paths": {
+      "contexts/*": ["src/contexts/*"],
+      "view/*": ["src/view/*"],
+      "assets/*": ["src/assets/*"],
+      "src/*": ["src/*"]
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -23,5 +23,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

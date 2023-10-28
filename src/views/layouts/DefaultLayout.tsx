@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import styled from "styled-components";
@@ -14,13 +14,18 @@ const LayoutWapper = styled(Box)(
   `,
 );
 
-export function DefaultLayout(props: { children?: ReactNode }) {
+function DefaultLayout(props: { children?: ReactNode }) {
   return (
     <LayoutWapper>
       <Noitification />
       <Header />
-      <Box>{props.children}</Box>
+      <Box flex={1}>
+        <Box sx={{ flex: 1, display: "flex", alignItems: "stretch" }}>
+          {props.children}
+        </Box>
+      </Box>
       <Footer />
     </LayoutWapper>
   );
 }
+export default DefaultLayout;

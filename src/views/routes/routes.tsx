@@ -1,11 +1,11 @@
 import { ReactNode, lazy } from "react";
 import { Route, RouteProps } from "react-router-dom";
-
 import { BASE_URL } from "./routesContants";
-import { VerticalLayout, DefaultLayout } from "../layouts";
-import { JSX } from "react/jsx-runtime";
 
 const HomePage = lazy(() => import("../pages/home/HomePage"));
+const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
+const VerticalLayout = lazy(() => import("../layouts/VerticalLayout"));
+const DefaultLayout = lazy(() => import("../layouts/DefaultLayout"));
 
 const getVerticalLayout = (e: ReactNode) => (
   <VerticalLayout>{e}</VerticalLayout>
@@ -20,9 +20,14 @@ const routes: CustomRouteProps[] = [
     element: getDefaultLayout(<HomePage />),
     loader: undefined,
   },
+  {
+    path: "login",
+    element: getDefaultLayout(<LoginPage />),
+    loader: undefined,
+  },
 ];
 
-export const getRoutes = (role?: string): JSX.Element[] => {
+export const getRoutes = (role?: string) => {
   const r = new Array<CustomRouteProps>();
   r.push(...routes);
 

@@ -12,6 +12,7 @@ type PropsType = {
     | undefined;
 };
 
-export const VerticalLayout = (props: PropsType) => {
+const VerticalLayout = (props: PropsType) => {
   return <React.Fragment>{props.children}</React.Fragment>;
 };
+export default VerticalLayout;
