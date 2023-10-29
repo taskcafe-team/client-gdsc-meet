@@ -3,6 +3,7 @@ const fs = require('fs')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 const PROJECT_PATH = __dirname.replace(/\\/g, '/')
 const resolve =
@@ -34,6 +35,14 @@ module.exports = async (env, arg) => {
 		externalsType: WebpackConfigWithMode.externalsType || 'global',
 		externals: WebpackConfigWithMode.externals || {},
 		resolve: {
+			extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
+			plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
+			fallback: {
+				https: require.resolve('https-browserify'),
+				url: require.resolve('url/'),
+				http: require.resolve('stream-http'),
+				buffer: require.resolve('buffer/'),
+			},
 			preferRelative: true,
 			alias: {
 				...resolve.alias,
