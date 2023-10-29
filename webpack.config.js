@@ -14,12 +14,6 @@ module.exports = {
       { test: /\.(ts|tsx)?$/, use: "ts-loader", exclude: /node_modules/ },
       { test: /\.css$/, use: ["style-loader", "css-loader"] },
       { test: /\.(png|jp(e*)g|svg|gif)$/, type: "asset/resource" },
-      // {
-      //   test: /\.(png|jpe?g|gif)$/i,
-      //   use: [
-      //     { loader: "file-loader", options: { name: "images/[name].[ext]" } },
-      //   ],
-      // },
     ],
   },
   resolve: {
@@ -34,7 +28,7 @@ module.exports = {
   },
   devtool: "cheap-module-source-map",
   devServer: {
-    static: { directory: path.join(__dirname, "build") },
+    static: { directory: path.join(__dirname, "dist") },
     port: 3000,
   },
   plugins: [

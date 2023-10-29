@@ -2,14 +2,10 @@ import { ReactNode, lazy } from "react";
 import { Route, RouteProps } from "react-router-dom";
 import { AUTH_LOGIN_URL, BASE_URL } from "./routesContants";
 
-const HomePage = lazy(() => import("../pages/home/HomePage"));
-const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
-const VerticalLayout = lazy(() => import("../layouts/VerticalLayout"));
 const DefaultLayout = lazy(() => import("../layouts/DefaultLayout"));
 
-const getVerticalLayout = (e: ReactNode) => (
-  <VerticalLayout>{e}</VerticalLayout>
-);
+const HomePage = lazy(() => import("../pages/home/HomePage"));
+const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>;
 

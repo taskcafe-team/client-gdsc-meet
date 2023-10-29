@@ -3,14 +3,14 @@ export interface APIResponseError {
   message: string;
 }
 
-export interface ResponseMeta {
+export interface ResponseData {
   status: number;
   success: boolean;
   error?: APIResponseError;
 }
 
 export interface ApiResponse<T = unknown> {
-  responseMeta: ResponseMeta;
+  responseMeta: ResponseData;
   data: T;
   code?: string;
 }

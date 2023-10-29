@@ -1,14 +1,11 @@
-import type { AxiosPromise } from "axios";
-import Api from "../api";
+import { AxiosPromise } from "axios";
 
-export interface LoginUserRequest {
-  email: string;
-  password: string;
-}
+import Api from "../api";
+import { LoginUserRequest } from "./userApi";
 
 export class AuthApi extends Api {
   private static authUrl = "auth";
-  private static emailLoginlUrl = `${AuthApi.authUrl}/email/login`;
+  private static emailLoginlUrl = `${this.authUrl}/email/login`;
 
   static async loginWithEmail(
     request: LoginUserRequest,

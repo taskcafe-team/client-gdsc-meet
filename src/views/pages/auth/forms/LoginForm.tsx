@@ -26,7 +26,7 @@ import { Formik } from "formik";
 // project import
 import AuthWithThirtyService from "./AuthWithThirtyService";
 import AnimateButton from "../../../components/AnimateButton";
-import AuthApi from "@src/api/http-rest/authApi";
+import { AuthApi } from "@api/http-rest";
 
 export default function LoginForm() {
   const [checked, setChecked] = React.useState(false);
@@ -57,8 +57,9 @@ export default function LoginForm() {
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
           const { email, password } = values;
-          console.log({ email, password });
           const res = await AuthApi.loginWithEmail({ email, password });
+
+          console.log(res);
           return;
         } catch (error) {
           return;

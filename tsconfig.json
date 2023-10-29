@@ -25,10 +25,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx"
   },
-  "include": ["**/*.ts", "**/*.tsx", "webpack.config.ts", "src/custom.d.ts"],
   "exclude": ["node_modules"],
-  "plugins": ["@typescript-eslint"],
-  "parser": "@typescript-eslint/parser",
-  "settings": { "import/resolver": { "typescript": {} } },
-  "rules": {}
+  "settings": { "import/resolver": { "typescript": {} } }
 }
