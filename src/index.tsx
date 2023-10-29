@@ -1,8 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./app";
+import 'assets/styles/main.css'
+import 'assets/styles/tailwind.css'
+import router from 'config/router/index'
+import { UserInfoProvider } from 'context/UserInfoContext'
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
-);
-root.render(<App />);
+const root = createRoot(document.getElementById('root'))
+
+root.render(
+	<StrictMode>
+		<UserInfoProvider>
+			<RouterProvider router={router} />
+		</UserInfoProvider>
+	</StrictMode>
+)
