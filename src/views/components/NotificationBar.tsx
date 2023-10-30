@@ -1,6 +1,6 @@
 import { useAppSelector } from 'contexts'
 import React, { useLayoutEffect } from 'react'
-import { ToastContainer, toast, ToastOptions } from 'react-toastify'
+import { ToastContainer, ToastOptions, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 interface ToastProps {
@@ -24,7 +24,7 @@ const showToast = ({ content, type = 'success' }: ToastProps) => {
 }
 
 export default function NotificationBar() {
-	const noitifiactionState = useAppSelector((s) => s.noitificatioin.payload)
+	const noitifiactionState = useAppSelector((s) => s.noitificatioin)
 	useLayoutEffect(() => {
 		if (!noitifiactionState.timestamp) return
 		showToast({ content: noitifiactionState.message })

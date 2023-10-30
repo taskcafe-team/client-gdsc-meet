@@ -1,16 +1,17 @@
-export interface APIResponseError {
-	code: string | number
+export interface ApiResponseError {
+	code: string
 	message: string
 }
 
-export interface ResponseData {
+export interface ReponseMatadata {
 	status: number
 	success: boolean
-	error?: APIResponseError
+	message: string
+	error?: ApiResponseError
 }
 
 export interface ApiResponse<T = unknown> {
-	responseMeta: ResponseData
+	metadate: ReponseMatadata
 	data: T
-	code?: string
+	timestamp: number
 }

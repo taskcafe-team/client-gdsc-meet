@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-
 import {
-	Button,
 	Checkbox,
 	Divider,
 	FormControlLabel,
@@ -16,65 +14,66 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
-
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
-
 import * as Yup from 'yup'
-import { Formik } from 'formik'
+import { Formik, type FormikProps } from 'formik'
 
 // project import
+import { noitificationSet } from 'contexts/notification'
 import AuthWithThirtyService from './AuthWithThirtyService'
 import AnimateButton from '../../../components/AnimateButton'
 import { AuthApi } from 'api/http-rest'
+import { LoadingButton } from '@mui/lab'
+import { useAppDispatch } from 'contexts/hooks'
+
+interface LoginFormValueInit {
+	email: string
+	password: string
+	errMessage: null
+}
+
+const loginFormValueInit: LoginFormValueInit = {
+	email: 'dangnhatminh@gmail.com',
+	password: '123456',
+	errMessage: null,
+}
+
+const ShowPasswordIcon = ({ showPassword }: { showPassword: boolean }) =>
+	showPassword ? <RemoveRedEyeOutlinedIcon /> : <VisibilityOffOutlinedIcon />
 
 export default function LoginForm() {
+	const dispatch = useAppDispatch()
 	const [checked, setChecked] = React.useState(false)
-
 	const [showPassword, setShowPassword] = React.useState(false)
-	const handleClickShowPassword = () => {
-		setShowPassword(!showPassword)
-	}
-
-	const handleMouseDownPassword = (event: any) => {
-		event.preventDefault()
-	}
 
 	return (
 		<Formik
-			initialValues={{
-				email: '',
-				password: '',
-				submit: null,
-			}}
+			initialValues={loginFormValueInit}
 			validationSchema={Yup.object().shape({
 				email: Yup.string()
 					.email('Must be a valid email')
-					.max(255)
-					.required('Email is required'),
+					.required('Email is required')
+					.max(255),
 				password: Yup.string().max(255).required('Password is required'),
 			})}
-			onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+			onSubmit={async (values) => {
 				try {
 					const { email, password } = values
+					Promise.reject({ error: 'HEllO' })
 					const res = await AuthApi.loginWithEmail({ email, password })
+					dispatch(noitificationSet({ code: '500', message: 'HellO' }))
 					console.log(res)
 					return
 				} catch (error) {
-					return
+					console.log(error)
+				} finally {
+					dispatch(noitificationSet({ code: '500', message: 'HellO' }))
 				}
 			}}
 		>
-			{({
-				errors,
-				handleBlur,
-				handleChange,
-				handleSubmit,
-				isSubmitting,
-				touched,
-				values,
-			}) => (
-				<form noValidate onSubmit={handleSubmit}>
+			{(p: FormikProps<LoginFormValueInit>) => (
+				<form noValidate onSubmit={p.handleSubmit}>
 					<Grid container spacing={1}>
 						<Grid item xs={12}>
 							<Stack spacing={1}>
@@ -82,20 +81,20 @@ export default function LoginForm() {
 								<OutlinedInput
 									id="email-login"
 									type="email"
-									value={values.email}
+									value={p.values.email}
 									name="email"
-									onBlur={handleBlur}
-									onChange={handleChange}
+									onBlur={p.handleBlur}
+									onChange={p.handleChange}
 									placeholder="Enter email address"
 									fullWidth
-									error={Boolean(touched.email && errors.email)}
+									error={Boolean(p.touched.email && p.errors.email)}
 								/>
-								{touched.email && errors.email && (
+								{p.touched.email && p.errors.email && (
 									<FormHelperText
 										error
 										id="standard-weight-helper-text-email-login"
 									>
-										{errors.email}
+										{p.errors.email}
 									</FormHelperText>
 								)}
 							</Stack>
@@ -105,38 +104,33 @@ export default function LoginForm() {
 								<InputLabel htmlFor="password-login">Password</InputLabel>
 								<OutlinedInput
 									fullWidth
-									error={Boolean(touched.password && errors.password)}
+									error={Boolean(p.touched.password && p.errors.password)}
 									id="-password-login"
 									type={showPassword ? 'text' : 'password'}
-									value={values.password}
+									value={p.values.password}
 									name="password"
-									onBlur={handleBlur}
-									onChange={handleChange}
+									onBlur={p.handleBlur}
+									onChange={p.handleChange}
 									endAdornment={
 										<InputAdornment position="end">
 											<IconButton
 												aria-label="toggle password visibility"
-												onClick={handleClickShowPassword}
-												onMouseDown={handleMouseDownPassword}
+												onClick={() => setShowPassword(!showPassword)}
 												edge="end"
 												size="large"
 											>
-												{showPassword ? (
-													<RemoveRedEyeOutlinedIcon />
-												) : (
-													<VisibilityOffOutlinedIcon />
-												)}
+												<ShowPasswordIcon showPassword={showPassword} />
 											</IconButton>
 										</InputAdornment>
 									}
 									placeholder="Enter password"
 								/>
-								{touched.password && errors.password && (
+								{p.touched.password && p.errors.password && (
 									<FormHelperText
 										error
 										id="standard-weight-helper-text-password-login"
 									>
-										{errors.password}
+										{p.errors.password}
 									</FormHelperText>
 								)}
 							</Stack>
@@ -173,16 +167,11 @@ export default function LoginForm() {
 								</Link>
 							</Stack>
 						</Grid>
-						{errors.submit && (
-							<Grid item xs={12}>
-								<FormHelperText error>{errors.submit}</FormHelperText>
-							</Grid>
-						)}
 						<Grid item xs={12}>
 							<AnimateButton>
-								<Button
+								<LoadingButton
+									loading={p.isSubmitting}
 									disableElevation
-									disabled={isSubmitting}
 									fullWidth
 									size="large"
 									type="submit"
@@ -190,7 +179,7 @@ export default function LoginForm() {
 									color="primary"
 								>
 									Login
-								</Button>
+								</LoadingButton>
 							</AnimateButton>
 						</Grid>
 						<Grid item xs={12}>
@@ -199,7 +188,7 @@ export default function LoginForm() {
 							</Divider>
 						</Grid>
 						<Grid item xs={12}>
-							<AuthWithThirtyService />
+							<AuthWithThirtyService loginBtnLoading={p.isSubmitting} />
 						</Grid>
 					</Grid>
 				</form>

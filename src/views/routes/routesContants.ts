@@ -2,6 +2,7 @@ export const BASE_URL = '/'
 export const PAGE_NOT_FOUND_URL = '/404'
 export const SERVER_ERROR_URL = '/500'
 
+export const HOME_URL = BASE_URL
 export const AUTH_URL = '/auth'
 export const USERS_URL = '/users'
 export const FORGOT_PASSWORD_URL = `${AUTH_URL}/forgotPassword`

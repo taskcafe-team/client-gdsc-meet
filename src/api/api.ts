@@ -9,11 +9,14 @@ import qs from 'qs'
 
 import { REQUEST_TIMEOUT_MS } from './apiConstants'
 import {
-	apiFailureResponseInterceptor,
 	apiRequestInterceptor,
+	apiFailureRequestInterceptor,
 	apiSuccessResponseInterceptor,
+	apiFailureResponseInterceptor,
 } from './interceptor'
 import { Agent } from 'https'
+import { ApiResponse } from './apiResponses'
+import { json } from 'react-router-dom'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
 	baseURL: `${'https://gdsc-meet.us.to:5000'}`,
@@ -26,19 +29,16 @@ const apiRequestConfig: CreateAxiosDefaults<any> = {
 const axiosInstance: AxiosInstance = axios.create(apiRequestConfig)
 
 // -- Request --
-const requestInterceptors = [apiRequestInterceptor]
-requestInterceptors.forEach((interceptor) => {
-	axiosInstance.interceptors.request.use(interceptor as any)
-})
+axiosInstance.interceptors.request.use(
+	(cf) => apiRequestInterceptor(cf),
+	(err) => apiFailureRequestInterceptor(err)
+)
 
 // -- Response --
-const responseInterceptors = [
-	apiSuccessResponseInterceptor,
-	apiFailureResponseInterceptor,
-]
-responseInterceptors.forEach((interceptor) => {
-	axiosInstance.interceptors.request.use(interceptor as any)
-})
+axiosInstance.interceptors.response.use(
+	(res) => apiSuccessResponseInterceptor(res),
+	(err) => apiFailureResponseInterceptor(err)
+)
 
 class Api {
 	static async get(
@@ -57,7 +57,8 @@ class Api {
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		return axiosInstance.post(_url, body, { ...config })
+		const res = await axiosInstance.post(_url, body, { ...config })
+		return res
 	}
 
 	static async put(

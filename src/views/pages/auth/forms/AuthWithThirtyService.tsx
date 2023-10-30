@@ -1,16 +1,13 @@
 import React from 'react'
-import { useTheme } from '@mui/material/styles'
-import { useMediaQuery, Button, Stack } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 
-// assets
-// import Google from "../../../../assets/images/icons/google.svg";
-// import Twitter from "../../../../assets/images/icons/twitter.svg";
-// import Facebook from "../../../../assets/images/icons/facebook.svg";
+interface AuthWithThirtyServiceProps {
+	loginBtnLoading: boolean
+}
 
-export default function AuthWithThirtyService() {
-	const theme = useTheme()
-	const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'))
-
+export default function AuthWithThirtyService({
+	loginBtnLoading,
+}: AuthWithThirtyServiceProps) {
 	const googleHandler = async () => {
 		// login || singup
 	}
@@ -24,40 +21,33 @@ export default function AuthWithThirtyService() {
 	}
 
 	return (
-		<Stack
-			direction="row"
-			spacing={matchDownSM ? 1 : 3}
-			justifyContent={matchDownSM ? 'space-around' : 'space-between'}
-		>
+		<Stack direction="row" spacing={1}>
 			<Button
-				size={matchDownSM ? 'small' : 'medium'}
+				disabled={loginBtnLoading}
 				variant="outlined"
-				color="secondary"
-				fullWidth={!matchDownSM}
-				// startIcon={<img src={Google} alt="Google" />}
+				fullWidth={true}
+				startIcon={<img src="../images/icons/google.svg" alt="F" />}
 				onClick={googleHandler}
 			>
 				Google
 			</Button>
 			<Button
-				size={matchDownSM ? 'small' : 'medium'}
+				disabled={loginBtnLoading}
 				variant="outlined"
-				color="secondary"
-				fullWidth={!matchDownSM}
-				// startIcon={<img src={Twitter} alt="Twitter" />}
+				fullWidth={true}
+				startIcon={<img src="../images/icons/facebook.svg" alt="F" />}
 				onClick={twitterHandler}
 			>
-				Twitter
+				Facebook
 			</Button>
 			<Button
-				size={matchDownSM ? 'small' : 'medium'}
+				disabled={loginBtnLoading}
 				variant="outlined"
-				color="secondary"
-				fullWidth={!matchDownSM}
-				// startIcon={<img src={Facebook} alt="Facebook" />}
+				fullWidth={true}
+				startIcon={<img src="../images/icons/twitter.svg" alt="F" />}
 				onClick={facebookHandler}
 			>
-				Facebook
+				Twitter
 			</Button>
 		</Stack>
 	)

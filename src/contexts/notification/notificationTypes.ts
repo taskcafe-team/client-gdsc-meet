@@ -6,6 +6,4 @@ export interface INoitificationMessage {
 	timestamp?: number
 }
 
-export interface NoitificationState extends CommonState {
-	payload: INoitificationMessage
-}
+export type NoitificationState = INoitificationMessage

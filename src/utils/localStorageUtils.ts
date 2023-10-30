@@ -1,6 +1,6 @@
 type LocalStorageData = {
 	key: string
-	value: any
+	value: unknown
 }
 
 export const setLocalStorageItem = ({ key, value }: LocalStorageData): void => {

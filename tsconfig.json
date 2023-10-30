@@ -41,7 +41,7 @@
 			"components/*": ["components/*"],
 			"utils/*": ["utils/*"],
 			"api/*": ["api/*"],
-			"context/*": ["context/*"],
+			"contexts/*": ["contexts/*"],
 			"views/*": ["views/*"]
 		},
 

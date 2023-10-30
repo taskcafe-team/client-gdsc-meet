@@ -3,10 +3,13 @@ import AuthWrapper from './AuthWrapper'
 import { Box, Grid, Stack, Typography } from '@mui/material'
 import LoginForm from './forms/LoginForm'
 import { useAppSelector } from 'contexts'
+import { Navigation } from '@mui/icons-material'
+import { HOME_URL } from 'views/routes/routesContants'
 
 export default function LoginPage() {
-	const isLogin = useAppSelector((s) => s.auth.payload.isLogin)
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
+	if (isLogin) return <Navigation to={HOME_URL} />
 	return (
 		<AuthWrapper>
 			<Box width={1} height={1}>

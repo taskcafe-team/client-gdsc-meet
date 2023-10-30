@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import { Box, Grid } from '@mui/material'
 
 import AuthCard from './AuthCard'
-// import AuthBackground from "../../../assets/images/componentImages/AuthBackground";
-// import Logo from "../../../assets/images/componentImages/Logo";
+import { Logo } from 'views/layouts/Header'
 
 export default function AuthWrapper({ children }: { children: ReactNode }) {
 	return (
 		<Box width={1} height={1}>
-			{/* <AuthBackground /> */}
 			<Grid container direction="column" justifyContent="flex-end">
 				<Grid item xs={12} sx={{ ml: 3, mt: 3 }}>
-					{/* <Logo /> */}
+					<Box display="flex" alignItems="center">
+						<Logo />
+					</Box>
 				</Grid>
 				<Grid item xs={12}>
 					<Grid

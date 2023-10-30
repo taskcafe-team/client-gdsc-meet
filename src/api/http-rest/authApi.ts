@@ -1,6 +1,7 @@
 import { type AxiosPromise } from 'axios'
 import Api from '../api'
 import { LoginUserRequest } from './userApi'
+import { ApiResponse } from 'api/apiResponses'
 
 export class AuthApi extends Api {
 	private static authUrl = 'auth'
@@ -9,7 +10,7 @@ export class AuthApi extends Api {
 
 	static async loginWithEmail(
 		request: LoginUserRequest
-	): Promise<AxiosPromise<any>> {
+	): Promise<AxiosPromise<ApiResponse>> {
 		return this.post(this.emailLoginlUrl, request)
 	}
 }

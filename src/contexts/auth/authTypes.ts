@@ -4,7 +4,6 @@ export interface IAuth {
 	isLogin: boolean
 }
 
-export interface AuthDetailState extends CommonState {
-	payload: IAuth
+export interface AuthDetailState extends IAuth, CommonState {
 	loading: boolean
 }

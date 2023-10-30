@@ -33,7 +33,7 @@ const TopWrapper = styled(Box)(
 )
 
 export default function HomePage() {
-	const isLogin = useAppSelector((s) => s.auth.payload.isLogin)
+	// const isLogin = useAppSelector((s) => s.auth.isLogin)
 
 	return (
 		<MainContent>
@@ -43,7 +43,7 @@ export default function HomePage() {
 						<img
 							alt="Oline Meeting Images"
 							height={180}
-							src="assets/static/images/icons/facebook.svg"
+							src="images/icons/facebook.svg"
 						/>
 						<Typography variant="h3" sx={{ my: 2 }}>
 							Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.

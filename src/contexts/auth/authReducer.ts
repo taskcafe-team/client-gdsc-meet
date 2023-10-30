@@ -8,9 +8,7 @@ import {
 } from './authActions'
 
 const initialState: AuthDetailState = {
-	payload: {
-		isLogin: false,
-	},
+	isLogin: false,
 	loading: false,
 }
 
@@ -21,12 +19,12 @@ const authSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(authDetailFetch, (state) => {
-				state.payload.isLogin = true
+				state.isLogin = true
 				state.loading = true
 				state.error = undefined
 			})
 			.addCase(authDetailData, (state, action) => {
-				state.payload = action.payload
+				state.isLogin = action.payload.isLogin
 				state.loading = false
 				state.error = undefined
 			})
@@ -35,7 +33,7 @@ const authSlice = createSlice({
 				state.error = action.payload
 			})
 			.addCase(authLogout, (state) => {
-				state.payload = { isLogin: false }
+				state.isLogin = false
 				state.loading = false
 				state.error = undefined
 			})

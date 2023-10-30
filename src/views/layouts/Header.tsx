@@ -23,11 +23,34 @@ import { AUTH_LOGIN_URL } from '../routes/routesContants'
 const pages: string[] = []
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
+export const Logo = () => (
+	<React.Fragment>
+		<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+		<Typography
+			variant="h6"
+			noWrap
+			component="a"
+			href="/"
+			sx={{
+				mr: 2,
+				display: { xs: 'none', md: 'flex' },
+				fontFamily: 'monospace',
+				fontWeight: 700,
+				letterSpacing: '.3rem',
+				color: 'inherit',
+				textDecoration: 'none',
+			}}
+		>
+			GDSC MEET
+		</Typography>
+	</React.Fragment>
+)
+
 function Header() {
 	const navigate = useNavigate()
 	const [btnLoginLoading, setBtnLoginLoading] = useState(false)
 
-	const isLogin = useAppSelector((s) => s.auth.payload.isLogin)
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
 		null
@@ -48,33 +71,15 @@ function Header() {
 		setAnchorElUser(null)
 	}
 
-	const handleLoginClick = useCallback(async () => {
+	const handleLoginClick = useCallback(() => {
 		navigate(AUTH_LOGIN_URL)
-	}, [isLogin])
+	}, [navigate])
 
 	return (
 		<AppBar position="static" color="default" elevation={0}>
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-					<Typography
-						variant="h6"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						GDSC MEET
-					</Typography>
-
+					<Logo />
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
 							size="large"
