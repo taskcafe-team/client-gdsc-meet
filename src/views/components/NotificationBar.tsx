@@ -16,6 +16,7 @@ const toastConfig: ToastOptions = {
 	pauseOnHover: true,
 	draggable: true,
 	progress: undefined,
+	style: { width: '230px' },
 }
 
 const showToast = ({ content, type = 'success' }: ToastProps) => {
@@ -27,7 +28,11 @@ export default function NotificationBar() {
 	const noitifiactionState = useAppSelector((s) => s.noitificatioin)
 	useLayoutEffect(() => {
 		if (!noitifiactionState.timestamp) return
-		showToast({ content: noitifiactionState.message })
+		const code = noitifiactionState.code
+		let type: ToastProps['type'] = 'info'
+
+		if (`${code}` !== '200') type = 'error'
+		showToast({ content: noitifiactionState.message, type })
 	}, [noitifiactionState])
 
 	return (

@@ -1,5 +1,4 @@
-import { type AxiosPromise } from 'axios'
-import Api from '../api'
+import Api from 'api/index'
 import { LoginUserRequest } from './userApi'
 import { ApiResponse } from 'api/apiResponses'
 
@@ -8,10 +7,10 @@ export class AuthApi extends Api {
 
 	private static emailLoginlUrl = `${this.authUrl}/email/login`
 
-	static async loginWithEmail(
+	static async loginWithEmail<T = any>(
 		request: LoginUserRequest
-	): Promise<AxiosPromise<ApiResponse>> {
-		return this.post(this.emailLoginlUrl, request)
+	): Promise<ApiResponse<T>> {
+		return this.post<T>(this.emailLoginlUrl, request)
 	}
 }
 

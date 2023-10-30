@@ -26,12 +26,7 @@ import AnimateButton from '../../../components/AnimateButton'
 import { AuthApi } from 'api/http-rest'
 import { LoadingButton } from '@mui/lab'
 import { useAppDispatch } from 'contexts/hooks'
-
-interface LoginFormValueInit {
-	email: string
-	password: string
-	errMessage: null
-}
+import { LoginFormValueInit } from '../type'
 
 const loginFormValueInit: LoginFormValueInit = {
 	email: 'dangnhatminh@gmail.com',
@@ -39,9 +34,30 @@ const loginFormValueInit: LoginFormValueInit = {
 	errMessage: null,
 }
 
-const ShowPasswordIcon = ({ showPassword }: { showPassword: boolean }) =>
-	showPassword ? <RemoveRedEyeOutlinedIcon /> : <VisibilityOffOutlinedIcon />
-
+function ShowPasswordIcon({
+	showPassword,
+	setShowPassword,
+}: {
+	showPassword: boolean
+	setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+	return (
+		<InputAdornment position="end">
+			<IconButton
+				aria-label="toggle password visibility"
+				onClick={() => setShowPassword(!showPassword)}
+				edge="end"
+				size="large"
+			>
+				{showPassword ? (
+					<RemoveRedEyeOutlinedIcon />
+				) : (
+					<VisibilityOffOutlinedIcon />
+				)}
+			</IconButton>
+		</InputAdornment>
+	)
+}
 export default function LoginForm() {
 	const dispatch = useAppDispatch()
 	const [checked, setChecked] = React.useState(false)
@@ -60,15 +76,12 @@ export default function LoginForm() {
 			onSubmit={async (values) => {
 				try {
 					const { email, password } = values
-					Promise.reject({ error: 'HEllO' })
 					const res = await AuthApi.loginWithEmail({ email, password })
-					dispatch(noitificationSet({ code: '500', message: 'HellO' }))
-					console.log(res)
+					const { status, message } = res.metadata
+					dispatch(noitificationSet({ code: `${status}`, message }))
 					return
 				} catch (error) {
 					console.log(error)
-				} finally {
-					dispatch(noitificationSet({ code: '500', message: 'HellO' }))
 				}
 			}}
 		>
@@ -80,22 +93,17 @@ export default function LoginForm() {
 								<InputLabel htmlFor="email-login">Email Address</InputLabel>
 								<OutlinedInput
 									id="email-login"
+									disabled={p.isSubmitting}
 									type="email"
 									value={p.values.email}
 									name="email"
 									onBlur={p.handleBlur}
 									onChange={p.handleChange}
 									placeholder="Enter email address"
-									fullWidth
 									error={Boolean(p.touched.email && p.errors.email)}
 								/>
 								{p.touched.email && p.errors.email && (
-									<FormHelperText
-										error
-										id="standard-weight-helper-text-email-login"
-									>
-										{p.errors.email}
-									</FormHelperText>
+									<FormHelperText error>{p.errors.email}</FormHelperText>
 								)}
 							</Stack>
 						</Grid>
@@ -103,25 +111,20 @@ export default function LoginForm() {
 							<Stack spacing={1}>
 								<InputLabel htmlFor="password-login">Password</InputLabel>
 								<OutlinedInput
+									disabled={p.isSubmitting}
 									fullWidth
 									error={Boolean(p.touched.password && p.errors.password)}
-									id="-password-login"
+									id="password-login"
 									type={showPassword ? 'text' : 'password'}
 									value={p.values.password}
 									name="password"
 									onBlur={p.handleBlur}
 									onChange={p.handleChange}
 									endAdornment={
-										<InputAdornment position="end">
-											<IconButton
-												aria-label="toggle password visibility"
-												onClick={() => setShowPassword(!showPassword)}
-												edge="end"
-												size="large"
-											>
-												<ShowPasswordIcon showPassword={showPassword} />
-											</IconButton>
-										</InputAdornment>
+										<ShowPasswordIcon
+											showPassword={showPassword}
+											setShowPassword={setShowPassword}
+										/>
 									}
 									placeholder="Enter password"
 								/>

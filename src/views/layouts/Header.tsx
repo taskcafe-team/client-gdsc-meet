@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import {
 	AppBar,
 	Box,
@@ -48,7 +48,6 @@ export const Logo = () => (
 
 function Header() {
 	const navigate = useNavigate()
-	const [btnLoginLoading, setBtnLoginLoading] = useState(false)
 
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
@@ -155,11 +154,7 @@ function Header() {
 								</IconButton>
 							</Tooltip>
 						) : (
-							<LoadingButton
-								loading={btnLoginLoading}
-								variant="outlined"
-								onClick={handleLoginClick}
-							>
+							<LoadingButton variant="outlined" onClick={handleLoginClick}>
 								Login
 							</LoadingButton>
 						)}

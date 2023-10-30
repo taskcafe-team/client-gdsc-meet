@@ -16,10 +16,9 @@ import {
 } from './interceptor'
 import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
-import { json } from 'react-router-dom'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
-	baseURL: `${'https://gdsc-meet.us.to:5000'}`,
+	baseURL: `${'http://localhost:5000'}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,
@@ -41,53 +40,62 @@ axiosInstance.interceptors.response.use(
 )
 
 class Api {
-	static async get(
+	static get<T = any>(
 		url: string,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		return axiosInstance.get(_url, { ...config })
+		return axiosInstance.get<T>(_url, { ...config }) as unknown as Promise<
+			ApiResponse<T>
+		>
 	}
 
-	static async post(
+	static post<T>(
 		url: string,
 		body?: any,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		const res = await axiosInstance.post(_url, body, { ...config })
-		return res
+		return axiosInstance.post<T>(_url, body, {
+			...config,
+		}) as unknown as Promise<ApiResponse<T>>
 	}
 
-	static async put(
+	static async put<T>(
 		url: string,
 		body?: any,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		return axiosInstance.put(_url, body, { ...config })
+		return axiosInstance.put<T>(_url, body, {
+			...config,
+		}) as unknown as Promise<ApiResponse<T>>
 	}
 
-	static async patch(
+	static async patch<T>(
 		url: string,
 		body?: any,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		return axiosInstance.patch(_url, body, { ...config })
+		return axiosInstance.patch<T>(_url, body, {
+			...config,
+		}) as unknown as Promise<ApiResponse<T>>
 	}
 
-	static async delete(
+	static async delete<T>(
 		url: string,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
-		return axiosInstance.delete(_url, { ...config })
+		return axiosInstance.delete<T>(_url, { ...config }) as unknown as Promise<
+			ApiResponse<T>
+		>
 	}
 }
 

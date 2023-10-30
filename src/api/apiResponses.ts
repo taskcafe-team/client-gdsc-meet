@@ -10,8 +10,8 @@ export interface ReponseMatadata {
 	error?: ApiResponseError
 }
 
-export interface ApiResponse<T = unknown> {
-	metadate: ReponseMatadata
+export interface ApiResponse<T = undefined> {
+	metadata: ReponseMatadata
 	data: T
 	timestamp: number
 }

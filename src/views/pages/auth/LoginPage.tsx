@@ -1,10 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import AuthWrapper from './AuthWrapper'
 import { Box, Grid, Stack, Typography } from '@mui/material'
 import LoginForm from './forms/LoginForm'
 import { useAppSelector } from 'contexts'
 import { Navigation } from '@mui/icons-material'
-import { HOME_URL } from 'views/routes/routesContants'
+import { AUTH_SIGNUP_URL, HOME_URL } from 'views/routes/routesContants'
 
 export default function LoginPage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -20,16 +21,14 @@ export default function LoginPage() {
 							justifyContent="space-between"
 							alignItems="baseline"
 						>
-							<Typography variant="h4" style={{ fontWeight: 'bold' }}>
+							<Typography variant="h4" fontWeight="bold">
 								Login
 							</Typography>
-							<Typography
-								variant="body1"
-								sx={{ textDecoration: 'none' }}
-								color="primary"
-							>
-								Don&apos;t have an account?
-							</Typography>
+							<Link to={AUTH_SIGNUP_URL} style={{ textDecoration: 'none' }}>
+								<Typography variant="body1" color="primary">
+									Don&apos;t have an account?
+								</Typography>
+							</Link>
 						</Stack>
 					</Grid>
 					<Grid item xs={12}>
