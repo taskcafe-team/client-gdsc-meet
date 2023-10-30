@@ -10,3 +10,6 @@ export const RESET_PASSWORD_URL = `${AUTH_URL}/resetPassword`
 export const AUTH_LOGIN_URL = `${AUTH_URL}/login`
 export const AUTH_SIGNUP_URL = `${AUTH_URL}/signup`
 export const SIGNUP_SUCCESS_URL = `${AUTH_URL}/signup-success`
+
+export const MEETING_URL = 'meeting'
+export const PRE_MEETING_URL = 'meeting/:friendlyId'

@@ -1,9 +1,8 @@
 import { Suspense, useCallback } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Routes } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
-
-import Providers from './contexts/providers'
-import { getRoutes } from './views/routes/routes'
+import { getRoutes } from 'views/routes/routes'
+import Providers from 'contexts/providers'
 
 export const Loading = () => {
 	return (

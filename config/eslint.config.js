@@ -44,12 +44,7 @@ module.exports = {
 	},
 	rules: {
 		'linebreak-style': 'off',
-		'prettier/prettier': [
-			'error',
-			{
-				endOfLine: 'auto',
-			},
-		],
+		'prettier/prettier': ['error', { endOfLine: 'auto' }],
 		'@typescript-eslint/naming-convention': 'off',
 		'no-unused-vars': 'warn',
 		'react-hooks/rules-of-hooks': 'warn',

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import Header from './Header'
 import Footer from './Footer'
-import styled from 'styled-components'
-import { Box } from '@mui/material'
+import { styled } from 'styled-components'
+import { Box, CssBaseline } from '@mui/material'
 import Noitification from '../components/NotificationBar'
 
 const LayoutWapper = styled(Box)(
@@ -14,14 +14,19 @@ const LayoutWapper = styled(Box)(
   `
 )
 
-function DefaultLayout(props: { children?: ReactNode }) {
+type DefaultLayoutProps = { children?: ReactNode }
+
+function DefaultLayout(props: DefaultLayoutProps) {
 	return (
 		<LayoutWapper>
+			<CssBaseline />
 			<Noitification />
 			<Header />
-			<Box flex={1}>
-				<Box sx={{ flex: 1, display: 'flex', alignItems: 'stretch' }}>
-					{props.children}
+			<Box flex={1} display="flex" alignItems="stretch">
+				<Box flex={1}>
+					<Box width="1" height="1">
+						{props.children}
+					</Box>
 				</Box>
 			</Box>
 			<Footer />

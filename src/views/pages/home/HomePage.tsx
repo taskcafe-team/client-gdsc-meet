@@ -11,7 +11,6 @@ import {
 	styled,
 } from '@mui/material'
 import CallIcon from '@mui/icons-material/Call'
-import { useAppSelector } from '../../../contexts/hooks'
 
 const MainContent = styled(Box)(
 	() => `
@@ -41,9 +40,10 @@ export default function HomePage() {
 				<Container maxWidth="md">
 					<Box textAlign="center">
 						<img
+							style={{ display: 'inline-block' }}
 							alt="Oline Meeting Images"
-							height={180}
-							src="assets/static/images/icons/facebook.svg"
+							width="400px"
+							src="images/icons/online_meeting_illustration.svg"
 						/>
 						<Typography variant="h3" sx={{ my: 2 }}>
 							Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.

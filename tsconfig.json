@@ -35,14 +35,12 @@
 		// NOTE - Setup resolve alias path for project (use case is for auto complete sugestion)
 		"paths": {
 			"@/*": ["../*"],
-			"assets/*": ["assets/*"],
 			"config/*": ["config/*"],
-			"pages/*": ["pages/*"],
-			"components/*": ["components/*"],
+			"pages/*": ["views/pages/*"],
+			"components/*": ["views/components/*"],
 			"utils/*": ["utils/*"],
 			"api/*": ["api/*"],
-			"contexts/*": ["contexts/*"],
-			"views/*": ["views/*"]
+			"contexts/*": ["contexts/*"]
 		},
 
 		// NOTE - Tell typescript compile just only check type

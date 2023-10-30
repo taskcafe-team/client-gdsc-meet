@@ -1,6 +1,12 @@
 import { ReactNode, lazy } from 'react'
 import { Route, type RouteProps } from 'react-router-dom'
-import { AUTH_LOGIN_URL, AUTH_SIGNUP_URL, BASE_URL } from './routesContants'
+import {
+	AUTH_LOGIN_URL,
+	AUTH_SIGNUP_URL,
+	BASE_URL,
+	PRE_MEETING_URL,
+} from './routesContants'
+import PreMeeting from 'pages/pre-meeting/PreMeeting'
 
 const NotificationBar = lazy(() => import('views/components/NotificationBar'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -20,6 +26,13 @@ const blackLayout = (e: ReactNode) => (
 type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
+	{
+		path: PRE_MEETING_URL,
+		element: getDefaultLayout(
+			<PreMeeting title={undefined} subheader={undefined} chart={undefined} />
+		),
+		loader: undefined,
+	},
 	{
 		path: AUTH_SIGNUP_URL,
 		element: blackLayout(<SignupPage />),
