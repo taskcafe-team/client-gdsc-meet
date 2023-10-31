@@ -1,9 +1,9 @@
 export interface CommonError {
-  code: number;
-  message: string[];
+	code: number
+	message: string[]
 }
 
 export interface CommonState {
-  error?: CommonError;
-  loading?: boolean;
+	error?: CommonError
+	loading?: boolean
 }

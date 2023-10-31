@@ -1,10 +1,9 @@
-import { CommonState } from "../types";
+import { CommonState } from '../types'
 
 export interface IAuth {
-  isLogin: boolean;
+	isLogin: boolean
 }
 
-export interface AuthDetailState extends CommonState {
-  payload: IAuth;
-  loading: boolean;
+export interface AuthDetailState extends IAuth, CommonState {
+	loading: boolean
 }

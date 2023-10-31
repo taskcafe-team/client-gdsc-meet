@@ -1,64 +1,54 @@
-import React from "react";
-import { useTheme } from "@mui/material/styles";
-import { useMediaQuery, Button, Stack } from "@mui/material";
+import React from 'react'
+import { Button, Stack } from '@mui/material'
 
-// assets
-// import Google from "../../../../assets/images/icons/google.svg";
-// import Twitter from "../../../../assets/images/icons/twitter.svg";
-// import Facebook from "../../../../assets/images/icons/facebook.svg";
+interface AuthWithThirtyServiceProps {
+	loginBtnLoading: boolean
+}
 
-export default function AuthWithThirtyService() {
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("sm"));
+export default function AuthWithThirtyService({
+	loginBtnLoading,
+}: AuthWithThirtyServiceProps) {
+	const googleHandler = async () => {
+		// login || singup
+	}
 
-  const googleHandler = async () => {
-    // login || singup
-  };
+	const twitterHandler = async () => {
+		// login || singup
+	}
 
-  const twitterHandler = async () => {
-    // login || singup
-  };
+	const facebookHandler = async () => {
+		// login || singup
+	}
 
-  const facebookHandler = async () => {
-    // login || singup
-  };
-
-  return (
-    <Stack
-      direction="row"
-      spacing={matchDownSM ? 1 : 3}
-      justifyContent={matchDownSM ? "space-around" : "space-between"}
-    >
-      <Button
-        size={matchDownSM ? "small" : "medium"}
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        // startIcon={<img src={Google} alt="Google" />}
-        onClick={googleHandler}
-      >
-        Google
-      </Button>
-      <Button
-        size={matchDownSM ? "small" : "medium"}
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        // startIcon={<img src={Twitter} alt="Twitter" />}
-        onClick={twitterHandler}
-      >
-        Twitter
-      </Button>
-      <Button
-        size={matchDownSM ? "small" : "medium"}
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        // startIcon={<img src={Facebook} alt="Facebook" />}
-        onClick={facebookHandler}
-      >
-        Facebook
-      </Button>
-    </Stack>
-  );
+	return (
+		<Stack direction="row" spacing={1}>
+			<Button
+				disabled={loginBtnLoading}
+				variant="outlined"
+				fullWidth={true}
+				startIcon={<img src="../images/icons/google.svg" alt="F" />}
+				onClick={googleHandler}
+			>
+				Google
+			</Button>
+			<Button
+				disabled={loginBtnLoading}
+				variant="outlined"
+				fullWidth={true}
+				startIcon={<img src="../images/icons/facebook.svg" alt="F" />}
+				onClick={twitterHandler}
+			>
+				Facebook
+			</Button>
+			<Button
+				disabled={loginBtnLoading}
+				variant="outlined"
+				fullWidth={true}
+				startIcon={<img src="../images/icons/twitter.svg" alt="F" />}
+				onClick={facebookHandler}
+			>
+				Twitter
+			</Button>
+		</Stack>
+	)
 }

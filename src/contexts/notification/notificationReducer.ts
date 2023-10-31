@@ -1,33 +1,30 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { NoitificationState } from "./notificationTypes";
-import { noitificationSet, noitificationClear } from "./notificationActions";
+import { createSlice } from '@reduxjs/toolkit'
+import { NoitificationState } from './notificationTypes'
+import { noitificationSet, noitificationClear } from './notificationActions'
 
 const initialState: NoitificationState = {
-  payload: {
-    message: "",
-    code: undefined,
-    timestamp: undefined,
-  },
-};
+	message: '',
+	code: undefined,
+	timestamp: undefined,
+}
 
 const noitificationSlice = createSlice({
-  name: "noitification",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(noitificationSet, (state, action) => {
-        state.payload.message = action.payload.message;
-        state.payload.code = action.payload.code;
-        state.payload.timestamp =
-          state.payload.timestamp || new Date("2012-02-26").getTime();
-      })
-      .addCase(noitificationClear, (state) => {
-        state.payload.message = "";
-        state.payload.code = undefined;
-        state.payload.timestamp = undefined;
-      });
-  },
-});
+	name: 'noitification',
+	initialState,
+	reducers: {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(noitificationSet, (state, action) => {
+				state.message = action.payload.message
+				state.code = action.payload.code
+				state.timestamp = action.payload.timestamp || new Date().getTime()
+			})
+			.addCase(noitificationClear, (state) => {
+				state.message = ''
+				state.code = undefined
+				state.timestamp = undefined
+			})
+	},
+})
 
-export const noitificationReducer = noitificationSlice.reducer;
+export const noitificationReducer = noitificationSlice.reducer

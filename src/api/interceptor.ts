@@ -1,22 +1,26 @@
-import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { getLocalStorageItem } from "../utils/localStorageUtils";
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { getLocalStorageItem } from '../utils/localStorageUtils'
+import { ApiResponse } from './apiResponses'
 
-export const apiRequestInterceptor = (config: AxiosRequestConfig) => {
-  config.headers = config.headers ?? {};
+export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
+	config.headers = config.headers ?? {}
+	const methodUpper = config.method?.toUpperCase()
+	if (methodUpper && methodUpper !== 'GET' && methodUpper !== 'HEAD')
+		config.headers['x-api-token'] = `${getLocalStorageItem('access_token')}`
 
-  const methodUpper = config.method?.toUpperCase();
-  if (methodUpper && methodUpper !== "GET" && methodUpper !== "HEAD")
-    config.headers["x-api-token"] = `${getLocalStorageItem("access_token")}`;
+	return config
+}
 
-  return { ...config, timer: performance.now() };
-};
+export const apiFailureRequestInterceptor = async (error: any) => {
+	return Promise.resolve(error)
+}
 
 export const apiSuccessResponseInterceptor = (
-  response: AxiosResponse,
-): AxiosResponse["data"] => {
-  return response.data;
-};
+	response: AxiosResponse
+): AxiosResponse['data'] => {
+	return response.data
+}
 
 export const apiFailureResponseInterceptor = async (error: any) => {
-  return Promise.resolve(error);
-};
+	return Promise.resolve(error)
+}

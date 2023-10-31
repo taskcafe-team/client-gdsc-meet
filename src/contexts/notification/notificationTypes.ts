@@ -1,11 +1,9 @@
-import { CommonState } from "../types";
+import { CommonState } from '../types'
 
 export interface INoitificationMessage {
-  code?: string;
-  message: string;
-  timestamp?: number;
+	code?: string
+	message: string
+	timestamp?: number
 }
 
-export interface NoitificationState extends CommonState {
-  payload: INoitificationMessage;
-}
+export type NoitificationState = INoitificationMessage

@@ -1,2 +1,3 @@
-export * from "./DefaultLayout";
-export * from "./VerticalLayout";
+/* eslint-disable import/export */
+export * from './DefaultLayout'
+export * from './VerticalLayout'
