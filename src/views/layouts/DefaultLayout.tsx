@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Header from "./Header";
+import Header from "@views/components/Header";
 import Footer from "./Footer";
 import styled from "styled-components";
 import { Box } from "@mui/material";

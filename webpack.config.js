@@ -11,13 +11,13 @@ module.exports = {
   module: {
     rules: [
       { test: /\.(js|jsx)$/, use: ["babel-loader"], exclude: /node_modules/ },
-      { test: /\.(ts|tsx)?$/, use: "ts-loader", exclude: /node_modules/ },
-      { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      { test: /\.(ts|tsx)$/, use: "ts-loader", exclude: /node_modules/ },
+      { test: /\.(css|scss)$/, use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"] },
       { test: /\.(png|jp(e*)g|svg|gif)$/, type: "asset/resource" },
     ],
   },
   resolve: {
-    extensions: [".́́*", ".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".*", ".js", ".jsx", ".ts", ".tsx"],
     plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
     fallback: {
       https: require.resolve("https-browserify"),

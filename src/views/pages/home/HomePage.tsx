@@ -38,7 +38,7 @@ export default function HomePage() {
   const isLogin = useAppSelector((s) => s.auth.payload.isLogin);
 
   return (
-    <MainContent>
+    <MainContent className="">
       <TopWrapper>
         <Container maxWidth="md">
           <Box textAlign="center">
