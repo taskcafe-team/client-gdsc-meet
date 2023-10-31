@@ -1,12 +1,7 @@
+/* eslint-disable import/no-unresolved */
 import { ReactNode, lazy } from 'react'
 import { Route, type RouteProps } from 'react-router-dom'
-import {
-	AUTH_LOGIN_URL,
-	AUTH_SIGNUP_URL,
-	BASE_URL,
-	PRE_MEETING_URL,
-} from './routesContants'
-import PreMeeting from 'pages/pre-meeting/PreMeeting'
+import RouterPath from './routesContants'
 
 const NotificationBar = lazy(() => import('views/components/NotificationBar'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -14,6 +9,7 @@ const DefaultLayout = lazy(() => import('../layouts/DefaultLayout'))
 
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
+const PreMeeting = lazy(() => import('../pages/pre_meeting/PreMeeting'))
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const blackLayout = (e: ReactNode) => (
@@ -27,24 +23,24 @@ type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
 	{
-		path: PRE_MEETING_URL,
+		path: RouterPath.PRE_MEETING_URL,
 		element: getDefaultLayout(
 			<PreMeeting title={undefined} subheader={undefined} chart={undefined} />
 		),
 		loader: undefined,
 	},
 	{
-		path: AUTH_SIGNUP_URL,
+		path: RouterPath.SINGUP_URL,
 		element: blackLayout(<SignupPage />),
 		loader: undefined,
 	},
 	{
-		path: AUTH_LOGIN_URL,
+		path: RouterPath.LOGIN_URL,
 		element: blackLayout(<LoginPage />),
 		loader: undefined,
 	},
 	{
-		path: BASE_URL,
+		path: RouterPath.BASE_URL,
 		element: getDefaultLayout(<HomePage />),
 		loader: undefined,
 	},

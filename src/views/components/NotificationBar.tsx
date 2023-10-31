@@ -32,6 +32,8 @@ export default function NotificationBar() {
 		let type: ToastProps['type'] = 'info'
 
 		if (`${code}` !== '200') type = 'error'
+		if (`${code}` === '200') type = 'success'
+
 		showToast({ content: noitifiactionState.message, type })
 	}, [noitifiactionState])
 

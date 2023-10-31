@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import {
 	Checkbox,
 	Divider,
@@ -27,6 +27,8 @@ import { AuthApi } from 'api/http-rest'
 import { LoadingButton } from '@mui/lab'
 import { useAppDispatch } from 'contexts/hooks'
 import { LoginFormValueInit } from '../type'
+import { setLocalStorageItem } from 'utils/localStorageUtils'
+import { authLoginSuccess } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
 	email: 'dangnhatminh@gmail.com',
@@ -60,6 +62,7 @@ function ShowPasswordIcon({
 }
 export default function LoginForm() {
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 	const [checked, setChecked] = React.useState(false)
 	const [showPassword, setShowPassword] = React.useState(false)
 
@@ -78,10 +81,24 @@ export default function LoginForm() {
 					const { email, password } = values
 					const res = await AuthApi.loginWithEmail({ email, password })
 					const { status, message } = res.metadata
+					console.log(status)
+					if (`${status}` == '200') {
+						const data = res.data as {
+							id: string
+							accessToken: string
+							refreshToken: string
+						}
+						setLocalStorageItem({
+							key: `access_token`,
+							value: data.accessToken,
+						})
+
+						dispatch(authLoginSuccess())
+						return
+					}
 					dispatch(noitificationSet({ code: `${status}`, message }))
-					return
 				} catch (error) {
-					console.log(error)
+					return
 				}
 			}}
 		>

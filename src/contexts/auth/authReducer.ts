@@ -4,6 +4,7 @@ import {
 	authDetailData,
 	authDetailError,
 	authDetailFetch,
+	authLoginSuccess,
 	authLogout,
 } from './authActions'
 
@@ -34,6 +35,11 @@ const authSlice = createSlice({
 			})
 			.addCase(authLogout, (state) => {
 				state.isLogin = false
+				state.loading = false
+				state.error = undefined
+			})
+			.addCase(authLoginSuccess, (state) => {
+				state.isLogin = true
 				state.loading = false
 				state.error = undefined
 			})
