@@ -101,6 +101,7 @@
 		"formik": "^2.4.5",
 		"framer-motion": "^10.16.4",
 		"livekit-client": "^1.14.2",
+		"next-themes": "^0.2.1",
 		"path-to-regexp": "^6.2.1",
 		"polished": "^4.2.2",
 		"prop-types": "^15.8.1",

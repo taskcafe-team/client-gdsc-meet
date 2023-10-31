@@ -1,6 +1,8 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ['./src/**/*.{js,jsx,ts,tsx}'],
-	// prefix: 'gj-',
+	darkMode: ['class'],
+	purge: ['./components/**/*.{js,ts,jsx,tsx}', './pages/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		screens: {
 			375: '375px',
@@ -18,11 +20,11 @@ module.exports = {
 
 		colors: {
 			primary: {
-				300: '#B34600',
-				200: '#D95500',
-				70: '#FF8332',
-				40: '#FFC198',
 				10: '#FFEFE5',
+				40: '#FFC198',
+				70: '#FF8332',
+				200: '#D95500',
+				300: '#B34600',
 				DEFAULT: '#FF6400',
 			},
 			white: '#FFFFFF',
@@ -167,6 +169,9 @@ module.exports = {
 			},
 			flexBasis: {
 				45: '45%',
+			},
+			backgroundImage: {
+				lprimary: 'linear-gradient(109deg, #4367FF 1.57%, #913DFD 100%)',
 			},
 		},
 	},
