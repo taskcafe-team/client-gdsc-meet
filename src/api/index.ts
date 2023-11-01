@@ -18,7 +18,7 @@ import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
-	baseURL: `${'http://localhost:5000'}`,
+	baseURL: `${'https://gdsc-meet.us.to:5000'}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
 )
 
 class Api {
-	static get<T = any>(
+	static get<T>(
 		url: string,
 		queryParams?: any,
 		config: AxiosRequestConfig = {}

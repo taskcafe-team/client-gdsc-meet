@@ -1,16 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import AuthWrapper from './AuthWrapper'
 import { Box, Grid, Stack, Typography } from '@mui/material'
+import AuthWrapper from './AuthWrapper'
 import LoginForm from './forms/LoginForm'
 import { useAppSelector } from 'contexts'
-import { Navigation } from '@mui/icons-material'
-import { AUTH_SIGNUP_URL, HOME_URL } from 'views/routes/routesContants'
+import RouterPath from 'views/routes/routesContants'
 
 export default function LoginPage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
-	if (isLogin) return <Navigation to={HOME_URL} />
+	if (isLogin) return <Navigate to="/" />
 	return (
 		<AuthWrapper>
 			<Box width={1} height={1}>
@@ -24,7 +23,10 @@ export default function LoginPage() {
 							<Typography variant="h4" fontWeight="bold">
 								Login
 							</Typography>
-							<Link to={AUTH_SIGNUP_URL} style={{ textDecoration: 'none' }}>
+							<Link
+								to={RouterPath.SINGUP_URL}
+								style={{ textDecoration: 'none' }}
+							>
 								<Typography variant="body1" color="primary">
 									Don&apos;t have an account?
 								</Typography>

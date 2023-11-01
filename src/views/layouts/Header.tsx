@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import AdbIcon from '@mui/icons-material/Adb'
 
 import { useAppSelector } from '../../contexts/hooks'
-import { AUTH_LOGIN_URL } from '../routes/routesContants'
+import RouterPath from '../routes/routesContants'
 
 const pages: string[] = []
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
@@ -48,12 +48,10 @@ export const Logo = () => (
 
 function Header() {
 	const navigate = useNavigate()
-
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
-	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-		null
-	)
+
+	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>()
+	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>()
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget)
@@ -71,7 +69,7 @@ function Header() {
 	}
 
 	const handleLoginClick = useCallback(() => {
-		navigate(AUTH_LOGIN_URL)
+		navigate(RouterPath.LOGIN_URL)
 	}, [navigate])
 
 	return (

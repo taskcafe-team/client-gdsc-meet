@@ -7,7 +7,7 @@ export class AuthApi extends Api {
 
 	private static emailLoginlUrl = `${this.authUrl}/email/login`
 
-	static async loginWithEmail<T = any>(
+	static async loginWithEmail<T = unknown>(
 		request: LoginUserRequest
 	): Promise<ApiResponse<T>> {
 		return this.post<T>(this.emailLoginlUrl, request)

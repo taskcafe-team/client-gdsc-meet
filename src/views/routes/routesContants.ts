@@ -1,15 +1,16 @@
-export const BASE_URL = '/'
-export const PAGE_NOT_FOUND_URL = '/404'
-export const SERVER_ERROR_URL = '/500'
+export default class RouterPath {
+	static readonly BASE_URL = '/'
 
-export const HOME_URL = BASE_URL
-export const AUTH_URL = '/auth'
-export const USERS_URL = '/users'
-export const FORGOT_PASSWORD_URL = `${AUTH_URL}/forgotPassword`
-export const RESET_PASSWORD_URL = `${AUTH_URL}/resetPassword`
-export const AUTH_LOGIN_URL = `${AUTH_URL}/login`
-export const AUTH_SIGNUP_URL = `${AUTH_URL}/signup`
-export const SIGNUP_SUCCESS_URL = `${AUTH_URL}/signup-success`
+	static readonly AUTH = `auth`
 
-export const MEETING_URL = 'meeting'
-export const PRE_MEETING_URL = 'meeting/:friendlyId'
+	static readonly LOGIN_URL = `${this.AUTH}/login`
+
+	static readonly SINGUP_URL = `${this.AUTH}/signup`
+
+	static readonly MEETING_URL = 'meeting'
+
+	static readonly PRE_MEETING_URL = `${this.MEETING_URL}/:friendlyId`
+
+	static readonly getPreMeetingPath = (friendlyId: string) =>
+		`meeting/${friendlyId}`
+}

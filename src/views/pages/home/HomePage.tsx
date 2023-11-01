@@ -11,6 +11,9 @@ import {
 	styled,
 } from '@mui/material'
 import CallIcon from '@mui/icons-material/Call'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
+import { noitificationSet } from 'contexts/notification'
+import RouterPath from 'views/routes/routesContants'
 
 const MainContent = styled(Box)(
 	() => `
@@ -32,7 +35,22 @@ const TopWrapper = styled(Box)(
 )
 
 export default function HomePage() {
-	// const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const [friendLyId, setFriendlyId] = useState('')
+
+	const validationLogin = useCallback(() => {
+		if (!isLogin)
+			dispatch(noitificationSet({ code: ``, message: 'Please Login' }))
+
+		return isLogin
+	}, [dispatch, isLogin])
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		if (validationLogin()) navigate(RouterPath.getPreMeetingPath(friendLyId))
+	}
 
 	return (
 		<MainContent>
@@ -61,24 +79,36 @@ export default function HomePage() {
 					</Box>
 					<Container maxWidth="sm">
 						<Box sx={{ textAlign: 'center', mt: 3, p: 4 }}>
-							<FormControl variant="outlined" fullWidth>
-								<OutlinedInput
-									type="text"
-									placeholder="Input meeting id..."
-									endAdornment={
-										<InputAdornment position="end">
-											<Button variant="contained" size="small">
-												Join Meeting
-											</Button>
-										</InputAdornment>
-									}
-									startAdornment={
-										<InputAdornment position="start">
-											<CallIcon />
-										</InputAdornment>
-									}
-								/>
-							</FormControl>
+							<form onSubmit={handleSubmit}>
+								<FormControl
+									variant="outlined"
+									fullWidth
+									onSubmit={(e) => {
+										e.preventDefault()
+										console.log('Submit')
+									}}
+								>
+									<OutlinedInput
+										value={friendLyId}
+										onChange={(e) => setFriendlyId(e.target.value)}
+										type="text"
+										required={true}
+										placeholder="Input meeting id..."
+										endAdornment={
+											<InputAdornment position="end">
+												<Button variant="contained" type="submit">
+													Join Meeting
+												</Button>
+											</InputAdornment>
+										}
+										startAdornment={
+											<InputAdornment position="start">
+												<CallIcon />
+											</InputAdornment>
+										}
+									/>
+								</FormControl>
+							</form>
 							<Divider sx={{ my: 4 }}>OR</Divider>
 							<Button variant="outlined">Create Meeting</Button>
 						</Box>
