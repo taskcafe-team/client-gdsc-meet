@@ -4,9 +4,9 @@ import { ApiResponse } from './apiResponses'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 	config.headers = config.headers ?? {}
-	const methodUpper = config.method?.toUpperCase()
-	if (methodUpper && methodUpper !== 'GET' && methodUpper !== 'HEAD')
-		config.headers['x-api-token'] = `${getLocalStorageItem('access_token')}`
+	// const methodUpper = config.method?.toUpperCase()
+	// if (methodUpper && methodUpper !== 'GET' && methodUpper !== 'HEAD')
+	config.headers['x-api-token'] = `${getLocalStorageItem('access_token')}`
 
 	return config
 }
