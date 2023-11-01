@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import * as Yup from 'yup'
@@ -10,8 +10,8 @@ import Entity2 from 'components/UILib/Entity2'
 import GoogleIcon from 'components/UILib/GoogleIcon'
 import FacbookIcon from 'components/UILib/FacbookIcon'
 import { AuthApi } from 'api/http-rest'
-import RouterPath from 'views/routes/routesContants';
-import useToastily from 'hooks/useToastily';
+import RouterPath from 'views/routes/routesContants'
+import useToastily from 'hooks/useToastily'
 
 interface IUser {
 	UserName: string
@@ -26,7 +26,7 @@ const inituser: IUser = {
 }
 export default function SignupPage() {
 	const [loading, setLoading] = useState(false)
-	const navigate = useNavigate();
+	const navigate = useNavigate()
 	const Toastily = useToastily()
 	// init container animate
 	const container = {
@@ -66,23 +66,22 @@ export default function SignupPage() {
 	const formik = useFormik({
 		initialValues: inituser,
 		validationSchema: validationSchema,
-		onSubmit: async(values) => {
+		onSubmit: async (values) => {
 			try {
-				setLoading(true);
+				setLoading(true)
 				const initUser = await AuthApi.registerWithEmail({
-					email:values.UserName,
-					password:values.Password,
+					email: values.UserName,
+					password: values.Password,
 				})
-				initUser.data 
-				? navigate(RouterPath.LOGIN_URL)
-				: Toastily({
-					type:'error',
-					content:'can not register please try again'
-				})		
+				initUser.data
+					? navigate(RouterPath.LOGIN_URL)
+					: Toastily({
+							type: 'error',
+							content: 'can not register please try again',
+					  })
 			} catch (error) {
-				
-			}finally{
-				setLoading(false);
+			} finally {
+				setLoading(false)
 			}
 		},
 	})
@@ -98,9 +97,18 @@ export default function SignupPage() {
 				animate="visible"
 			>
 				<motion.li className="item" variants={item}>
-					<div className="absolute  max-h-[30vh]  z-3 rotate-45">
-						<Entity2 />
-					</div>
+					<motion.div
+						whileHover={{ scale: 0.6 }}
+						whileTap={{
+							scale: 0.8,
+							rotate: -20,
+							borderRadius: '100%',
+						}}
+					>
+						<div className="absolute  max-h-[30vh]  z-3 rotate-45">
+							<Entity2 />
+						</div>
+					</motion.div>
 				</motion.li>
 			</motion.ul>
 
