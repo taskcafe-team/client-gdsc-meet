@@ -28,7 +28,7 @@ module.exports = {
 				70: '#FF8332',
 				200: '#D95500',
 				300: '#B34600',
-				DEFAULT: '#FF6400',
+				DEFAULT: '#5F54E5',
 			},
 			white: '#FFFFFF',
 			borderElement: '#D1D1D6',

@@ -8,21 +8,21 @@ interface IButton extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-const Button: React.FC<IButton> = ({ children, className, loading = false, ...rest }) => {
+const Button: React.FC<IButton> = ({ children, className, loading = false, ...rest }) => { 
   return (
     <button
       className={`flex items-center justify-center rounded-md gap-2
         hover:opacity-90
-        px-6 py-6 font-bold text-20 cursor-pointer
+        px-6 py-8 font-bold text-20 cursor-pointer
         relative
         ${className ? className : ''}`}
       {...rest}
     > 
       {children}
-      <div className="absolute right-0">
+      <div className="absolute right-6">
         {loading ? (
           <svg
-            className=" animate-spin h-5 w-5 mr-3 bg-white text-transparent rounded-md"
+            className=" animate-spin h-16 w-16  mr-3 bg-white text-transparent rounded-md"
             viewBox="0 0 24 24"
           ></svg>
         ) : null}

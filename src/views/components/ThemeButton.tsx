@@ -25,7 +25,7 @@ const ThemeButton: React.FC = () => {
 
   return (
     <div
-      className={`cursor-pointer relative Header__item relative group px-2 py-1 transition-all rounded-md cursor-pointer min-w-[68px] max-w-[68px]`}
+      className={`relative Header__item relative group px-2 py-1 transition-all rounded-md cursor-pointer min-w-[68px] max-w-[68px]`}
       onClick={() => handleModel()}
     >
       {/* <div className="dark:hidden Header__item__icon flex justify-center items-center group text-black hover:text-white dark:text-while dark:hover:text-black rounded-md cursor-pointer transition-all">

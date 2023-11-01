@@ -34,7 +34,7 @@ export const Input: React.FC<IInput> = ({
         onChange={onChange}
         type={type ? type : 'text'}
         placeholder={placeholder}
-        className="block outline-none px-6 py-6 w-full max-sm:w-full border-b-2 border-gray-20"
+        className="block outline-none px-6 py-10 w-full max-sm:w-full border-b-2 border-gray-20"
         onBlur={onBlur}
         disabled={disabled}
         {...rest}
