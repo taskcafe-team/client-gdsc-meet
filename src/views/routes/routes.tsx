@@ -9,7 +9,7 @@ const DefaultLayout = lazy(() => import('../layouts/DefaultLayout'))
 
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
-const PreMeeting = lazy(() => import('../pages/pre_meeting/PreMeeting'))
+const MeetingPage = lazy(() => import('../pages/meeting/MeetingPage'))
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const blackLayout = (e: ReactNode) => (
@@ -23,10 +23,8 @@ type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
 	{
-		path: RouterPath.PRE_MEETING_URL,
-		element: getDefaultLayout(
-			<PreMeeting title={undefined} subheader={undefined} chart={undefined} />
-		),
+		path: RouterPath.MEETING_URL,
+		element: getDefaultLayout(<MeetingPage />),
 		loader: undefined,
 	},
 	{
