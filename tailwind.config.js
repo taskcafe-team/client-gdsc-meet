@@ -28,12 +28,13 @@ module.exports = {
 				70: '#FF8332',
 				200: '#D95500',
 				300: '#B34600',
-				DEFAULT: '#FF6400',
+				DEFAULT: '#5F54E5',
 			},
 			white: '#FFFFFF',
 			borderElement: '#D1D1D6',
 			gray: {
 				80: '#1C1C1E',
+				70: '#5f6368',
 				60: '#3A3A3C',
 				40: '#636366',
 				30: '#AEAEB2',
@@ -81,16 +82,6 @@ module.exports = {
 			48: ['48px', { lineHeight: '1.5' }],
 		}, // fontSize
 
-		borderRadius: {
-			4: '4px',
-			8: '8px',
-			10: '10px',
-			12: '12px',
-			16: '16px',
-			20: '20px',
-			27: '27px',
-			round: '50%',
-		}, // borderRadius
 
 		boxShadow: {
 			'02030': '0px 20px 30px rgba(0, 0, 0, 0.1)',
@@ -166,10 +157,7 @@ module.exports = {
 				45: '45px',
 				52: '52px',
 			},
-			margin: {
-				8: '8px',
-				16: '16px',
-			},
+			
 			flexBasis: {
 				45: '45%',
 			},
