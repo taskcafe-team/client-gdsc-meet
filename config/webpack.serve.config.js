@@ -10,8 +10,9 @@ const serverInitial = new WebpackDevServer(
 	{
 		compress: true,
 		static: './dist',
-    historyApiFallback: true,
+		historyApiFallback: true,
+		port: process.env.PORT || 8080,
 	}
 )
 
-serverInitial.start(process.env.PORT || 8080)
+serverInitial.start()

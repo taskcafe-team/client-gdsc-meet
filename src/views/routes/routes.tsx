@@ -2,14 +2,11 @@
 import { ReactNode, lazy } from 'react'
 import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
-import {
-	getLocalStorageItem,
-	setLocalStorageItem,
-} from 'utils/localStorageUtils'
-import { AuthApi } from 'api/http-rest'
+import { getLocalStorageItem } from 'utils/localStorageUtils'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authLoginSuccess } from 'contexts/auth'
 import UserApi, { ResponseSuccessDataGetMe } from 'api/http-rest/userApi'
+import { Loading } from 'app'
 
 const NotificationBar = lazy(() => import('views/components/NotificationBar'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -66,22 +63,19 @@ export default function Router() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const dispatch = useAppDispatch()
 
+	const [isLoading, setIsLoading] = useState(false)
+
 	const login = useCallback(async () => {
 		const accessToken = getLocalStorageItem('access_token')
 		if (!accessToken) return
 		// const res = await AuthApi.verifyAccessToken(accessToken)
 
-		const body = {
-			email: 'dangnhatminh@gmail.com',
-			password: '123456',
-		}
 		const res = await UserApi.getMe()
+		setIsLoading(false)
 		const { status } = res.metadata
 		if (`${status}` == '200') {
-			const data = res.data as ResponseSuccessDataGetMe
-			console.log(data)
+			// const data = res.data as ResponseSuccessDataGetMe
 			dispatch(authLoginSuccess())
-			return
 		}
 	}, [])
 
@@ -89,5 +83,11 @@ export default function Router() {
 		login()
 	}, [])
 
-	return <Routes>{getRoutes(isLogin)}</Routes>
+	if (isLoading) return <Loading />
+	return (
+		<Routes>
+			{getRoutes(isLogin)}
+			<Route path="*" element={<Navigate to="/" />} />
+		</Routes>
+	)
 }

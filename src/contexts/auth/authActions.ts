@@ -43,5 +43,5 @@ export const authDetailData =
 	createAction<AuthDetailData['payload']>(AUTH_DETAIL_DATA)
 export const authDetailError =
 	createAction<AuthDetailError['payload']>(AUTH_DETAIL_ERROR)
-export const authLogout = createAction(AUTH_LOGOUT)
+export const authLogout = createAction<undefined>(AUTH_LOGOUT)
 export const authLoginSuccess = createAction(AUTH_LOGIN_SUCESS)

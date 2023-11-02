@@ -14,6 +14,10 @@ import CallIcon from '@mui/icons-material/Call'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { noitificationSet } from 'contexts/notification'
 import RouterPath from 'views/routes/routesContants'
+import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
+import MeetingApi, {
+	ResponseSuccessDataCreateMeeting,
+} from 'api/http-rest/meetingApi'
 
 const MainContent = styled(Box)(
 	() => `
@@ -47,6 +51,18 @@ export default function HomePage() {
 		return isLogin
 	}, [dispatch, isLogin])
 
+	const createMeeting = useCallback(async () => {
+		if (validationLogin()) {
+			const res =
+				await MeetingApi.createMeeting<ResponseSuccessDataCreateMeeting>()
+
+			if (res.metadata.status === 200) {
+				const data = res.data
+				navigate(RouterPath.getPreMeetingPath(data.friendlyId))
+			}
+		}
+	}, [navigate, validationLogin])
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		if (validationLogin()) navigate(RouterPath.getPreMeetingPath(friendLyId))
@@ -61,7 +77,7 @@ export default function HomePage() {
 							style={{ display: 'inline-block' }}
 							alt="Oline Meeting Images"
 							width="400px"
-							src="images/icons/online_meeting_illustration.svg"
+							src={online_meeting_illustration}
 						/>
 						<Typography variant="h3" sx={{ my: 2 }}>
 							Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
@@ -110,7 +126,9 @@ export default function HomePage() {
 								</FormControl>
 							</form>
 							<Divider sx={{ my: 4 }}>OR</Divider>
-							<Button variant="outlined">Create Meeting</Button>
+							<Button variant="outlined" onClick={createMeeting}>
+								Create Meeting
+							</Button>
 						</Box>
 					</Container>
 				</Container>

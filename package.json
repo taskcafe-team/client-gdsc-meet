@@ -3,7 +3,7 @@
 		"dev": "cross-env ENV=development PORT=3000 IO_PORT=3030 webpack serve --mode=development --hot",
 		"build": "tsc && webpack --mode=production",
 		"build:esm": "tsc && cross-env ESM=true webpack --mode=production",
-		"preview": "cross-env PORT=8080 NODE_NO_WARNINGS=1 node ./config/webpack.serve.config.js",
+		"preview": "cross-env PORT=3000 NODE_NO_WARNINGS=1 node ./config/webpack.serve.config.js",
 		"prettier": "tsc --noEmit && prettier src/**/*.{t,j}s{,x} --no-error-on-unmatched-pattern --check",
 		"lint": "tsc --noEmit && eslint src/**/*.{t,j}s{,x} --no-error-on-unmatched-pattern --ignore-pattern node_modules/",
 		"lint:fix": "npm run lint -- --fix",

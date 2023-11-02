@@ -18,8 +18,10 @@ import MenuIcon from '@mui/icons-material/Menu'
 import AdbIcon from '@mui/icons-material/Adb'
 import avatar from 'assets/static/images/users/avatar-1.png'
 
-import { useAppSelector } from '../../contexts/hooks'
+import { useAppDispatch, useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
+import { setLocalStorageItem } from 'utils/localStorageUtils'
+import { authLogout } from 'contexts/auth'
 
 const pages: string[] = []
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
@@ -50,6 +52,7 @@ export const Logo = () => (
 function Header() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const dispatch = useAppDispatch()
 
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>()
 	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>()
@@ -65,7 +68,12 @@ function Header() {
 		setAnchorElNav(null)
 	}
 
-	const handleCloseUserMenu = () => {
+	const handleClickUserMenu = (setting: string) => {
+		if (setting === 'Logout') {
+			setLocalStorageItem({ key: 'access_token', value: null })
+			dispatch(authLogout())
+		}
+
 		setAnchorElUser(null)
 	}
 
@@ -172,11 +180,14 @@ function Header() {
 								horizontal: 'right',
 							}}
 							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
+							onClose={() => setAnchorElUser(null)}
 						>
 							{isLogin &&
 								settings.map((setting) => (
-									<MenuItem key={setting} onClick={handleCloseUserMenu}>
+									<MenuItem
+										key={setting}
+										onClick={(e) => handleClickUserMenu(setting)}
+									>
 										<Typography textAlign="center">{setting}</Typography>
 									</MenuItem>
 								))}
