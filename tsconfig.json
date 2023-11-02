@@ -11,7 +11,7 @@
 		"config/types/ImportMeta.d.ts",
 		"src/static.d.ts"
 	],
-	"include": ["*"],
+	"include": ["src/**/*.js", "src/**/*.ts", "src/**/*.jsx", "src/**/*.tsx"],
 	"compilerOptions": {
 		// NOTE - Set what module will be built for project (es, commonjs) (what is compile way will be chosen for import / export syntax)
 		// https://www.typescriptlang.org/tsconfig#module
@@ -35,6 +35,7 @@
 		// NOTE - Setup resolve alias path for project (use case is for auto complete sugestion)
 		"paths": {
 			"@/*": ["../*"],
+			"assets/*": ["assets/*"],
 			"config/*": ["config/*"],
 			"pages/*": ["views/pages/*"],
 			"components/*": ["views/components/*"],

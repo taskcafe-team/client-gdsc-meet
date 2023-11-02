@@ -9,7 +9,7 @@ const BgL1 = ({ ...rest }) => {
 			viewBox="0 0 918 950"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className='object-cover'
+			className="object-cover"
 		>
 			<g filter="url(#filter0_d_283_532)">
 				<path

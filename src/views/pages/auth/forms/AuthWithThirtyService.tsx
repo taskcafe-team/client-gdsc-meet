@@ -9,8 +9,6 @@ interface AuthWithThirtyServiceProps {
 	loginBtnLoading: boolean
 }
 
-const a: any = {}
-
 export default function AuthWithThirtyService({
 	loginBtnLoading,
 }: AuthWithThirtyServiceProps) {

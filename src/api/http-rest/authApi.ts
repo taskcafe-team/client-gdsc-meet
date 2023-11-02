@@ -18,7 +18,7 @@ export class AuthApi extends Api {
 		request: CreateUserRequest
 	): Promise<ApiResponse<T>> {
 		return this.post<T>(this.registerUrl, request)
-	} 
+	}
 }
 
 export default AuthApi
