@@ -82,7 +82,6 @@ module.exports = {
 			48: ['48px', { lineHeight: '1.5' }],
 		}, // fontSize
 
-
 		boxShadow: {
 			'02030': '0px 20px 30px rgba(0, 0, 0, 0.1)',
 			2420: '2px 4px 20px rgba(0, 0, 0, 0.2)',
@@ -157,7 +156,7 @@ module.exports = {
 				45: '45px',
 				52: '52px',
 			},
-			
+
 			flexBasis: {
 				45: '45%',
 			},

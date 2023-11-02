@@ -1,6 +1,6 @@
-import { SvgProps } from "./type"
+import { SvgProps } from './type'
 
-const GoogleIcon = ({ className, ...rest }:SvgProps) => {
+const GoogleIcon = ({ className, ...rest }: SvgProps) => {
 	return (
 		<svg
 			width="16"
@@ -8,8 +8,8 @@ const GoogleIcon = ({ className, ...rest }:SvgProps) => {
 			viewBox="0 0 16 16"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-            {...rest}
-            className={className}
+			{...rest}
+			className={className}
 		>
 			<path
 				d="M15.6871 6.53113H15.083V6.5H8.33301V9.5H12.5716C11.9533 11.2464 10.2916 12.5 8.33301 12.5C5.84788 12.5 3.83301 10.4851 3.83301 8C3.83301 5.51487 5.84788 3.5 8.33301 3.5C9.48013 3.5 10.5238 3.93275 11.3184 4.63962L13.4398 2.51825C12.1003 1.26987 10.3085 0.5 8.33301 0.5C4.19113 0.5 0.833008 3.85812 0.833008 8C0.833008 12.1419 4.19113 15.5 8.33301 15.5C12.4749 15.5 15.833 12.1419 15.833 8C15.833 7.49713 15.7813 7.00625 15.6871 6.53113Z"

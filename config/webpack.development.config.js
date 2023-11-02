@@ -123,7 +123,6 @@ const WebpackDevelopmentConfiguration = async () => {
 		plugins: [
 			new HtmlWebpackPlugin({
 				title: 'webpack project for vue',
-				// template: './config/templates/index.development.pacman-loading.html',
 				template: './config/templates/index.development.image-loading.html',
 				inject: 'body',
 				templateParameters: {
