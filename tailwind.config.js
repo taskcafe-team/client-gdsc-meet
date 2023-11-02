@@ -7,19 +7,19 @@ module.exports = {
 	],
 	darkMode: 'class',
 	theme: {
-		screens: {
-			375: '375px',
-			390: '390px',
-			425: '425px',
-			480: '480px',
-			640: '640px',
-			740: '740px',
-			768: '768px',
-			992: '992px',
-			1024: '1024px',
-			1200: '1200px',
-			1366: '1366px',
-		}, // screens
+		// screens: {
+		// 	375: '375px',
+		// 	390: '390px',
+		// 	425: '425px',
+		// 	480: '480px',
+		// 	640: '640px',
+		// 	740: '740px',
+		// 	768: '768px',
+		// 	992: '992px',
+		// 	1024: '1024px',
+		// 	1200: '1200px',
+		// 	1366: '1366px',
+		// }, // screens
 
 		colors: {
 			primary: {
@@ -32,6 +32,7 @@ module.exports = {
 			},
 			white: '#FFFFFF',
 			borderElement: '#D1D1D6',
+			black: '#000',
 			gray: {
 				80: '#1C1C1E',
 				70: '#5f6368',

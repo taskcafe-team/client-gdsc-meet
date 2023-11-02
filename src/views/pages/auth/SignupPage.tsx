@@ -12,6 +12,7 @@ import googleIcon from 'assets/static/images/icons/google.svg'
 import entity2 from 'assets/static/images/icons/entity.svg'
 import { Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import Button from 'components/Button'
 
 interface IUser {
 	UserName: string
@@ -90,11 +91,11 @@ export default function SignupPage() {
 	})
 	return (
 		<div className="Singn-up relative min-h-[89.8vh] max-h-[88vh] overflow-hidden z-1">
-			<div className="absolute bottom-[-10%] left-[-5%] max-h-[100vh]  z-2">
+			<div className="max-lg:hidden absolute bottom-[-10%] left-[-5%] max-h-[100vh]  z-2">
 				<img src={bgL1} />
 			</div>
 			<motion.ul
-				className="container"
+				className="container max-lg:hidden"
 				variants={container}
 				initial="hidden"
 				animate="visible"
@@ -108,23 +109,22 @@ export default function SignupPage() {
 							borderRadius: '100%',
 						}}
 					>
-						<div className="absolute  max-h-[30vh]  z-3 rotate-45">
-							<img src={entity2} />
-						</div>
+							<img src={entity2} className='absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45' />
+
 					</motion.div>
 				</motion.li>
 			</motion.ul>
 
-			<main className="transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
+			<main className="transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
 				<form
 					onSubmit={formik.handleSubmit}
 					action=""
-					className="w-[100%] min-w-[420px] max-w-[70%] md:mx-0 max-sm:p-10"
+					className="w-[100%] min-w-[420px] max-w-[65%] md:mx-0 max-sm:p-10"
 				>
-					<h2 className="max-w-[570px] text-40 text-gray-80 my-[20px] max-lg:max-w-none text-start leading-tight py-2 ">
+					<h2 className="max-w-[570px] text-40 text-gray-80 dark:text-white my-[20px] max-lg:max-w-none text-start leading-tight py-2 ">
 						Sign Up
 					</h2>
-					<div className="Form__group px-2 mb-8">
+					<div className="Form__group px-2 mb-10">
 						<Input
 							id="UserName"
 							value={formik.values.UserName}
@@ -133,7 +133,7 @@ export default function SignupPage() {
 							// icon={<BiUser />}
 							key={'input-userName'}
 							placeholder="UserName"
-							className="text-18 border-b-2  "
+							className="Input text-18 border-b-2 w-full dark:text-white dark:border-white p-6"
 						/>
 						<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
 							{formik.touched.UserName && formik.errors.UserName ? (
@@ -141,7 +141,7 @@ export default function SignupPage() {
 							) : null}
 						</p>
 					</div>
-					<div className="Form__group px-2 mb-8">
+					<div className="Form__group px-2 mb-10">
 						<Input
 							id="Password"
 							type="password"
@@ -151,7 +151,7 @@ export default function SignupPage() {
 							// icon={<BiKey />}
 							key={'Password'}
 							placeholder="Password"
-							className="text-18 rounded-sm border-b-2  "
+							className="Input text-18 rounded-sm border-b-2  w-full dark:text-white dark:border-white p-6"
 						/>
 						<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
 							{formik.touched.Password && formik.errors.Password ? (
@@ -159,7 +159,7 @@ export default function SignupPage() {
 							) : null}
 						</p>
 					</div>
-					<div className="Form__group px-2 mb-8 ">
+					<div className="Form__group px-2 mb-10 ">
 						<Input
 							id="Repassword"
 							type="password"
@@ -168,7 +168,7 @@ export default function SignupPage() {
 							onBlur={formik.handleBlur}
 							key={'RePassword'}
 							placeholder="Re Password"
-							className="text-18 rounded-sm border-b-2 "
+							className="Input text-18 rounded-sm border-b-2 w-full dark:text-white dark:border-white p-6"
 						/>
 						<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
 							{formik.touched.Repassword && formik.errors.Repassword ? (
@@ -177,7 +177,7 @@ export default function SignupPage() {
 						</p>
 					</div>
 					<div className="mt-10">
-						<LoadingButton
+						<Button
 							type="submit"
 							loading={loading}
 							className={
@@ -185,7 +185,7 @@ export default function SignupPage() {
 							}
 						>
 							Sign Now
-						</LoadingButton>
+						</Button>
 					</div>
 					<div className="flex items-center justify-center  text-gray-70  mt-20	">
 						-or-
