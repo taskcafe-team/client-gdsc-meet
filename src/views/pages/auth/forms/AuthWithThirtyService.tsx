@@ -1,9 +1,15 @@
 import React from 'react'
 import { Button, Stack } from '@mui/material'
 
+import googleIcon from 'assets/static/images/icons/google.svg'
+import facebookIcon from 'assets/static/images/icons/facebook.svg'
+import twitterIcon from 'assets/static/images/icons/twitter.svg'
+
 interface AuthWithThirtyServiceProps {
 	loginBtnLoading: boolean
 }
+
+const a: any = {}
 
 export default function AuthWithThirtyService({
 	loginBtnLoading,
@@ -26,7 +32,7 @@ export default function AuthWithThirtyService({
 				disabled={loginBtnLoading}
 				variant="outlined"
 				fullWidth={true}
-				startIcon={<img src="../images/icons/google.svg" alt="F" />}
+				startIcon={<img src={googleIcon} alt="F" />}
 				onClick={googleHandler}
 			>
 				Google
@@ -35,8 +41,8 @@ export default function AuthWithThirtyService({
 				disabled={loginBtnLoading}
 				variant="outlined"
 				fullWidth={true}
-				startIcon={<img src="../images/icons/facebook.svg" alt="F" />}
-				onClick={twitterHandler}
+				startIcon={<img src={facebookIcon} alt="F" />}
+				onClick={facebookHandler}
 			>
 				Facebook
 			</Button>
@@ -44,8 +50,8 @@ export default function AuthWithThirtyService({
 				disabled={loginBtnLoading}
 				variant="outlined"
 				fullWidth={true}
-				startIcon={<img src="../images/icons/twitter.svg" alt="F" />}
-				onClick={facebookHandler}
+				startIcon={<img src={twitterIcon} alt="F" />}
+				onClick={twitterHandler}
 			>
 				Twitter
 			</Button>

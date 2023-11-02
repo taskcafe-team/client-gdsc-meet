@@ -95,11 +95,11 @@ module.exports = async (env, arg) => {
 				// NOTE - This config to resolve asset's paths
 				{
 					test: /\.(png|jpe?g|gif|webm|mp4|svg|ico|tff|eot|otf|woff|woff2)$/,
-					type: 'asset/resource',
-					generator: {
-						emit: false,
-						// filename: '[hash][ext][query]',
-					},
+					type: 'asset/inline',
+					// generator: {
+					// 	emit: false,
+					// 	// filename: '[hash][ext][query]',
+					// },
 					exclude: [/node_modules/],
 				},
 				...(WebpackConfigWithMode?.module?.rules ?? []),

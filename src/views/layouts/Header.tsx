@@ -16,6 +16,7 @@ import {
 import { LoadingButton } from '@mui/lab'
 import MenuIcon from '@mui/icons-material/Menu'
 import AdbIcon from '@mui/icons-material/Adb'
+import avatar from 'assets/static/images/users/avatar-1.png'
 
 import { useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
@@ -148,7 +149,7 @@ function Header() {
 						{isLogin ? (
 							<Tooltip title="Open settings">
 								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="A" src="/static/images/avatar/2.jpg" />
+									<Avatar alt="A" src={avatar} />
 								</IconButton>
 							</Tooltip>
 						) : (

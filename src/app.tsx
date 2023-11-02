@@ -1,7 +1,5 @@
-import { Suspense, useCallback } from 'react'
-import { BrowserRouter, Routes } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
-import { getRoutes } from 'views/routes/routes'
+import Router, { getRoutes } from 'views/routes/routes'
 import { ThemeProvider } from 'next-themes'
 import Providers from 'contexts/providers'
 
@@ -28,7 +26,7 @@ function App() {
 			<Suspense fallback={<Loading />}>
 				<Providers>
 					<ThemeProvider attribute="class">
-						<Routes>{getR()}</Routes>
+						<Router />
 					</ThemeProvider>
 				</Providers>
 			</Suspense>
