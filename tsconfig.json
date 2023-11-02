@@ -11,7 +11,7 @@
 		"config/types/ImportMeta.d.ts",
 		"src/static.d.ts"
 	],
-	"include": ["src/**/*.js", "src/**/*.ts", "src/**/*.jsx", "src/**/*.tsx"],
+	"include": ["*"],
 	"compilerOptions": {
 		// NOTE - Set what module will be built for project (es, commonjs) (what is compile way will be chosen for import / export syntax)
 		// https://www.typescriptlang.org/tsconfig#module

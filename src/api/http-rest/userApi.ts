@@ -79,3 +79,19 @@ export interface CreateSuperUserRequest {
 	allowCollectingAnonymousData: boolean
 	signupForNewsletter: boolean
 }
+
+// Response Data
+export type ResponseSuccessDataGetMe = {
+	id: string
+	avatar: string
+	email: string
+	firstName: string
+	lastName: string
+	role: 'USER' | 'ADMIN'
+}
+
+export default class UserApi extends Api {
+	static async getMe<T>() {
+		return Api.get<T>(`users/me`)
+	}
+}
