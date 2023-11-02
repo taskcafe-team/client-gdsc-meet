@@ -14,6 +14,7 @@ import UserApi, { ResponseSuccessDataGetMe } from 'api/http-rest/userApi'
 const NotificationBar = lazy(() => import('views/components/NotificationBar'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const DefaultLayout = lazy(() => import('../layouts/DefaultLayout'))
+const PublicLayout = lazy(() => import('../layouts/PublicLayout'))
 
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
@@ -26,7 +27,7 @@ const blackLayout = (e: ReactNode) => (
 		{e}
 	</React.Fragment>
 )
-
+const getPublicLayout = (e: ReactNode) => <PublicLayout>{e}</PublicLayout>
 type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
@@ -37,7 +38,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.SINGUP_URL,
-		element: blackLayout(<SignupPage />),
+		element: getPublicLayout(<SignupPage />),
 		loader: undefined,
 	},
 	{

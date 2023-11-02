@@ -40,7 +40,8 @@
 			"components/*": ["views/components/*"],
 			"utils/*": ["utils/*"],
 			"api/*": ["api/*"],
-			"contexts/*": ["contexts/*"]
+			"contexts/*": ["contexts/*"],
+			"hooks/*": ["hooks/*"]
 		},
 
 		// NOTE - Tell typescript compile just only check type
