@@ -11,6 +11,8 @@ import { UserInfo, userDetailData } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
+import NotificationBar from 'components/NotificationBar'
+// import NotificationBar from 'components/NotificationBar'
 
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -91,28 +93,29 @@ export default function Router() {
 	const [isLoading, setIsLoading] = useState(true)
 
 	const login = useCallback(async () => {
-		const accessToken = getLocalStorageItem('access_token')
-		if (!accessToken) return
-		else {
-			const res = await UserApi.getMe()
-			const { status } = res.metadata
-			if (`${status}` == '200') {
-				if (res.data.avatar)
-					res.data.avatar =
-						'http://localhost:5000/users/avatar/' + res.data.avatar
-
-				dispatch(userDetailData(res.data as UserInfo))
-				dispatch(authLoginSuccess())
+		try{
+			const accessToken = getLocalStorageItem('access_token')
+			if (!accessToken) return
+			else {
+				const res = await UserApi.getMe()
+				const { status } = res.metadata
+				if (`${status}` == '200') {
+					if (res.data.avatar)
+						res.data.avatar =
+							'http://localhost:5000/users/avatar/' + res.data.avatar
+	
+					dispatch(userDetailData(res.data as UserInfo))
+					dispatch(authLoginSuccess())
+				}
 			}
+		}finally{
+			setIsLoading(false)
 		}
-		setIsLoading(false)
 	}, [])
 
 	useEffect(() => {
 		login()
 	}, [])
-
-	console.log(isLogin)
 	if (isLoading) return <Loading />
 	return (
 		<Routes>
