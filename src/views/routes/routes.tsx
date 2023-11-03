@@ -35,8 +35,16 @@ export const Loading = () => {
 }
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-const blackLayout = (e: ReactNode) => <React.Fragment>{e}</React.Fragment>
-const getPublicLayout = (e: ReactNode) => <PublicLayout>{e}</PublicLayout>
+
+const blackLayout = (e: ReactNode) => (
+	<React.Fragment>
+		<NotificationBar />
+		{e}
+	</React.Fragment>
+)
+const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => <PublicLayout type={type}>{e}</PublicLayout>
+
+
 type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
@@ -57,7 +65,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
+		element: getPublicLayout(<HomePage />,'wrapper'),
 		loader: undefined,
 	},
 	{

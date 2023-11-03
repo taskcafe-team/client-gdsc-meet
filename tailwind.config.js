@@ -80,6 +80,7 @@ module.exports = {
 			36: ['36px', { lineHeight: '1.5' }],
 			40: ['40px', { lineHeight: '1.5' }],
 			42: ['42px', { lineHeight: '1.5' }],
+			46: ['46px', { lineHeight: '1.5' }],
 			48: ['48px', { lineHeight: '1.5' }],
 		}, // fontSize
 

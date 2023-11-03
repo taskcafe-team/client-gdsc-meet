@@ -18,7 +18,7 @@ const Button: React.FC<IButton> = ({
 		<button
 			className={`flex items-center justify-center rounded-md gap-2
         hover:opacity-90
-        px-6 py-8 font-bold text-20 cursor-pointer
+        px-10 py-8 font-bold text-20 cursor-pointer
         relative
         ${className ? className : ''}`}
 			{...rest}

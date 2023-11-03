@@ -20,11 +20,11 @@ import { Link } from 'react-router-dom'
 import { useTheme } from 'next-themes'
 
 interface HeaderProps {
-	type?: string
+	type?: 'full'|'wrapper'
 	className?: string
 }
 
-const Header: React.FC<HeaderProps> = ({ type, className, ...rest }) => {
+const Header: React.FC<HeaderProps> = ({ type = 'full', className, ...rest }) => {
 	const [triggerToggle, setTriggerToggle] = useState(false)
 	const { theme } = useTheme()
 
@@ -32,18 +32,21 @@ const Header: React.FC<HeaderProps> = ({ type, className, ...rest }) => {
 	const isLogin = useSelector(authLoading)
 	const UDetail = useSelector(authDetail)
 
+	const withSize = useMemo(()=>{
+		return type == 'wrapper' ? 'w-[65%] max-lg:w-full' : null
+	},[type])
 	return (
 		<header
-			className={`px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px]`}
+			className={`fixed z-50 top-0 left-0 right-0 bg-transparent px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px] ${withSize} `}
 			{...rest}
-		>
+		>	
 			{/*  Desktop  */}
 			<Link to="/">
 				<div className="flex items-center gap-2">
 					<img
 						src={Logo}
 						alt="DTUMeet"
-						className="w-[75px] h-[75px] object-fill  max-lg:w-[45px] max-lg:h-[45px]"
+						className="w-[55px] h-[55px] object-fill  max-lg:w-[45px] max-lg:h-[45px]"
 					/>
 					<h1 className="text-gray-70  opacity-100 text-[45px] max-lg:text-24 font-bold">
 						GDSC Meet
@@ -84,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ type, className, ...rest }) => {
 				onClick={() => setTriggerToggle(!triggerToggle)}
 				className={`text-gray-80 dark:text-white w-full opacity-90 fixed left-0 right-0 top-0 bottom-0 z-[100] transition-opacity ${
 					triggerToggle === true ? 'opacity-1 block' : 'opacity-0 hidden'
-				}`}	
+				}`}
 			></div>
 			<nav
 				className={`w-[230px] h-[100vh]  z-[101]

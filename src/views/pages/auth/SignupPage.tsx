@@ -90,10 +90,8 @@ export default function SignupPage() {
 		},
 	})
 	return (
-		<div className="Singn-up relative min-h-[89.8vh] max-h-[88vh] overflow-hidden z-1">
-			<div className="max-lg:hidden absolute bottom-[-10%] left-[-5%] max-h-[100vh]  z-2">
-				<img src={bgL1} />
-			</div>
+		<div className="Singn-up relative h-[100vh] overflow-hidden z-1">
+				<img src={bgL1} className='max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2' />
 			<motion.ul
 				className="container max-lg:hidden"
 				variants={container}
@@ -115,7 +113,7 @@ export default function SignupPage() {
 				</motion.li>
 			</motion.ul>
 
-			<main className="transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
+			<main className="mt-[10vh] transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
 				<form
 					onSubmit={formik.handleSubmit}
 					action=""

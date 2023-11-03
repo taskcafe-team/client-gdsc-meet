@@ -11,16 +11,18 @@ const LayoutWapper = styled(Box)(
   `
 )
 
-type PublicLayoutProps = { children?: ReactNode }
+type PublicLayoutProps = { children?: ReactNode ,type?: 'full'|'wrapper' }
 
-function PublicLayout(props: PublicLayoutProps) {
+function PublicLayout({children,type}:PublicLayoutProps) {
 	return (
-		<LayoutWapper className="max-h-[100vh] overflow-hidden">
-			<Header />
+		<LayoutWapper className='max-h-[100vh] overflow-hidden'>
+			<Noitification />
+			<Header type={type}/>
+
 			<Box flex={1} display="flex" alignItems="stretch">
 				<Box flex={1}>
 					<Box width="1" height="1">
-						{props.children}
+						{children}
 					</Box>
 				</Box>
 			</Box>
