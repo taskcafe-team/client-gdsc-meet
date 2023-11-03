@@ -24,7 +24,8 @@ const blackLayout = (e: ReactNode) => (
 		{e}
 	</React.Fragment>
 )
-const getPublicLayout = (e: ReactNode) => <PublicLayout>{e}</PublicLayout>
+const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => <PublicLayout type={type}>{e}</PublicLayout>
+
 type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
@@ -45,7 +46,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
+		element: getPublicLayout(<HomePage />,'wrapper'),
 		loader: undefined,
 	},
 ]

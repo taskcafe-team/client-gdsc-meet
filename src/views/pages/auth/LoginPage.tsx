@@ -6,6 +6,15 @@ import LoginForm from './forms/LoginForm'
 import { useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
 
+interface IUser {
+	UserName: string
+	Password: string
+}
+
+const inituser: IUser = {
+	UserName: '',
+	Password: '',
+}
 export default function LoginPage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
