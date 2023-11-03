@@ -1,4 +1,4 @@
-import Api from 'api/index'
+import Api from 'api/api'
 
 export type ResponseSuccessDataCreateMeeting = {
 	id: string

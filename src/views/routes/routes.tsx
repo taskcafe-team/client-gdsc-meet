@@ -1,23 +1,41 @@
 /* eslint-disable import/no-unresolved */
-import { ReactNode, lazy } from 'react'
+import { ReactNode } from 'react'
 import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { getLocalStorageItem } from 'utils/localStorageUtils'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authLoginSuccess } from 'contexts/auth'
-import UserApi, { ResponseSuccessDataGetMe } from 'api/http-rest/userApi'
-import { Loading } from 'app'
+import UserApi from 'api/http-rest/userApi'
+import { CircularProgress } from '@mui/material'
+import { UserInfo, userDetailData } from 'contexts/user'
 
-const NotificationBar = lazy(() => import('views/components/NotificationBar'))
+import DefaultLayout from 'views/layouts/DefaultLayout'
+import PublicLayout from 'views/layouts/PublicLayout'
+
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
-const DefaultLayout = lazy(() => import('../layouts/DefaultLayout'))
-const PublicLayout = lazy(() => import('../layouts/PublicLayout'))
+const HomePage = lazy(() => import('views/pages/home/HomePage'))
+const LoginPage = lazy(() => import('views/pages/auth/LoginPage'))
+const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
+const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
 
-const HomePage = lazy(() => import('../pages/home/HomePage'))
-const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
-const MeetingPage = lazy(() => import('../pages/meeting/MeetingPage'))
+export const Loading = () => {
+	return (
+		<div
+			style={{
+				width: '100vw',
+				height: '100vh',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<CircularProgress />
+		</div>
+	)
+}
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
+
 const blackLayout = (e: ReactNode) => (
 	<React.Fragment>
 		<NotificationBar />
@@ -25,6 +43,7 @@ const blackLayout = (e: ReactNode) => (
 	</React.Fragment>
 )
 const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => <PublicLayout type={type}>{e}</PublicLayout>
+
 
 type CustomRouteProps = RouteProps
 
@@ -49,41 +68,51 @@ const routes: CustomRouteProps[] = [
 		element: getPublicLayout(<HomePage />,'wrapper'),
 		loader: undefined,
 	},
+	{
+		path: 'profile',
+		element: getDefaultLayout(<ProfilePage />),
+		loader: undefined,
+	},
 ]
 
 const privateRoutes: CustomRouteProps[] = []
 
 export const getRoutes = (isLogin: boolean) => {
 	const r = new Array<CustomRouteProps>()
-	if (isLogin) r.push(...privateRoutes)
 	r.push(...routes)
+	if (isLogin) r.push(...privateRoutes)
 	return r.map((p, i) => <Route key={i} {...p} />)
 }
 
 export default function Router() {
-	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const dispatch = useAppDispatch()
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 
 	const login = useCallback(async () => {
 		const accessToken = getLocalStorageItem('access_token')
 		if (!accessToken) return
-		// const res = await AuthApi.verifyAccessToken(accessToken)
+		else {
+			const res = await UserApi.getMe()
+			const { status } = res.metadata
+			if (`${status}` == '200') {
+				if (res.data.avatar)
+					res.data.avatar =
+						'http://localhost:5000/users/avatar/' + res.data.avatar
 
-		const res = await UserApi.getMe()
-		setIsLoading(false)
-		const { status } = res.metadata
-		if (`${status}` == '200') {
-			// const data = res.data as ResponseSuccessDataGetMe
-			dispatch(authLoginSuccess())
+				dispatch(userDetailData(res.data as UserInfo))
+				dispatch(authLoginSuccess())
+			}
 		}
+		setIsLoading(false)
 	}, [])
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		login()
 	}, [])
 
+	console.log(isLogin)
 	if (isLoading) return <Loading />
 	return (
 		<Routes>

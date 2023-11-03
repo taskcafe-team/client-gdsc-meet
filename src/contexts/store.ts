@@ -1,10 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { authReducer } from './auth'
-import { noitificationReducer } from './notification'
+import { userReducer } from './user'
 
 export const rootReducer = combineReducers({
 	auth: authReducer,
-	noitificatioin: noitificationReducer,
+	user: userReducer,
 })
 
 const store = configureStore({

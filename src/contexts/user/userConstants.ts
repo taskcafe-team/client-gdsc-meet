@@ -1,0 +1,1 @@
+export const USER_DETAIL_DATA = 'AUTH_DETAIL_DATA'

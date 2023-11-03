@@ -52,6 +52,7 @@ export const Logo = () => (
 function Header() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const user = useAppSelector((s) => s.user)
 	const dispatch = useAppDispatch()
 
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>()
@@ -74,6 +75,9 @@ function Header() {
 			dispatch(authLogout())
 		}
 
+		if (setting == 'Profile') {
+			navigate('/profile')
+		}
 		setAnchorElUser(null)
 	}
 
@@ -157,7 +161,7 @@ function Header() {
 						{isLogin ? (
 							<Tooltip title="Open settings">
 								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="A" src={avatar} />
+									<Avatar alt={user.firstName || ''} src={user.avatar || ''} />
 								</IconButton>
 							</Tooltip>
 						) : (

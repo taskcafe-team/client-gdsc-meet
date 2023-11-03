@@ -1,5 +1,5 @@
 import type { AxiosPromise } from 'axios'
-import Api from '..'
+import Api from '../api'
 import type { ApiResponse } from '../apiResponses'
 
 export interface LoginUserRequest {
@@ -50,15 +50,6 @@ export interface InviteUserRequest {
 	status?: string
 }
 
-export interface UpdateUserRequest {
-	name?: string
-	email?: string
-	proficiency?: string
-	role?: string
-	useCase?: string
-	intercomConsentGiven?: boolean
-}
-
 export interface SendTestEmailPayload {
 	smtpHost: string
 	fromEmail: string
@@ -80,18 +71,39 @@ export interface CreateSuperUserRequest {
 	signupForNewsletter: boolean
 }
 
+export interface RequestUpdateMe {
+	avatar?: File
+	firstName?: string
+	lastName?: string
+}
+
 // Response Data
-export type ResponseSuccessDataGetMe = {
+export enum UserRole {
+	'USER' = 'USER',
+	'ADMIN' = 'ADMIN',
+}
+
+export interface ResponseUserData {
 	id: string
-	avatar: string
+	avatar: string | null
 	email: string
-	firstName: string
-	lastName: string
-	role: 'USER' | 'ADMIN'
+	firstName: string | null
+	lastName: string | null
+	role: UserRole
 }
 
 export default class UserApi extends Api {
-	static async getMe<T>() {
-		return Api.get<T>(`users/me`)
+	static async getMe() {
+		return Api.get<ResponseUserData>(`users/me`)
+	}
+
+	static async updateMe(request: RequestUpdateMe) {
+		const formData = new FormData()
+		if (request.avatar) formData.append('file', request.avatar)
+		return Api.put<ResponseUserData>(`users/me`, formData, null, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		})
 	}
 }

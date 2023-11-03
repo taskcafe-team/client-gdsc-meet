@@ -1,4 +1,4 @@
-import Api from 'api/index'
+import Api from 'api/api'
 import { CreateUserRequest, LoginUserRequest } from './userApi'
 import { ApiResponse } from 'api/apiResponses'
 

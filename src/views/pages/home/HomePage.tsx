@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import CallIcon from '@mui/icons-material/Call'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { noitificationSet } from 'contexts/notification'
 import RouterPath from 'views/routes/routesContants'
 import Button from 'components/Button'
 import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
@@ -29,18 +28,14 @@ import { listRoom } from 'utils/mockNameRoom'
 import { IoMdClose } from 'react-icons/io'
 const DEFAUFT = 'Defauft'
 export default function HomePage() {
-	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
 	const [opinion,setOpinion] = useState(DEFAUFT);
 	const validationLogin = useCallback(() => {
-		if (!isLogin)
-			dispatch(noitificationSet({ code: ``, message: 'Please Login' }))
-
 		return isLogin
-	}, [dispatch, isLogin])
+	}, [isLogin])
 
 	const createMeeting = useCallback(async () => {
 		if (validationLogin()) {
@@ -52,7 +47,7 @@ export default function HomePage() {
 				navigate(RouterPath.getPreMeetingPath(data.friendlyId))
 			}
 		}
-	}, [navigate, validationLogin])
+	}, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import {
 	Checkbox,
 	Divider,
@@ -20,7 +20,6 @@ import * as Yup from 'yup'
 import { Formik, type FormikProps } from 'formik'
 
 // project import
-import { noitificationSet } from 'contexts/notification'
 import AuthWithThirtyService from './AuthWithThirtyService'
 import AnimateButton from '../../../components/AnimateButton'
 import { AuthApi } from 'api/http-rest'
@@ -31,8 +30,8 @@ import { setLocalStorageItem } from 'utils/localStorageUtils'
 import { authLoginSuccess } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
-	email: 'dangnhatminh@gmail.com',
-	password: '123456',
+	email: 'dangnhatminh1@gmail.com',
+	password: 'MyP@ssw0rd',
 	errMessage: null,
 }
 
@@ -62,7 +61,6 @@ function ShowPasswordIcon({
 }
 export default function LoginForm() {
 	const dispatch = useAppDispatch()
-	const navigate = useNavigate()
 	const [checked, setChecked] = React.useState(false)
 	const [showPassword, setShowPassword] = React.useState(false)
 
@@ -80,7 +78,7 @@ export default function LoginForm() {
 				try {
 					const { email, password } = values
 					const res = await AuthApi.loginWithEmail({ email, password })
-					const { status, message } = res.metadata
+					const { status } = res.metadata
 					console.log(status)
 					if (`${status}` == '200') {
 						const data = res.data as {
@@ -92,11 +90,9 @@ export default function LoginForm() {
 							key: `access_token`,
 							value: data.accessToken,
 						})
-
 						dispatch(authLoginSuccess())
 						return
 					}
-					dispatch(noitificationSet({ code: `${status}`, message }))
 				} catch (error) {
 					return
 				}
