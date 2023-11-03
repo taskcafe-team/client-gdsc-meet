@@ -25,17 +25,7 @@ const showToast = ({ content, type = 'success' }: ToastProps) => {
 }
 
 export default function NotificationBar() {
-	const noitifiactionState = useAppSelector((s) => s.noitificatioin)
-	useLayoutEffect(() => {
-		if (!noitifiactionState.timestamp) return
-		const code = noitifiactionState.code
-		let type: ToastProps['type'] = 'info'
-
-		if (`${code}` !== '200') type = 'error'
-		if (`${code}` === '200') type = 'success'
-
-		showToast({ content: noitifiactionState.message, type })
-	}, [noitifiactionState])
+	useLayoutEffect(() => {}, [])
 
 	return (
 		<React.Fragment>

@@ -18,7 +18,7 @@ import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
-	baseURL: `${'https://gdsc-meet.us.to:5000'}`,
+	baseURL: `${'http://localhost:5000'}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,
