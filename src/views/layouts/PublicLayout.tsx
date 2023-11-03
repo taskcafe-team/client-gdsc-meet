@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import Header from 'components/Header'
-import Footer from './Footer'
 import { styled } from 'styled-components'
 import { Box, Container, CssBaseline } from '@mui/material'
 import Noitification from '../components/NotificationBar'
@@ -17,7 +16,7 @@ type PublicLayoutProps = { children?: ReactNode }
 
 function PublicLayout(props: PublicLayoutProps) {
 	return (
-		<LayoutWapper>
+		<LayoutWapper className='max-h-[100vh] overflow-hidden'>
 			<Noitification />
 			<Header />
 			<Box flex={1} display="flex" alignItems="stretch">
