@@ -1,47 +1,46 @@
-import { CommonError } from '../types'
-import { IAuth } from './authTypes'
 import {
-	AUTH_DETAIL_FETCH,
-	AUTH_DETAIL_DATA,
-	AUTH_DETAIL_ERROR,
+	AUTH_FETCH_EMAIL_LOGIN,
+	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
+	AUTH_FETCH_SUCESS,
 	AUTH_LOGOUT,
-	AUTH_SUCESS,
-	AUTH_LOGIN_SUCESS,
 } from './authConstants'
-import { createAction } from '@reduxjs/toolkit'
-
-// interface of action
-export interface AuthDetailFetch {
-	type: typeof AUTH_DETAIL_FETCH
-}
-
-export interface AuthDetailData {
-	type: typeof AUTH_DETAIL_DATA
-	payload: IAuth
-}
-
-export interface AuthDetailError {
-	type: typeof AUTH_DETAIL_ERROR
-	payload: CommonError
-}
-
-export interface AuthLogout {
-	type: typeof AUTH_LOGOUT
-}
-
-export interface AuthSuccess {
-	type: typeof AUTH_SUCESS
-}
-
-export interface AuthLoginSuccess {
-	type: typeof AUTH_LOGIN_SUCESS
-}
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { AuthApi } from 'api/http-rest'
+import { userFetchMe } from 'contexts/user'
+import { setLocalStorageItem } from 'utils/localStorageUtils'
 
 // action
-export const authDetailFetch = createAction(AUTH_DETAIL_FETCH)
-export const authDetailData =
-	createAction<AuthDetailData['payload']>(AUTH_DETAIL_DATA)
-export const authDetailError =
-	createAction<AuthDetailError['payload']>(AUTH_DETAIL_ERROR)
-export const authLogout = createAction<undefined>(AUTH_LOGOUT)
-export const authLoginSuccess = createAction(AUTH_LOGIN_SUCESS)
+export const authLogout = createAction(AUTH_LOGOUT)
+export const authFetchSucess = createAction(AUTH_FETCH_SUCESS)
+
+// thunk action
+export const authFetchEmailLogin = createAsyncThunk(
+	AUTH_FETCH_EMAIL_LOGIN,
+	async (request: { email: string; password: string }, { dispatch }) => {
+		const res = await AuthApi.loginWithEmail(request)
+		const { status } = res.metadata
+		if (status.toString().match(/(2|3)../)) {
+			setLocalStorageItem({
+				key: `access_token`,
+				value: res.data.accessToken,
+			})
+			dispatch(authFetchSucess())
+			dispatch(userFetchMe())
+		}
+	}
+)
+
+export const authFetchGoogleLoginVerify = createAsyncThunk(
+	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
+	async (search: string, { dispatch }) => {
+		const res = await AuthApi.googleAuthVerify(search)
+		if (res.metadata.status === 200) {
+			setLocalStorageItem({
+				key: `access_token`,
+				value: res.data.accessToken,
+			})
+			dispatch(userFetchMe())
+			dispatch(authFetchSucess())
+		}
+	}
+)

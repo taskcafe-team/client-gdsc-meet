@@ -1,6 +1,6 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getLocalStorageItem } from '../utils/localStorageUtils'
-import { ApiResponse } from './apiResponses'
+import useToastily from 'hooks/useToastily'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 	config.headers = config.headers ?? {}
@@ -12,15 +12,19 @@ export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 }
 
 export const apiFailureRequestInterceptor = async (error: any) => {
+	console.log(error)
 	return Promise.resolve(error)
 }
 
 export const apiSuccessResponseInterceptor = (
 	response: AxiosResponse
 ): AxiosResponse['data'] => {
+	const status = response.data.metadata
 	return response.data
 }
 
 export const apiFailureResponseInterceptor = async (error: any) => {
-	return Promise.resolve(error)
+	const Toastily = useToastily()
+	Toastily({ content: 'Something went wrong', type: 'error' })
+	return
 }
