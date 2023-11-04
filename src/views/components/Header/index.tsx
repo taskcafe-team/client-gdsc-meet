@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ type = 'full', className, ...rest }) =>
 	const UDetail = useSelector(authDetail)
 
 	const withSize = useMemo(()=>{
-		return type == 'wrapper' ? 'w-[65%] max-lg:w-full' : null
+		return type == 'wrapper' ? 'w-[65%] max-2xl:w-full' : null
 	},[type])
 	return (
 		<header
