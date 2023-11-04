@@ -2,13 +2,14 @@
 import { ReactNode } from 'react'
 import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
-import { getLocalStorageItem } from 'utils/localStorageUtils'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { CircularProgress } from '@mui/material'
 import { fetchCurrentUser } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
+import NotificationBar from 'components/NotificationBar'
+// import NotificationBar from 'components/NotificationBar'
 
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -33,8 +34,17 @@ export const Loading = () => {
 }
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-const blackLayout = (e: ReactNode) => <React.Fragment>{e}</React.Fragment>
-const getPublicLayout = (e: ReactNode) => <PublicLayout>{e}</PublicLayout>
+
+const blackLayout = (e: ReactNode) => (
+	<React.Fragment>
+		<NotificationBar />
+		{e}
+	</React.Fragment>
+)
+const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
+	<PublicLayout type={type}>{e}</PublicLayout>
+)
+
 type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
@@ -55,7 +65,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
+		element: getPublicLayout(<HomePage />, 'wrapper'),
 		loader: undefined,
 	},
 ]
