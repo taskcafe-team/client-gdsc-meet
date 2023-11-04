@@ -1,6 +1,6 @@
 export interface CommonError {
-	code: number
-	message: string[]
+	code: number | string
+	message: string
 }
 
 export interface CommonState {

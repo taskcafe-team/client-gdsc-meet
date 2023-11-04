@@ -10,12 +10,13 @@ import { authFetchGoogleLoginVerify } from 'contexts/auth'
 export default function LoginPage() {
 	const dispatch = useAppDispatch()
 	const query = useLocation()
+
 	const loginGoogle = useCallback(async () => {
 		const { search } = query
 		if (search) dispatch(authFetchGoogleLoginVerify(search))
 	}, [])
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		loginGoogle()
 	}, [])
 

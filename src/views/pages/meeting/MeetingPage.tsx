@@ -29,8 +29,6 @@ export default function MeetingPage() {
 			friendlyId
 		)
 
-		console.log(res)
-
 		if (res.metadata.status == 200) setToken(res.data.token)
 	}, [friendlyId])
 

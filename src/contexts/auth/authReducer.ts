@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { AuthDetailState } from './authTypes'
-import { authFetchSucess, authLogout } from './authActions'
+import {
+	authFetching,
+	authFetchSucess,
+	authFetchEmailLogin,
+	authLogout,
+	authFetchError,
+} from './authActions'
 
 const initialState: AuthDetailState = {
 	isLogin: false,
 	loading: false,
+	error: undefined,
 }
 
 const authSlice = createSlice({
@@ -13,6 +20,13 @@ const authSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
+			.addCase(authFetching, (state) => {
+				state.loading = true
+			})
+			.addCase(authFetchError, (state, action) => {
+				state.loading = false
+				state.error = action.payload
+			})
 			.addCase(authLogout, (state) => {
 				state.isLogin = false
 				state.loading = false
@@ -20,6 +34,13 @@ const authSlice = createSlice({
 			})
 			.addCase(authFetchSucess, (state) => {
 				state.isLogin = true
+				state.loading = false
+				state.error = undefined
+			})
+			.addCase(authFetchEmailLogin.pending, (state) => {
+				state.loading = true
+			})
+			.addCase(authFetchEmailLogin.fulfilled, (state) => {
 				state.loading = false
 				state.error = undefined
 			})

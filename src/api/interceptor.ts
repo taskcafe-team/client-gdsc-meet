@@ -12,7 +12,6 @@ export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 }
 
 export const apiFailureRequestInterceptor = async (error: any) => {
-	console.log(error)
 	return Promise.resolve(error)
 }
 

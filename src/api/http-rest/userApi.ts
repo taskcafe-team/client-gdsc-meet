@@ -102,7 +102,6 @@ export default class UserApi extends Api {
 		for (var key in request)
 			if (request[key]) formData.append(key, request[key])
 
-		console.log(request)
 		return Api.put<ResponseUserData>(`users/me`, formData, null, {
 			headers: { 'Content-Type': 'multipart/form-data' },
 		})

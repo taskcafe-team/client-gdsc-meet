@@ -24,11 +24,11 @@ import { LoadingButton } from '@mui/lab'
 import AuthWithThirtyService from './AuthWithThirtyService'
 import AnimateButton from '../../../components/AnimateButton'
 import { LoginFormValueInit } from '../type'
-import { useAppDispatch } from 'contexts/hooks'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authFetchEmailLogin } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
-	email: 'dangnhatminh1@gmail.com',
+	email: 'dangnhatminh@gmail.com',
 	password: 'MyP@ssw0rd',
 	errMessage: null,
 }
@@ -59,8 +59,19 @@ function ShowPasswordIcon({
 }
 export default function LoginForm() {
 	const dispatch = useAppDispatch()
+
+	const error = useAppSelector((s) => s.auth.error)
+	const [err, setErr] = useState<string>('')
+
 	const [checked, setChecked] = React.useState(false)
 	const [showPassword, setShowPassword] = React.useState(false)
+
+	useLayoutEffect(() => {
+		if (error) {
+			setErr(error.message)
+			setTimeout(() => setErr(''), 2000)
+		}
+	}, [error])
 
 	return (
 		<Formik
@@ -177,6 +188,13 @@ export default function LoginForm() {
 								</LoadingButton>
 							</AnimateButton>
 						</Grid>
+						{err && (
+							<Grid item xs={12}>
+								<Typography variant="body1" color="red">
+									{err}
+								</Typography>
+							</Grid>
+						)}
 						<Grid item xs={12}>
 							<Divider>
 								<Typography variant="caption">Login with</Typography>
