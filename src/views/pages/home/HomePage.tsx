@@ -74,36 +74,46 @@ export default function HomePage() {
 				theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
 			}`}
 		>
-			<motion.div
-				initial={{ scale: 0, rotate: 180 }}
-				animate={{ rotate: 0, scale: 1 }}
-				transition={{
-					type: 'spring',
-					stiffness: 260,
-					damping: 20,
-				}}
-				className="max-lg:hidden h-[100vh] object-center opacity-30 absolute left-0 top-0 z-1 max-lg:object-cover"
+			<motion.ul
+				className="container max-lg:hidden"
+				variants={container}
+				initial="hidden"
+				animate="visible"
 			>
-				<img src={Bg} alt="background"></img>
-			</motion.div>
+				<motion.li className="item" variants={item}>
+					<motion.div
+						whileHover={{ scale: 0.6 }}
+						whileTap={{
+							opacity: 0.8,
+
+							borderRadius: '100%',
+						}}
+					>
+						<img
+							src={Bg}
+							alt="background"
+							className="max-lg:hidden h-[100vh] object-fill opacity-30 absolute left-0 top-0 z-1 max-lg:object-cover"
+						></img>
+					</motion.div>
+				</motion.li>
+			</motion.ul>
 			<img
 				src={theme === 'light' ? Bgtop : BgDarktop}
 				alt="background"
-				className="max-lg:hidden h-[120vh]  max-lg:w-[120%] max-lg:object-right object-center absolute left-[-17%] top-[-3%] z-2"
+				className="max-lg:hidden h-[120vh] max-2xl:h-[94vh]  max-lg:w-[80vh] max-2xl:max-w-[200%]  object-contain object-top absolute left-[-17%] top-[-3%] z-2"
 			></img>
 
 			<img
 				src={theme === 'light' ? BgBottom : BgDarkBottom}
 				alt="background"
-				className="max-lg:hidden h-[100vh] w-[40%] object-center absolute bottom-[-6%] right-[-4%] z-2"
+				className="max-lg:hidden h-[100vh] w-[40%] object-contain object-bottom absolute bottom-[-6%] right-[-4%] z-2"
 			></img>
-			<div className=" mt-[10vh] max-sm:mt-[5vh] transition-opacity contianer absolute z-100 top-0 left-0 w-[60%] max-lg:w-full z-3 ">
+			<div className=" mt-[10vh] max-sm:mt-[5vh] transition-opacity contianer absolute z-100 top-0 left-0 w-[60%] max-2xl:w-[80%] max-lg:w-full  z-3 ">
 				<div className="py-[16px] px-[53px] max-sm:py-[20px] max-sm:px-[20px] max-lg:flex max-lg:justify-center max-lg:items-center max-lg:flex-col">
-					{/* <Image src={BGMobile} alt="GDSC mobile" className="h-[30vh] hidden max-lg:block"></Image> */}
 					<h1 className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]">
 						Meetings and video calling for everyone.
 					</h1>
-					<p className="max-w-[800px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
+					<p className="max-w-[800px] max-lg:max-w-[600px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
 						DTU Meet is a versatile video conferencing and meeting service that
 						offers secure and high-quality video calling and collaboration
 						features, catering to users across a wide range of devices and
