@@ -22,6 +22,7 @@ import BgDarkBottom from 'assets/static/images/backgrouds/HomeDarkBr.svg'
 import MeetingApi, {
 	ResponseSuccessDataCreateMeeting,
 } from 'api/http-rest/meetingApi'
+import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
@@ -32,11 +33,30 @@ export default function HomePage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
-	const [opinion,setOpinion] = useState(DEFAUFT);
+	const [opinion, setOpinion] = useState(DEFAUFT)
 	const validationLogin = useCallback(() => {
 		return isLogin
 	}, [isLogin])
-
+	const container = {
+		hidden: { opacity: 1, scale: 0 },
+		visible: {
+			opacity: 1,
+			scale: 1,
+			transition: {
+				delayChildren: 0.3,
+				staggerChildren: 0.2,
+			},
+		},
+	}
+	const item = {
+		hidden: { y: '-100%', opacity: 0, scale: 0 },
+		visible: {
+			y: '-20%',
+			x: '+10%',
+			opacity: 1,
+			scale: 1,
+		},
+	}
 	const createMeeting = useCallback(async () => {
 		if (validationLogin()) {
 			const res =
@@ -60,12 +80,18 @@ export default function HomePage() {
 				theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
 			}`}
 		>
-			<img
-				src={Bg}
-				alt="background"
+			<motion.div
+				initial={{ scale: 0, rotate: 180 }}
+				animate={{ rotate: 0, scale: 1 }}
+				transition={{
+					type: 'spring',
+					stiffness: 260,
+					damping: 20,
+				}}
 				className="max-lg:hidden h-[100vh] object-center opacity-30 absolute left-0 top-0 z-1 max-lg:object-cover"
-			></img>
-
+			>
+				<img src={Bg} alt="background"></img>
+			</motion.div>
 			<img
 				src={theme === 'light' ? Bgtop : BgDarktop}
 				alt="background"
@@ -89,7 +115,11 @@ export default function HomePage() {
 						features, catering to users across a wide range of devices and
 						platforms for a seamless communication experience.
 					</p>
-					<img src={online_meeting_illustration} alt="" className='w-[20vh] hidden max-sm:block' />
+					<img
+						src={online_meeting_illustration}
+						alt=""
+						className="w-[20vh] hidden max-sm:block"
+					/>
 					<div className="Home__function flex items-center gap-12 my-26 max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center">
 						<Button
 							className="max-md:w-full text-white bg-lprimary"
@@ -118,19 +148,24 @@ export default function HomePage() {
 						</div>
 					</div>
 					<h2 className="text-gray-80 dark:text-white text-46 mr-2 max-sm:text-[25px] mr-auto">
-					Meeting opinions
+						Meeting opinions
 					</h2>
 					<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10 ">
 						<div className="Tabinfo-room__body flex flex-wrap gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
 							{listRoom &&
 								listRoom.map((item) => (
-									<div className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
-									${opinion === item.lable ? "bg-lprimary text-white" :"bg-green-10 text-green-50"}
+									<div
+										className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
+									${
+										opinion === item.lable
+											? 'bg-lprimary text-white'
+											: 'bg-green-10 text-green-50'
+									}
 									`}
-									onClick={()=>setOpinion(item.lable)}
+										onClick={() => setOpinion(item.lable)}
 									>
 										<p className="text-xl">{item.lable}</p>
-										
+
 										{/* {submitState.room && <IoMdClose className="text-4xl " />} */}
 									</div>
 								))}
