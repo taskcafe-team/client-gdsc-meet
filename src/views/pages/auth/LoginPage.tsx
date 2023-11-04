@@ -3,10 +3,22 @@ import { Link } from 'react-router-dom'
 import { Box, Grid, Stack, Typography } from '@mui/material'
 import AuthWrapper from './AuthWrapper'
 import LoginForm from './forms/LoginForm'
-import { useAppSelector } from 'contexts'
+import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
+import { fetchAuthGoogleLoginVerify } from 'contexts/auth'
 
 export default function LoginPage() {
+	const dispatch = useAppDispatch()
+	const query = useLocation()
+	const loginGoogle = useCallback(async () => {
+		const { search } = query
+		if (search) dispatch(fetchAuthGoogleLoginVerify(search))
+	}, [])
+
+	useEffect(() => {
+		loginGoogle()
+	}, [])
+
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
 	if (isLogin) return <Navigate to="/" />

@@ -109,8 +109,10 @@ export default function SignupPage() {
 							borderRadius: '100%',
 						}}
 					>
-							<img src={entity2} className='absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45' />
-
+						<img
+							src={entity2}
+							className="absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45"
+						/>
 					</motion.div>
 				</motion.li>
 			</motion.ul>

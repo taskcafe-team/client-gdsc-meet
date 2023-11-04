@@ -12,6 +12,7 @@ export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 }
 
 export const apiFailureRequestInterceptor = async (error: any) => {
+	console.log(error)
 	return Promise.resolve(error)
 }
 
@@ -22,5 +23,12 @@ export const apiSuccessResponseInterceptor = (
 }
 
 export const apiFailureResponseInterceptor = async (error: any) => {
-	return Promise.resolve(error)
+	return Promise.resolve({
+		metadata: {
+			status: 500,
+			message: 'Something went wrong',
+			success: false,
+		},
+		timestamp: Date.now(),
+	})
 }

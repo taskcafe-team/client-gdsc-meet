@@ -99,11 +99,12 @@ export default class UserApi extends Api {
 
 	static async updateMe(request: RequestUpdateMe) {
 		const formData = new FormData()
-		if (request.avatar) formData.append('file', request.avatar)
+		for (var key in request)
+			if (request[key]) formData.append(key, request[key])
+
+		console.log(request)
 		return Api.put<ResponseUserData>(`users/me`, formData, null, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
+			headers: { 'Content-Type': 'multipart/form-data' },
 		})
 	}
 }

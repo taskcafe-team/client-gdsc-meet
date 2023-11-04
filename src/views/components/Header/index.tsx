@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ type, className, ...rest }) => {
 				onClick={() => setTriggerToggle(!triggerToggle)}
 				className={`text-gray-80 dark:text-white w-full opacity-90 fixed left-0 right-0 top-0 bottom-0 z-[100] transition-opacity ${
 					triggerToggle === true ? 'opacity-1 block' : 'opacity-0 hidden'
-				}`}	
+				}`}
 			></div>
 			<nav
 				className={`w-[230px] h-[100vh]  z-[101]

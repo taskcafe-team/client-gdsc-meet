@@ -22,12 +22,10 @@ import { Formik, type FormikProps } from 'formik'
 // project import
 import AuthWithThirtyService from './AuthWithThirtyService'
 import AnimateButton from '../../../components/AnimateButton'
-import { AuthApi } from 'api/http-rest'
 import { LoadingButton } from '@mui/lab'
 import { useAppDispatch } from 'contexts/hooks'
 import { LoginFormValueInit } from '../type'
-import { setLocalStorageItem } from 'utils/localStorageUtils'
-import { authLoginSuccess } from 'contexts/auth'
+import { fetchAuthLoginEmail } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
 	email: 'dangnhatminh1@gmail.com',
@@ -77,22 +75,7 @@ export default function LoginForm() {
 			onSubmit={async (values) => {
 				try {
 					const { email, password } = values
-					const res = await AuthApi.loginWithEmail({ email, password })
-					const { status } = res.metadata
-					console.log(status)
-					if (`${status}` == '200') {
-						const data = res.data as {
-							id: string
-							accessToken: string
-							refreshToken: string
-						}
-						setLocalStorageItem({
-							key: `access_token`,
-							value: data.accessToken,
-						})
-						dispatch(authLoginSuccess())
-						return
-					}
+					dispatch(fetchAuthLoginEmail({ email, password }))
 				} catch (error) {
 					return
 				}

@@ -4,10 +4,8 @@ import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { getLocalStorageItem } from 'utils/localStorageUtils'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { authLoginSuccess } from 'contexts/auth'
-import UserApi from 'api/http-rest/userApi'
 import { CircularProgress } from '@mui/material'
-import { UserInfo, userDetailData } from 'contexts/user'
+import { fetchCurrentUser } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
@@ -60,14 +58,15 @@ const routes: CustomRouteProps[] = [
 		element: getDefaultLayout(<HomePage />),
 		loader: undefined,
 	},
+]
+
+const privateRoutes: CustomRouteProps[] = [
 	{
 		path: 'profile',
 		element: getDefaultLayout(<ProfilePage />),
 		loader: undefined,
 	},
 ]
-
-const privateRoutes: CustomRouteProps[] = []
 
 export const getRoutes = (isLogin: boolean) => {
 	const r = new Array<CustomRouteProps>()
@@ -77,35 +76,24 @@ export const getRoutes = (isLogin: boolean) => {
 }
 
 export default function Router() {
+	const param = useParams()
+	const query = useLocation()
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const fetchLoading = useAppSelector((s) => s.user.loading)
 
-	const [isLoading, setIsLoading] = useState(true)
+	const [loading, setLoading] = useState(true)
 
 	const login = useCallback(async () => {
-		const accessToken = getLocalStorageItem('access_token')
-		if (!accessToken) return
-		else {
-			const res = await UserApi.getMe()
-			const { status } = res.metadata
-			if (`${status}` == '200') {
-				if (res.data.avatar)
-					res.data.avatar =
-						'http://localhost:5000/users/avatar/' + res.data.avatar
-
-				dispatch(userDetailData(res.data as UserInfo))
-				dispatch(authLoginSuccess())
-			}
-		}
-		setIsLoading(false)
+		dispatch(fetchCurrentUser())
+		setLoading(false)
 	}, [])
 
 	useEffect(() => {
 		login()
 	}, [])
 
-	console.log(isLogin)
-	if (isLoading) return <Loading />
+	if (loading || fetchLoading) return <Loading />
 	return (
 		<Routes>
 			{getRoutes(isLogin)}

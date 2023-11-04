@@ -13,7 +13,7 @@ export default function AuthWithThirtyService({
 	loginBtnLoading,
 }: AuthWithThirtyServiceProps) {
 	const googleHandler = async () => {
-		// login || singup
+		window.open('http://localhost:5000/auth/google/login', '_self')
 	}
 
 	const twitterHandler = async () => {
