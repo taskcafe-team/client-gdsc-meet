@@ -98,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({
 				className={`w-[230px] h-[100vh]  z-[101]
           	fixed  right-0 top-0 bottom-0 z-100
         rounded-md
-        flex flex-col 
+        flex flex-col
         p-10
         gap-10
         transition-transform

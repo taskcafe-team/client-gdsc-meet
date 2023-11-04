@@ -1,11 +1,13 @@
 /* eslint-disable import/no-unresolved */
-import { Input } from '@mui/material'
-import { Formik, useFormik } from 'formik'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import * as Yup from 'yup'
-
 import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
+import { Input } from '@mui/material'
+
 import bgL1 from 'assets/static/images/icons/bgl1.svg'
 import facbookIcon from 'assets/static/images/icons/facebook.svg'
 import googleIcon from 'assets/static/images/icons/google.svg'
@@ -152,7 +154,7 @@ export default function LoginPage() {
 						</p>
 					</div>
 					<Link
-						to={RouterPath.FORGOT_PASSWORD_URL}
+						to={RouterPath.FORGOTPASSWORD_URL}
 						className="text-16 block my-14 rounded-sm border-b-2 text-gray-70  w-full dark:text-white"
 					>
 						Lost your password ?
@@ -162,17 +164,13 @@ export default function LoginPage() {
 						<Button
 							type="submit"
 							loading={authLoading}
-							className="max-sm:w-full w-full  flex items-center py-10 justify-center  bg-lprimary text-white"
+							className={
+								'max-sm:w-full w-full  flex items-center py-10 justify-center  bg-lprimary text-white'
+							}
 						>
 							Sign Now
 						</Button>
 					</div>
-					<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
-						{(formik.touched.password || formik.touched.email) &&
-						formik.errors.errMessage ? (
-							<span>{formik.errors.errMessage}</span>
-						) : null}
-					</p>
 					<div className="flex items-center justify-center  text-gray-70  mt-20	">
 						-or-
 					</div>
@@ -181,15 +179,14 @@ export default function LoginPage() {
 							type="button"
 							className="flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
 						>
-							<img className="w-30 h-30 mx-3" src={googleIcon} />
+							<img className={'w-30 h-30 mx-3'} src={googleIcon} />
 							<p>Google</p>
 						</button>
 						<button
-							onClick={loginWithGoogle}
 							type="button"
 							className="flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
 						>
-							<img className="block w-30 h-30 mx-3" src={facbookIcon} />
+							<img className={'block w-30 h-30 mx-3'} src={facbookIcon} />
 							<p>Facebook</p>
 						</button>
 					</div>
