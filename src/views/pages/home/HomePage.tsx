@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react'
 import { useAppSelector } from 'contexts/hooks'
 import RouterPath from 'views/routes/routesContants'
@@ -14,11 +15,13 @@ import MeetingApi, {
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
+
 const DEFAUFT = 'Defauft'
 
 export default function HomePage() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
 	const [opinion, setOpinion] = useState(DEFAUFT)
@@ -42,6 +45,8 @@ export default function HomePage() {
 		e.preventDefault()
 		if (validationLogin()) navigate(RouterPath.getPreMeetingPath(friendLyId))
 	}
+
+	useEffect(() => {})
 
 	return (
 		<main

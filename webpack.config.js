@@ -42,6 +42,7 @@ module.exports = async (env, arg) => {
 				url: require.resolve('url/'),
 				http: require.resolve('stream-http'),
 				buffer: require.resolve('buffer/'),
+				path: require.resolve('path-browserify'),
 			},
 			preferRelative: true,
 			alias: {
@@ -105,7 +106,6 @@ module.exports = async (env, arg) => {
 				...(WebpackConfigWithMode?.module?.rules ?? []),
 			],
 			unsafeCache: true,
-			noParse: /[\\/]src\/assets\/static[\\/]|libs[\\/]socket.io.min.js/,
 		},
 		plugins: [
 			new CleanWebpackPlugin(),

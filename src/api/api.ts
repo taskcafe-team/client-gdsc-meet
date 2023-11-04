@@ -1,11 +1,11 @@
-/* eslint-disable import/named */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-unresolved */
 import axios, {
 	type AxiosInstance,
 	type AxiosRequestConfig,
-	CreateAxiosDefaults,
+	type CreateAxiosDefaults,
 } from 'axios'
-import qs from 'qs'
+import env from '_/config/env/env.json'
+const ENV = JSON.parse(JSON.stringify(env))
 
 import { REQUEST_TIMEOUT_MS } from './apiConstants'
 import {
@@ -16,6 +16,7 @@ import {
 } from './interceptor'
 import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
+import { convertObjectToQueryParams } from 'utils/urlUtils'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
 	baseURL: `${'http://localhost:5000'}`,
@@ -45,7 +46,7 @@ class Api {
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
-		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
+		const _url = url + convertObjectToQueryParams(queryParams)
 		return axiosInstance.get<T>(_url, { ...config }) as unknown as Promise<
 			ApiResponse<T>
 		>
@@ -57,7 +58,7 @@ class Api {
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
-		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
+		const _url = url + convertObjectToQueryParams(queryParams)
 		return axiosInstance.post<T>(_url, body, {
 			...config,
 		}) as unknown as Promise<ApiResponse<T>>
@@ -69,7 +70,7 @@ class Api {
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
-		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
+		const _url = url + convertObjectToQueryParams(queryParams)
 		return axiosInstance.put<T>(_url, body, {
 			...config,
 		}) as unknown as Promise<ApiResponse<T>>
@@ -81,7 +82,7 @@ class Api {
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
-		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
+		const _url = url + convertObjectToQueryParams(queryParams)
 		return axiosInstance.patch<T>(_url, body, {
 			...config,
 		}) as unknown as Promise<ApiResponse<T>>
@@ -92,7 +93,7 @@ class Api {
 		queryParams?: any,
 		config: AxiosRequestConfig = {}
 	) {
-		const _url = url + qs.stringify(queryParams, { arrayFormat: 'brackets' })
+		const _url = url + convertObjectToQueryParams(queryParams)
 		return axiosInstance.delete<T>(_url, { ...config }) as unknown as Promise<
 			ApiResponse<T>
 		>

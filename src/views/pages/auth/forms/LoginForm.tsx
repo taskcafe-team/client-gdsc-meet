@@ -18,14 +18,14 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 import * as Yup from 'yup'
 import { Formik, type FormikProps } from 'formik'
+import { LoadingButton } from '@mui/lab'
 
 // project import
 import AuthWithThirtyService from './AuthWithThirtyService'
 import AnimateButton from '../../../components/AnimateButton'
-import { LoadingButton } from '@mui/lab'
-import { useAppDispatch } from 'contexts/hooks'
 import { LoginFormValueInit } from '../type'
-import { fetchAuthLoginEmail } from 'contexts/auth'
+import { useAppDispatch } from 'contexts/hooks'
+import { authFetchEmailLogin } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
 	email: 'dangnhatminh1@gmail.com',
@@ -73,12 +73,8 @@ export default function LoginForm() {
 				password: Yup.string().max(255).required('Password is required'),
 			})}
 			onSubmit={async (values) => {
-				try {
-					const { email, password } = values
-					dispatch(fetchAuthLoginEmail({ email, password }))
-				} catch (error) {
-					return
-				}
+				const { email, password } = values
+				dispatch(authFetchEmailLogin({ email, password }))
 			}}
 		>
 			{(p: FormikProps<LoginFormValueInit>) => (
@@ -183,7 +179,7 @@ export default function LoginForm() {
 						</Grid>
 						<Grid item xs={12}>
 							<Divider>
-								<Typography variant="caption"> Login with</Typography>
+								<Typography variant="caption">Login with</Typography>
 							</Divider>
 						</Grid>
 						<Grid item xs={12}>

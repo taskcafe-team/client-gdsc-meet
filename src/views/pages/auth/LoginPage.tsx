@@ -5,14 +5,14 @@ import AuthWrapper from './AuthWrapper'
 import LoginForm from './forms/LoginForm'
 import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
-import { fetchAuthGoogleLoginVerify } from 'contexts/auth'
+import { authFetchGoogleLoginVerify } from 'contexts/auth'
 
 export default function LoginPage() {
 	const dispatch = useAppDispatch()
 	const query = useLocation()
 	const loginGoogle = useCallback(async () => {
 		const { search } = query
-		if (search) dispatch(fetchAuthGoogleLoginVerify(search))
+		if (search) dispatch(authFetchGoogleLoginVerify(search))
 	}, [])
 
 	useEffect(() => {

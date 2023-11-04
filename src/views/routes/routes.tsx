@@ -4,12 +4,11 @@ import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { CircularProgress } from '@mui/material'
-import { fetchCurrentUser } from 'contexts/user'
+
+import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
-import NotificationBar from 'components/NotificationBar'
-// import NotificationBar from 'components/NotificationBar'
 
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -34,13 +33,7 @@ export const Loading = () => {
 }
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-
-const blackLayout = (e: ReactNode) => (
-	<React.Fragment>
-		<NotificationBar />
-		{e}
-	</React.Fragment>
-)
+const blackLayout = (e: ReactNode) => <React.Fragment>{e}</React.Fragment>
 const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
 	<PublicLayout type={type}>{e}</PublicLayout>
 )
@@ -86,8 +79,6 @@ export const getRoutes = (isLogin: boolean) => {
 }
 
 export default function Router() {
-	const param = useParams()
-	const query = useLocation()
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const fetchLoading = useAppSelector((s) => s.user.loading)
@@ -95,7 +86,7 @@ export default function Router() {
 	const [loading, setLoading] = useState(true)
 
 	const login = useCallback(async () => {
-		dispatch(fetchCurrentUser())
+		dispatch(userFetchMe())
 		setLoading(false)
 	}, [])
 

@@ -2,9 +2,8 @@ import { Avatar, Box, Button, Grid, TextField, Typography } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import React from 'react'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import UserApi from 'api/http-rest/userApi'
 import { LoadingButton } from '@mui/lab'
-import { fetchUpdateCurrentUser } from 'contexts/user'
+import { userFetchUpdateMe } from 'contexts/user'
 
 interface InputFileUploadProps {
 	isChoiceFile: boolean
@@ -93,7 +92,7 @@ export default function ProfilePage() {
 	const btnSaveClick = useCallback(async () => {
 		setSaving(true)
 		dispatch(
-			fetchUpdateCurrentUser({
+			userFetchUpdateMe({
 				firstName: firstName || undefined,
 				lastName: lastName || undefined,
 				avatar: avatar || undefined,

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { AuthDetailState } from './authTypes'
-import { authLoginSuccess, authLogout } from './authActions'
+import { authFetchSucess, authLogout } from './authActions'
 
 const initialState: AuthDetailState = {
 	isLogin: false,
@@ -18,7 +18,7 @@ const authSlice = createSlice({
 				state.loading = false
 				state.error = undefined
 			})
-			.addCase(authLoginSuccess, (state) => {
+			.addCase(authFetchSucess, (state) => {
 				state.isLogin = true
 				state.loading = false
 				state.error = undefined
