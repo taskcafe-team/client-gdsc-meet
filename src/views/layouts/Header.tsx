@@ -16,7 +16,6 @@ import {
 import { LoadingButton } from '@mui/lab'
 import MenuIcon from '@mui/icons-material/Menu'
 import AdbIcon from '@mui/icons-material/Adb'
-import avatar from 'assets/static/images/users/avatar-1.png'
 
 import { useAppDispatch, useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
@@ -24,7 +23,7 @@ import { setLocalStorageItem } from 'utils/localStorageUtils'
 import { authLogout } from 'contexts/auth'
 
 const pages: string[] = []
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+const settings = ['Profile', 'Logout']
 
 export const Logo = () => (
 	<React.Fragment>
@@ -70,15 +69,15 @@ function Header() {
 	}
 
 	const handleClickUserMenu = (setting: string) => {
-		if (setting === 'Logout') {
+		setAnchorElUser(null)
+		setAnchorElNav(null)
+
+		if (setting == 'Logout') {
 			setLocalStorageItem({ key: 'access_token', value: null })
 			dispatch(authLogout())
-		}
-
-		if (setting == 'Profile') {
+		} else if (setting == 'Profile') {
 			navigate('/profile')
 		}
-		setAnchorElUser(null)
 	}
 
 	const handleLoginClick = useCallback(() => {
@@ -103,21 +102,13 @@ function Header() {
 						</IconButton>
 						<Menu
 							id="menu-appbar"
-							anchorEl={anchorElNav}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'left',
-							}}
 							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'left',
-							}}
+							anchorEl={anchorElNav}
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+							transformOrigin={{ vertical: 'top', horizontal: 'left' }}
 							open={Boolean(anchorElNav)}
 							onClose={handleCloseNavMenu}
-							sx={{
-								display: { xs: 'block', md: 'none' },
-							}}
+							sx={{ display: { xs: 'block', md: 'none' } }}
 						>
 							{pages.map((page) => (
 								<MenuItem key={page} onClick={handleCloseNavMenu}>
@@ -173,16 +164,10 @@ function Header() {
 						<Menu
 							sx={{ mt: '45px' }}
 							id="menu-appbar"
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
 							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
+							anchorEl={anchorElUser}
+							anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+							transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 							open={Boolean(anchorElUser)}
 							onClose={() => setAnchorElUser(null)}
 						>
@@ -190,7 +175,7 @@ function Header() {
 								settings.map((setting) => (
 									<MenuItem
 										key={setting}
-										onClick={(e) => handleClickUserMenu(setting)}
+										onClick={() => handleClickUserMenu(setting)}
 									>
 										<Typography textAlign="center">{setting}</Typography>
 									</MenuItem>

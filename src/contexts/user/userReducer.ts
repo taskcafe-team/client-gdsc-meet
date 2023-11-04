@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { userDetailData } from './userActions'
 import { UserInfoState } from './userTypes'
 import { UserRole } from 'api/http-rest/userApi'
+import { userFetchMe } from './userActions'
 
 const initialState: UserInfoState = {
 	id: '',
@@ -10,6 +10,7 @@ const initialState: UserInfoState = {
 	firstName: null,
 	lastName: null,
 	role: UserRole.USER,
+	loading: false,
 }
 
 const userSlice = createSlice({
@@ -17,9 +18,22 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(userDetailData, (state, action) => {
-			return Object.assign(state, action.payload)
-		})
+		builder
+			.addCase(userFetchMe.pending, (state) => {
+				state.loading = true
+			})
+			.addCase(userFetchMe.fulfilled, (state, action) => {
+				state.id = action.payload.id
+				state.avatar = action.payload.avatar
+				state.email = action.payload.email
+				state.firstName = action.payload.firstName
+				state.lastName = action.payload.lastName
+				state.role = action.payload.role as UserRole
+				state.loading = false
+			})
+			.addCase(userFetchMe.rejected, (state) => {
+				state.loading = false
+			})
 	},
 })
 

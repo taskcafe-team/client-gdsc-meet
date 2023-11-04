@@ -13,7 +13,7 @@ export default function AuthWithThirtyService({
 	loginBtnLoading,
 }: AuthWithThirtyServiceProps) {
 	const googleHandler = async () => {
-		// login || singup
+		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
 	}
 
 	const twitterHandler = async () => {
@@ -30,13 +30,13 @@ export default function AuthWithThirtyService({
 				disabled={loginBtnLoading}
 				variant="outlined"
 				fullWidth={true}
-				startIcon={<img src={googleIcon} alt="F" />}
+				startIcon={<img src={googleIcon} alt="G" />}
 				onClick={googleHandler}
 			>
 				Google
 			</Button>
 			<Button
-				disabled={loginBtnLoading}
+				disabled={true}
 				variant="outlined"
 				fullWidth={true}
 				startIcon={<img src={facebookIcon} alt="F" />}
@@ -45,10 +45,10 @@ export default function AuthWithThirtyService({
 				Facebook
 			</Button>
 			<Button
-				disabled={loginBtnLoading}
+				disabled={true}
 				variant="outlined"
 				fullWidth={true}
-				startIcon={<img src={twitterIcon} alt="F" />}
+				startIcon={<img src={twitterIcon} alt="T" />}
 				onClick={twitterHandler}
 			>
 				Twitter

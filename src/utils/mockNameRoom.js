@@ -17,5 +17,4 @@ export const listRoom = [
 	{
 		lable: 'CMU CSE305',
 	},
-	
 ]

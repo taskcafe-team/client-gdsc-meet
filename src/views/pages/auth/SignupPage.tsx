@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
@@ -91,7 +92,10 @@ export default function SignupPage() {
 	})
 	return (
 		<div className="Singn-up relative h-[100vh] overflow-hidden z-1">
-				<img src={bgL1} className='max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2' />
+			<img
+				src={bgL1}
+				className="max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2"
+			/>
 			<motion.ul
 				className="container max-lg:hidden"
 				variants={container}
@@ -107,8 +111,10 @@ export default function SignupPage() {
 							borderRadius: '100%',
 						}}
 					>
-							<img src={entity2} className='absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45' />
-
+						<img
+							src={entity2}
+							className="absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45"
+						/>
 					</motion.div>
 				</motion.li>
 			</motion.ul>

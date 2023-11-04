@@ -26,7 +26,19 @@ const inituser: IUser = {
 	email: '',
 	password: '',
 }
+
 export default function LoginPage() {
+	const dispatch = useAppDispatch()
+	const query = useLocation()
+	const loginGoogle = useCallback(async () => {
+		const { search } = query
+		if (search) dispatch(authFetchGoogleLoginVerify(search))
+	}, [])
+
+	useEffect(() => {
+		loginGoogle()
+	}, [])
+
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const dispatch = useAppDispatch()
 	const [loading, setLoading] = useState(false)

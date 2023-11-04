@@ -1,31 +1,18 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Grid,
-	IconButton,
-	TextField,
-	Typography,
-} from '@mui/material'
+import { Avatar, Box, Button, Grid, TextField, Typography } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import React from 'react'
-import { useAppSelector } from 'contexts/hooks'
-import UserApi from 'api/http-rest/userApi'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { LoadingButton } from '@mui/lab'
-const userInfo = {
-	id: 'string',
-	avatar: 'string',
-	email: 'string',
-	firstName: 'string',
-	lastName: 'string',
-	role: 'USER',
-}
+import { userFetchUpdateMe } from 'contexts/user'
 
 interface InputFileUploadProps {
-	onChangeFile: (event: React.ChangeEvent<HTMLInputElement>) => void
+	isChoiceFile: boolean
+	onChangeFile: React.ChangeEventHandler<HTMLInputElement>
 }
 
 function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
+	const uploadFRef = React.useRef<HTMLInputElement>(null)
+
 	return (
 		<Avatar
 			variant="rounded"
@@ -50,10 +37,10 @@ function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 			>
 				Upload
 				<input
-					onChange={onChangeFile}
+					ref={uploadFRef}
+					onChange={(e) => onChangeFile(e)}
 					type="file"
 					hidden
-					accept="image/*,.png"
 				/>
 			</Button>
 		</Avatar>
@@ -61,6 +48,7 @@ function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 }
 
 export default function ProfilePage() {
+	const dispatch = useAppDispatch()
 	const user = useAppSelector((s) => s.user)
 
 	const [firstName, setFirstName] = useState(user.firstName || '')
@@ -80,10 +68,9 @@ export default function ProfilePage() {
 	)
 
 	const handlePreviewImage = useCallback(
-		async (file: File) => {
+		(file: File) => {
 			const objectURL = URL.createObjectURL(file)
 			setPreviewImage(objectURL)
-			console.log(objectURL)
 		},
 		[avatar]
 	)
@@ -96,13 +83,21 @@ export default function ProfilePage() {
 		}
 	}
 
+	const btnCancelClick = useCallback(async () => {
+		setFirstName(user.firstName || '')
+		setLastName(user.lastName || '')
+		setAvatar(undefined)
+	}, [firstName, lastName, avatar])
+
 	const btnSaveClick = useCallback(async () => {
 		setSaving(true)
-		await UserApi.updateMe({
-			firstName: firstName || undefined,
-			lastName: lastName || undefined,
-			avatar: avatar || undefined,
-		})
+		dispatch(
+			userFetchUpdateMe({
+				firstName: firstName || undefined,
+				lastName: lastName || undefined,
+				avatar: avatar || undefined,
+			})
+		)
 		setSaving(false)
 	}, [firstName, lastName, avatar])
 
@@ -138,7 +133,12 @@ export default function ProfilePage() {
 								}}
 								alt={fullname.toUpperCase()}
 							></Avatar>
-							{canUpload && <InputFileUpload onChangeFile={onChangeFile} />}
+							{canUpload && (
+								<InputFileUpload
+									onChangeFile={onChangeFile}
+									isChoiceFile={Boolean(avatar)}
+								/>
+							)}
 						</Box>
 						<Grid container spacing={2}>
 							<Grid item xs={6}>
@@ -173,12 +173,20 @@ export default function ProfilePage() {
 				</Grid>
 
 				<Grid item xs={12}>
-					<Box
-						display="flex"
-						justifyContent="space-between"
-						alignItems="center"
-					>
+					<Box display="flex" justifyContent="right" alignItems="center">
 						<Typography variant="h6"></Typography>
+						{canSave && (
+							<LoadingButton
+								onClick={btnCancelClick}
+								disabled={saving}
+								variant="contained"
+								size="small"
+								color="warning"
+								sx={{ mr: 2 }}
+							>
+								Cancel
+							</LoadingButton>
+						)}
 						<LoadingButton
 							loading={saving}
 							onClick={btnSaveClick}

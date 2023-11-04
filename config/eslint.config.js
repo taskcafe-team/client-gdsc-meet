@@ -55,6 +55,15 @@ module.exports = {
 			'eslint-import-resolver-custom-alias': {
 				alias: {
 					'': './src',
+					'_/*': '../*',
+					'assets/*': ['./src/assets/*'],
+					'config/*': ['./src/config/*'],
+					'pages/*': ['./src/views/pages/*'],
+					'components/*': ['./src/views/components/*'],
+					'utils/*': ['./src/utils/*'],
+					'api/*': ['./src/api/*'],
+					'contexts/*': ['./src/contexts/*'],
+					'hooks/*': ['./src/hooks/*'],
 				},
 				extensions: ['.js', '.jsx', '.ts', '.tsx'],
 			},
