@@ -102,7 +102,7 @@ export default function SignupPage() {
 				initial="hidden"
 				animate="visible"
 			>
-				<motion.li className="item" variants={item}>
+				<motion.li className="mt-[20vh]" variants={item}>
 					<motion.div
 						whileHover={{ scale: 0.6 }}
 						whileTap={{

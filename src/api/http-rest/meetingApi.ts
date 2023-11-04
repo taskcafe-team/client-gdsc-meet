@@ -1,30 +1,57 @@
 import Api from 'api/api'
+import { generateName } from 'utils/personalNameUtils'
 
-export type ResponseSuccessDataCreateMeeting = {
+export enum MeetingStatus {
+	PUBLIC = 'PUBLIC',
+	PRIVATE = 'PRIVATE',
+}
+
+export type ResponseMeetingDto = {
 	id: string
+	friendlyId: string
+	title: string | null
 	startTime: string
 	endTime: string | null
-	title: string | null
 	description: string | null
-	status: string
-	friendlyId: string
+	status: MeetingStatus
+}
+
+export type ResponseSuccessDataCreateMeeting = ResponseMeetingDto
+
+export type RequestCreateMeetingBody = {
+	title?: string | null
+	description?: string | null
+	startDate?: string | null
+	endDate?: string | null
+	status?: MeetingStatus | null
+}
+
+type AccessTokenDataResponse = {
+	permissions: {
+		status: string
+	}
+	token: string
 }
 
 export default class MeetingApi extends Api {
-	static async getAccessToken<T>(friendlyId: string) {
-		const path = `meeting/${friendlyId}/access-token`
-		return Api.get<T>(path)
+	static async getMeeting(friendlyId: string) {
+		const path = `meeting/${friendlyId}`
+		return Api.get<ResponseSuccessDataCreateMeeting>(path)
 	}
 
-	static async createMeeting<T>() {
-		const path = 'meeting'
-		const body = {
-			title: null,
-			description: null,
-			startDate: null,
-			endDate: null,
-			status: 'PUBLIC',
+	static async createMeeting(request: RequestCreateMeetingBody) {
+		const body: RequestCreateMeetingBody = {
+			title: request.title || generateName(),
+			description: request.description || null,
+			startDate: request.startDate || null,
+			endDate: request.endDate || null,
+			status: request.status || MeetingStatus.PUBLIC,
 		}
-		return Api.post<T>(path, body)
+		return Api.post('meeting', body)
+	}
+
+	static async getAccessToken(friendlyId: string) {
+		const path = `meeting/${friendlyId}/access-token`
+		return Api.get<AccessTokenDataResponse>(path)
 	}
 }

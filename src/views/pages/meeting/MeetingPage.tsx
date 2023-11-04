@@ -1,34 +1,33 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import '@livekit/components-styles'
-import { Navigate } from 'react-router-dom'
 
 const PreJoin = lazy(() => import('./PreJoin'))
 const MeetingRoom = lazy(() => import('./MeetingRoom'))
 
 import MeetingApi from 'api/http-rest/meetingApi'
-import { useAppSelector } from 'contexts/hooks'
-
-type AccessTokenDataResponse = {
-	permissions: {
-		status: string
-	}
-	token: string
-}
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
+import { Loading } from 'views/routes/routes'
+import { meetingGetInstant } from 'contexts/meeting'
 
 export default function MeetingPage() {
-	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const loading = useAppSelector((s) => s.meeting.loading)
+	const ditpatch = useAppDispatch()
+	const navigate = useNavigate()
 	const [token, setToken] = useState('')
 
-	const { friendlyId } = useParams()
+	const { friendlyId } = useParams() // router blocked friendlyId null
+
+	const fetchMeeting = useCallback(async () => {
+		if (!friendlyId) return
+		ditpatch(meetingGetInstant(friendlyId))
+		const res = await MeetingApi.getMeeting(friendlyId)
+		if (!res.metadata.status.toString().match(/2\d\d/)) navigate('/')
+	}, [])
 
 	const getAccessToken = useCallback(async () => {
 		if (!friendlyId) return
-
-		const res = await MeetingApi.getAccessToken<AccessTokenDataResponse>(
-			friendlyId
-		)
-
+		const res = await MeetingApi.getAccessToken(friendlyId)
 		if (res.metadata.status == 200) setToken(res.data.token)
 	}, [friendlyId])
 
@@ -37,7 +36,11 @@ export default function MeetingPage() {
 		getAccessToken().then(() => setIsLoading(false))
 	}
 
-	if (!isLogin) return <Navigate to="/" />
+	useLayoutEffect(() => {
+		fetchMeeting()
+	}, [])
+
+	if (loading) return <Loading />
 	return (
 		<Box display="flex" justifyContent="center" alignItems="center" p={5}>
 			{token ? <MeetingRoom token={token} /> : ''}

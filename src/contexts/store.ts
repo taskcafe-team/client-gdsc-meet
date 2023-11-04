@@ -1,10 +1,12 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { authReducer } from './auth'
 import { userReducer } from './user'
+import { meetingReducer } from './meeting'
 
 export const rootReducer = combineReducers({
 	auth: authReducer,
 	user: userReducer,
+	meeting: meetingReducer,
 })
 
 const store = configureStore({

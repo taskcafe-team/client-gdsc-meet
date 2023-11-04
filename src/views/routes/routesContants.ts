@@ -8,6 +8,9 @@ export default class RouterPath {
 	static readonly FORGOT_PASSWORD_URL = `${this.AUTH}/forgot-password`
 	static readonly RESET_PASSWORD_URL = `${this.AUTH}/reset-password`
 
+	static readonly USER = `user`
+	static readonly PROFILE_URL = `${this.USER}/profile`
+
 	static readonly MEETING = `meeting`
 	static readonly MEETING_URL = `${this.MEETING}/:friendlyId`
 

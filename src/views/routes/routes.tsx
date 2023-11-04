@@ -33,7 +33,6 @@ export const Loading = () => {
 }
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-const blackLayout = (e: ReactNode) => <React.Fragment>{e}</React.Fragment>
 const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
 	<PublicLayout type={type}>{e}</PublicLayout>
 )
@@ -42,18 +41,13 @@ type CustomRouteProps = RouteProps
 
 const routes: CustomRouteProps[] = [
 	{
-		path: RouterPath.MEETING_URL,
-		element: getDefaultLayout(<MeetingPage />),
-		loader: undefined,
-	},
-	{
 		path: RouterPath.SINGUP_URL,
 		element: getPublicLayout(<SignupPage />),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: blackLayout(<LoginPage />),
+		element: getPublicLayout(<LoginPage />),
 		loader: undefined,
 	},
 	{
@@ -65,8 +59,13 @@ const routes: CustomRouteProps[] = [
 
 const privateRoutes: CustomRouteProps[] = [
 	{
-		path: 'profile',
+		path: RouterPath.PROFILE_URL,
 		element: getDefaultLayout(<ProfilePage />),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.MEETING_URL,
+		element: getDefaultLayout(<MeetingPage />),
 		loader: undefined,
 	},
 ]
@@ -92,7 +91,7 @@ export default function Router() {
 
 	useEffect(() => {
 		login()
-	}, [])
+	}, [isLogin])
 
 	if (loading || fetchLoading) return <Loading />
 	return (

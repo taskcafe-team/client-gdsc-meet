@@ -37,8 +37,9 @@ const Header: React.FC<HeaderProps> = ({
 	const UDetail = useSelector(authDetail)
 
 	const withSize = useMemo(() => {
-		return type == 'wrapper' ? 'w-[65%] max-lg:w-full' : null
+		return type == 'wrapper' ? 'w-[65%] max-2xl:w-full' : null
 	}, [type])
+
 	return (
 		<header
 			className={`fixed z-50 top-0 left-0 right-0 bg-transparent px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px] ${withSize} `}
