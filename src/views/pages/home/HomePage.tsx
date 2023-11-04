@@ -12,6 +12,7 @@ import BgDarkBottom from 'assets/static/images/backgrouds/HomeDarkBr.svg'
 import MeetingApi, {
 	ResponseSuccessDataCreateMeeting,
 } from 'api/http-rest/meetingApi'
+import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
@@ -28,7 +29,26 @@ export default function HomePage() {
 	const validationLogin = useCallback(() => {
 		return isLogin
 	}, [isLogin])
-
+	const container = {
+		hidden: { opacity: 1, scale: 0 },
+		visible: {
+			opacity: 1,
+			scale: 1,
+			transition: {
+				delayChildren: 0.3,
+				staggerChildren: 0.2,
+			},
+		},
+	}
+	const item = {
+		hidden: { y: '-100%', opacity: 0, scale: 0 },
+		visible: {
+			y: '-20%',
+			x: '+10%',
+			opacity: 1,
+			scale: 1,
+		},
+	}
 	const createMeeting = useCallback(async () => {
 		if (validationLogin()) {
 			const res =
@@ -54,12 +74,18 @@ export default function HomePage() {
 				theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
 			}`}
 		>
-			<img
-				src={Bg}
-				alt="background"
+			<motion.div
+				initial={{ scale: 0, rotate: 180 }}
+				animate={{ rotate: 0, scale: 1 }}
+				transition={{
+					type: 'spring',
+					stiffness: 260,
+					damping: 20,
+				}}
 				className="max-lg:hidden h-[100vh] object-center opacity-30 absolute left-0 top-0 z-1 max-lg:object-cover"
-			></img>
-
+			>
+				<img src={Bg} alt="background"></img>
+			</motion.div>
 			<img
 				src={theme === 'light' ? Bgtop : BgDarktop}
 				alt="background"

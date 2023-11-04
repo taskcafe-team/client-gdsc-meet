@@ -53,7 +53,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: blackLayout(<LoginPage />),
+		element: getPublicLayout(<LoginPage />),
 		loader: undefined,
 	},
 	{
@@ -92,9 +92,9 @@ export default function Router() {
 
 	useEffect(() => {
 		login()
-	}, [])
+	}, [isLogin])
+	if (isLoading) return <Loading />
 
-	if (loading || fetchLoading) return <Loading />
 	return (
 		<Routes>
 			{getRoutes(isLogin)}
