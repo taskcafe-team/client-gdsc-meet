@@ -27,6 +27,7 @@ const meetingSlice = createSlice({
 				state.error = undefined
 			})
 			.addCase(meetingFetchError, (state, action) => {
+				state.loading = false
 				state.error = action.payload
 			})
 			.addCase(meetingAddInstant, (state, action) => {

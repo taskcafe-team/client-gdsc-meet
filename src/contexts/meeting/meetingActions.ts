@@ -5,6 +5,7 @@ import {
 	MEETING_FETCH_ERROR,
 	MEETING_FETCH_INSTANT,
 	MEETING_FETCH_SUCESS,
+	MEETING_ADD_INSTANT,
 } from './meetingConstants'
 import { MeetingInfo } from './meetingTypes'
 
@@ -25,10 +26,10 @@ export const meetingFetching = createAction(MEETING_FETCHING)
 export const meetingFetchSuccess = createAction(MEETING_FETCH_SUCESS)
 export const meetingFetchError = createAction(MEETING_FETCH_ERROR)
 export const meetingAddInstant =
-	createAction<MeetingAddInstant['payload']>(MEETING_FETCH_ERROR)
+	createAction<MeetingAddInstant['payload']>(MEETING_ADD_INSTANT)
 
 /*----------- Thunk Action -----------*/
-export const meetingGetInstant = createAsyncThunk(
+export const meetingFetchGetInstant = createAsyncThunk(
 	MEETING_FETCH_INSTANT,
 	async (friendlyId: string, { dispatch }) => {
 		dispatch(meetingFetching())

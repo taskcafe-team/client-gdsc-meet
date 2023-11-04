@@ -8,7 +8,7 @@ const MeetingRoom = lazy(() => import('./MeetingRoom'))
 import MeetingApi from 'api/http-rest/meetingApi'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { Loading } from 'views/routes/routes'
-import { meetingGetInstant } from 'contexts/meeting'
+import { meetingFetchGetInstant } from 'contexts/meeting'
 
 export default function MeetingPage() {
 	const loading = useAppSelector((s) => s.meeting.loading)
@@ -20,7 +20,7 @@ export default function MeetingPage() {
 
 	const fetchMeeting = useCallback(async () => {
 		if (!friendlyId) return
-		ditpatch(meetingGetInstant(friendlyId))
+		ditpatch(meetingFetchGetInstant(friendlyId))
 		const res = await MeetingApi.getMeeting(friendlyId)
 		if (!res.metadata.status.toString().match(/2\d\d/)) navigate('/')
 	}, [])
