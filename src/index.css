@@ -131,6 +131,10 @@ table {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*{
+	user-select: none;
+}
 /* custom material */
 
 .Input::before {
