@@ -63,6 +63,7 @@ export default function LoginPage() {
 		if (search) dispatch(authFetchGoogleLoginVerify(search))
 	}, [])
 
+
 	// validate input
 
 	const validationSchema = Yup.object().shape({

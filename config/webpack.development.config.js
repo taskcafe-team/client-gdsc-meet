@@ -122,7 +122,7 @@ const WebpackDevelopmentConfiguration = async () => {
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
-				title: 'webpack project for vue',
+				title: 'gdsc meet',
 				template: './config/templates/index.development.image-loading.html',
 				inject: 'body',
 				templateParameters: {

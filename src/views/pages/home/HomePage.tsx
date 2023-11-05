@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import React from 'react'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import RouterPath from 'views/routes/routesContants'
 import Button from 'components/Button'
 import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
 import Bg from 'assets/static/images/backgrouds/bg.png'
@@ -13,9 +12,12 @@ import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
-import MeetingApi, { RequestCreateMeetingBody, ResponseSuccessDataCreateMeeting } from 'api/http-rest/meetingApi'
 import useToastily from 'hooks/useToastily'
-import { meetingFetchCreateInstant, meetingFetchGetInstant } from 'contexts/meeting'
+import {
+	meetingFetchCreateInstantAndJoin,
+	meetingFetchGetInstant,
+} from 'contexts/meeting'
+import { redirect } from 'react-router-dom'
 
 const DEFAUFT = 'Defauft'
 
@@ -26,8 +28,8 @@ export default function HomePage() {
 	const dispatch = useAppDispatch()
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
-	const user = useAppSelector((s)=>s.user );
-	const meetingroom = useAppSelector(s=>s.meeting.meetings)
+	const user = useAppSelector((s) => s.user)
+	const meetingroom = useAppSelector((s) => s.meeting.meetings)
 	const [opinion, setOpinion] = useState(DEFAUFT)
 	const validationLogin = useCallback(() => {
 		return isLogin
@@ -54,24 +56,17 @@ export default function HomePage() {
 	}
 
 	const createMeeting = useCallback(async () => {
-		dispatch(meetingFetchCreateInstant({
-			title:opinion
-		}));
-	}, [opinion,meetingroom])
+		dispatch(meetingFetchCreateInstantAndJoin({ navigate }))
+	}, [opinion, meetingroom])
 
-	const handleJoinRoom = useCallback((e) => {
-		e.preventDefault()
-		dispatch(meetingFetchGetInstant(opinion));
-		
-	},[opinion])
+	const handleJoinRoom = useCallback(
+		(e) => {
+			e.preventDefault()
+			dispatch(meetingFetchGetInstant(opinion))
+		},
+		[opinion]
+	)
 
-
-	useEffect(() => {
-		const length = meetingroom?.length || 0
-		if(length > 0)
-		navigate(RouterPath.getPreMeetingPath(meetingroom[length - 1].friendlyId))
-	},[meetingroom])
-	
 	return (
 		<main
 			className={`Home h-[100vh] w-full bg-lprimary backdrop-blur-30 relative overflow-hidden max-2xl:overflow-auto max-2xl:overflow-x-hidden  max-lg:bg-none ${
@@ -160,7 +155,10 @@ export default function HomePage() {
 										className="block  outline-none px-8 py-12 rounded-md max-sm:w-full bg-gray-100 dark:bg-gray-60 bg-gray-10"
 									/>
 								</div>
-								<Button className="max-sm:w-full  bg-lprimary  text-white" onClick={handleJoinRoom}>
+								<Button
+									className="max-sm:w-full  bg-lprimary  text-white"
+									onClick={handleJoinRoom}
+								>
 									Join Now
 								</Button>
 							</div>
@@ -181,9 +179,9 @@ export default function HomePage() {
 						<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10 ">
 							<div className="select-none Tabinfo-room__body flex flex-wrap gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
 								{listRoom &&
-									listRoom.map((item,index) => (
+									listRoom.map((item, index) => (
 										<div
-										key={`roomname_${index}`}
+											key={`roomname_${index}`}
 											className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
 									${
 										opinion === item.lable

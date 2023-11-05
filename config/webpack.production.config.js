@@ -67,7 +67,7 @@ module.exports = (async () => {
 				paths: glob.sync(`./src/**/*`, { nodir: true }),
 			}),
 			new HtmlWebpackPlugin({
-				title: 'webpack project for react',
+				title: 'gdsc meet',
 				template: 'index.production.html',
 				inject: 'body',
 				templateParameters: {

@@ -1,4 +1,5 @@
 import Api from 'api/api'
+import { MeetingInfo } from 'contexts/meeting'
 import { generateName } from 'utils/personalNameUtils'
 
 export enum MeetingStatus {
@@ -26,7 +27,7 @@ export type RequestCreateMeetingBody = {
 	status?: MeetingStatus | null
 }
 
-type AccessTokenDataResponse = {
+type ResponseAccessToken = {
 	permissions: {
 		status: string
 	}
@@ -47,11 +48,11 @@ export default class MeetingApi extends Api {
 			endDate: request.endDate || null,
 			status: request.status || MeetingStatus.PUBLIC,
 		}
-		return Api.post('meeting', body)
+		return Api.post<ResponseMeetingDto>('meeting', body)
 	}
 
 	static async getAccessToken(friendlyId: string) {
 		const path = `meeting/${friendlyId}/access-token`
-		return Api.get<AccessTokenDataResponse>(path)
+		return Api.get<ResponseAccessToken>(path)
 	}
 }

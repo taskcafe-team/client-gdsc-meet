@@ -9,7 +9,10 @@ import {
 } from './authConstants'
 import { AuthApi } from 'api/http-rest'
 import { userFetchMe } from 'contexts/user'
-import { removeLocalStorageItem, setLocalStorageItem } from 'utils/localStorageUtils'
+import {
+	removeLocalStorageItem,
+	setLocalStorageItem,
+} from 'utils/localStorageUtils'
 import { AuthFetchError } from './authTypes'
 
 /*----------- Action -----------*/
@@ -18,14 +21,10 @@ export const authFetchError =
 	createAction<AuthFetchError['payload']>(AUTH_FETCH_ERROR)
 export const authFetchSucess = createAction(AUTH_FETCH_SUCESS)
 
-
 /*----------- Thunk Action -----------*/
-export const authLogout = createAsyncThunk(
-	AUTH_LOGOUT,
-	async()=>{
-		removeLocalStorageItem('access_token')	
-	}
-)
+export const authLogout = createAsyncThunk(AUTH_LOGOUT, async () => {
+	removeLocalStorageItem('access_token')
+})
 
 export const authFetchEmailLogin = createAsyncThunk(
 	AUTH_FETCH_EMAIL_LOGIN,
