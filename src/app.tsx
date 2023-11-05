@@ -1,6 +1,7 @@
 import Router, { Loading } from 'views/routes/routes'
 import { ThemeProvider } from 'next-themes'
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Providers from 'contexts/providers'
 
 function App() {

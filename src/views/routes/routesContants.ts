@@ -10,6 +10,7 @@ export default class RouterPath {
 
 	static readonly USER = `user`
 	static readonly PROFILE_URL = `${this.USER}/profile`
+	static readonly CONFIRM_URL = `${this.USER}/confirm`
 
 	static readonly MEETING = `meeting`
 	static readonly MEETING_URL = `${this.MEETING}/:friendlyId`

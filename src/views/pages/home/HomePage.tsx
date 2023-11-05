@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import React from 'react'
-import { useAppSelector } from 'contexts/hooks'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import RouterPath from 'views/routes/routesContants'
 import Button from 'components/Button'
 import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
@@ -15,6 +15,7 @@ import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
 import MeetingApi, { RequestCreateMeetingBody, ResponseSuccessDataCreateMeeting } from 'api/http-rest/meetingApi'
 import useToastily from 'hooks/useToastily'
+import { meetingFetchCreateInstant, meetingFetchGetInstant } from 'contexts/meeting'
 
 const DEFAUFT = 'Defauft'
 
@@ -22,8 +23,11 @@ export default function HomePage() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const toastily = useToastily()
+	const dispatch = useAppDispatch()
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
+	const user = useAppSelector((s)=>s.user );
+	const meetingroom = useAppSelector(s=>s.meeting.meetings)
 	const [opinion, setOpinion] = useState(DEFAUFT)
 	const validationLogin = useCallback(() => {
 		return isLogin
@@ -48,30 +52,26 @@ export default function HomePage() {
 			scale: 1,
 		},
 	}
+
 	const createMeeting = useCallback(async () => {
-		// if (validationLogin()) {
-		// 	const res =
-		// 		await MeetingApi.createMeeting<RequestCreateMeetingBody>({})
+		dispatch(meetingFetchCreateInstant({
+			title:opinion
+		}));
+	}, [opinion,meetingroom])
 
-		// 	if (res.metadata.status === 200) {
-		// 		const data = res.data
-		// 		navigate(RouterPath.getPreMeetingPath(data?.friendlyId))
-		// 	}
-		// }else{
-		// 	toastily({
-		// 		content:'Plese login using function',
-		// 		type:'warning'
-		// 	})
-		// }
-	}, [])
-
-	const handleSubmit = (e) => {
+	const handleJoinRoom = useCallback((e) => {
 		e.preventDefault()
-		if (validationLogin()) navigate(RouterPath.getPreMeetingPath(friendLyId))
-	}
+		dispatch(meetingFetchGetInstant(opinion));
+		
+	},[opinion])
 
-	useEffect(() => {})
 
+	useEffect(() => {
+		const length = meetingroom?.length || 0
+		if(length > 0)
+		navigate(RouterPath.getPreMeetingPath(meetingroom[length - 1].friendlyId))
+	},[meetingroom])
+	
 	return (
 		<main
 			className={`Home h-[100vh] w-full bg-lprimary backdrop-blur-30 relative overflow-hidden max-lg:overflow-auto  max-lg:bg-none ${
@@ -127,7 +127,7 @@ export default function HomePage() {
 							Meetings and video calling for everyone.
 						</h2>
 						<p className="max-w-[800px] max-lg:max-w-[600px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
-							DTU Meet is a versatile video conferencing and meeting service
+							GDSC Meet is a versatile video conferencing and meeting service
 							that offers secure and high-quality video calling and
 							collaboration features, catering to users across a wide range of
 							devices and platforms for a seamless communication experience.
@@ -152,14 +152,14 @@ export default function HomePage() {
 										<BiDialpad className="block text-20 text-white" />
 									</div>
 									<input
-										//   value={nameRoom}
-										//   onChange={(e) => setNameRoom(e.target.value)}
+										value={friendLyId}
+										onChange={(e) => setFriendlyId(e.target.value)}
 										type="text"
 										placeholder="input tokent"
 										className="block  outline-none px-8 py-12 rounded-md max-sm:w-full bg-gray-100 dark:bg-gray-60 bg-gray-10"
 									/>
 								</div>
-								<Button className="max-sm:w-full  bg-lprimary  text-white">
+								<Button className="max-sm:w-full  bg-lprimary  text-white" onClick={handleJoinRoom}>
 									Join Now
 								</Button>
 							</div>

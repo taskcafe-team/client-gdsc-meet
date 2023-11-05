@@ -41,6 +41,7 @@ export default function LoginPage() {
 		if (search) dispatch(authFetchGoogleLoginVerify(search))
 	}, [])
 
+
 	// init container animate
 	const container = {
 		hidden: { opacity: 1, scale: 0 },
@@ -173,6 +174,7 @@ export default function LoginPage() {
 					</div>
 					<div className="flex gap-5 justify-center items-center   ">
 						<button
+						onClick={loginWithGoogle}
 							type="button"
 							className="flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
 						>
@@ -180,8 +182,9 @@ export default function LoginPage() {
 							<p>Google</p>
 						</button>
 						<button
+							disabled={true}
 							type="button"
-							className="flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
+							className="opacity-25 flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
 						>
 							<img className={'block w-30 h-30 mx-3'} src={facbookIcon} />
 							<p>Facebook</p>
