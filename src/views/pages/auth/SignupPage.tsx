@@ -94,7 +94,7 @@ export default function SignupPage() {
 		<div className="Singn-up relative h-[100vh] overflow-hidden z-1">
 			<img
 				src={bgL1}
-				className="max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2"
+				className="max-lg:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
 			/>
 			<motion.ul
 				className="container max-lg:hidden"
@@ -113,17 +113,17 @@ export default function SignupPage() {
 					>
 						<img
 							src={entity2}
-							className="absolute top-[50%] max-h-[70vh] max-w-[60vh] block z-3 rotate-45"
+							className="absolute top-[50%] max-h-[70vh] max-w-[35vw] block z-3 rotate-45"
 						/>
 					</motion.div>
 				</motion.li>
 			</motion.ul>
 
-			<main className="mt-[10vh] transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
+			<main className="mt-[10vh] transition-opacity max-2xl:p-10 py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
 				<form
 					onSubmit={formik.handleSubmit}
 					action=""
-					className="w-[100%] min-w-[420px] max-w-[65%] md:mx-0 max-sm:p-10"
+					className="w-[100%] min-w-[420px] max-w-[65%] max-sm:min-w-full md:mx-0 max-sm:p-10"
 				>
 					<h2 className="max-w-[570px] text-40 text-gray-80 dark:text-white my-[20px] max-lg:max-w-none text-start leading-tight py-2 ">
 						Sign Up
@@ -211,7 +211,7 @@ export default function SignupPage() {
 						</button>
 					</div>
 					<Link
-						to={'/signIn'}
+						to={RouterPath.LOGIN_URL}
 						className="flex  gap-2 mt-20 mx-auto justify-center w-full py-4 ml-2 text-18 text-gray-70  max-sm:text-xl text-gray-500 dark:text-gray-30  "
 					>
 						<span>if you already have an account</span>

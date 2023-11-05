@@ -61,14 +61,11 @@ export default function LoginPage() {
 		password: Yup.string()
 			.min(4, 'password must be 8 characters long')
 			.required('Required'),
-		Repassword: Yup.string()
-			.required('Please re-type your password')
-			.oneOf([Yup.ref('password')], 'passwords does not match'),
 	})
 	const formik = useFormik({
 		initialValues: {
 			email: 'dangnhatminh@gmail.com',
-			password: 'MyP@ssw0rd',
+			password: 'Minhnha@11',
 			errMessage: null,
 		},
 		validationSchema: validationSchema,
@@ -103,7 +100,7 @@ export default function LoginPage() {
 					>
 						<img
 							src={entity2}
-							className="absolute top-[50%] max-h-[100vh] max-w-[80vh] block z-3 "
+							className="absolute top-[50%] max-h-[100vh] max-w-[35vw] block z-3 "
 							loading={'lazy'}
 						/>
 					</motion.div>
@@ -113,7 +110,7 @@ export default function LoginPage() {
 				<form
 					onSubmit={formik.handleSubmit}
 					action=""
-					className="w-[100%] min-w-[420px] max-w-[65%] md:mx-0 max-sm:p-10 "
+					className="w-[100%] min-w-[420px] max-w-[65%] max-sm:min-w-full md:mx-0 max-sm:p-10 "
 				>
 					<h2 className="max-w-[570px] text-40 text-gray-80 dark:text-white my-[20px] max-lg:max-w-none text-start leading-tight py-2 ">
 						Sign In

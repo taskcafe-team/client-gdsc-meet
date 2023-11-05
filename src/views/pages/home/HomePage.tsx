@@ -13,13 +13,15 @@ import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import { listRoom } from 'utils/mockNameRoom'
+import MeetingApi, { RequestCreateMeetingBody, ResponseSuccessDataCreateMeeting } from 'api/http-rest/meetingApi'
+import useToastily from 'hooks/useToastily'
 
 const DEFAUFT = 'Defauft'
 
 export default function HomePage() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
-
+	const toastily = useToastily()
 	const { theme } = useTheme()
 	const [friendLyId, setFriendlyId] = useState('')
 	const [opinion, setOpinion] = useState(DEFAUFT)
@@ -46,7 +48,22 @@ export default function HomePage() {
 			scale: 1,
 		},
 	}
-	const createMeeting = useCallback(async () => {}, [])
+	const createMeeting = useCallback(async () => {
+		// if (validationLogin()) {
+		// 	const res =
+		// 		await MeetingApi.createMeeting<RequestCreateMeetingBody>({})
+
+		// 	if (res.metadata.status === 200) {
+		// 		const data = res.data
+		// 		navigate(RouterPath.getPreMeetingPath(data?.friendlyId))
+		// 	}
+		// }else{
+		// 	toastily({
+		// 		content:'Plese login using function',
+		// 		type:'warning'
+		// 	})
+		// }
+	}, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -87,13 +104,13 @@ export default function HomePage() {
 			<img
 				src={theme === 'light' ? Bgtop : BgDarktop}
 				alt="background"
-				className="max-lg:hidden h-[120vh] max-2xl:h-[94vh]  max-lg:w-[80vh] max-2xl:max-w-[200%]  object-contain object-top absolute left-[-17%] top-[-3%] z-2"
+				className="max-lg:hidden h-[120vh] max-2xl:w-[123vw] max-2xl:h-[160vh]  max-2xl:max-w-[200%]  object-contain object-left-top absolute left-[-17%] top-[-5%] z-2"
 			></img>
 
 			<img
 				src={theme === 'light' ? BgBottom : BgDarkBottom}
 				alt="background"
-				className="max-lg:hidden h-[100vh] w-[40%] object-contain object-bottom absolute bottom-[-6%] right-[-4%] z-2"
+				className="max-2xl:hidden h-[100vh] w-[40%] object-contain object-right-bottom absolute bottom-[-6%] right-[-4%] z-2"
 			></img>
 			<div className=" mt-[10vh] max-sm:mt-[5vh] transition-opacity contianer absolute z-100 top-0 left-0 w-[60%] max-2xl:w-[80%] max-lg:w-full  z-3 ">
 				<div className="py-[16px] px-[53px] max-sm:py-[20px] max-sm:px-[20px] max-lg:flex max-lg:justify-center max-lg:items-center max-lg:flex-col">
@@ -106,9 +123,9 @@ export default function HomePage() {
 							damping: 60,
 						}}
 					>
-						<h1 className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]">
+						<h2 className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]">
 							Meetings and video calling for everyone.
-						</h1>
+						</h2>
 						<p className="max-w-[800px] max-lg:max-w-[600px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
 							DTU Meet is a versatile video conferencing and meeting service
 							that offers secure and high-quality video calling and
@@ -118,7 +135,7 @@ export default function HomePage() {
 						<img
 							src={online_meeting_illustration}
 							alt=""
-							className="w-[20vh] hidden max-sm:block"
+							className="w-[20vh] hidden max-sm:block mx-auto"
 						/>
 						<div className="Home__function flex items-center gap-12 my-26 max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center">
 							<Button
@@ -157,14 +174,15 @@ export default function HomePage() {
 							damping: 80,
 						}}
 					>
-						<h2 className="text-gray-80 dark:text-white text-46 mr-2 max-sm:text-[25px] mr-auto">
+						<h2 className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-left max-lg:text-center leading-tight py-2 max-sm:text-[25px]">
 							Meeting opinions
 						</h2>
 						<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10 ">
 							<div className="Tabinfo-room__body flex flex-wrap gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
 								{listRoom &&
-									listRoom.map((item) => (
+									listRoom.map((item,index) => (
 										<div
+										key={`roomname_${index}`}
 											className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
 									${
 										opinion === item.lable
