@@ -14,25 +14,47 @@ import googleIcon from 'assets/static/images/icons/google.svg'
 import entity2 from 'assets/static/images/backgrouds/Saly-1.svg'
 import Button from 'components/Button'
 import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
-
+import useToastily from 'hooks/useToastily'
+import { Animate } from 'utils/mockAnimation'
+import {
+	getLocalStorageItem,
+	setLocalStorageItem,
+} from 'utils/localStorageUtils'
+// init container animate
+const container = {
+	hidden: { opacity: 1, scale: 0 },
+	visible: {
+		opacity: 1,
+		scale: 1,
+		transition: { delayChildren: 0.3, staggerChildren: 0.2 },
+	},
+}
+const item = {
+	hidden: { y: '-100%', opacity: 0, scale: 0 },
+	visible: { y: '-20%', x: '+10%', opacity: 1, scale: 1 },
+}
 export default function LoginPage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const authErr = useAppSelector((s) => s.auth.error)
 	const authLoading = useAppSelector((s) => s.auth.loading)
 	const dispatch = useAppDispatch()
 	const query = useLocation()
+	const navigate = useNavigate()
+	const Toastily = useToastily()
 
 	const [err, setErr] = useState<string>('')
+
+	const firstLogin = useMemo(() => getLocalStorageItem('meet:firstLogin'), [])
 
 	const loginWithGoogle = useCallback(() => {
 		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
 	}, [])
 
+	console.log(authErr)
+
 	useLayoutEffect(() => {
 		if (authErr) {
 			setErr(authErr.message)
-			console.log(err)
-			setTimeout(() => setErr(''), 2000)
 		}
 	}, [authErr])
 
@@ -41,20 +63,6 @@ export default function LoginPage() {
 		if (search) dispatch(authFetchGoogleLoginVerify(search))
 	}, [])
 
-
-	// init container animate
-	const container = {
-		hidden: { opacity: 1, scale: 0 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			transition: { delayChildren: 0.3, staggerChildren: 0.2 },
-		},
-	}
-	const item = {
-		hidden: { y: '-100%', opacity: 0, scale: 0 },
-		visible: { y: '-20%', x: '+10%', opacity: 1, scale: 1 },
-	}
 	// validate input
 
 	const validationSchema = Yup.object().shape({
@@ -65,21 +73,31 @@ export default function LoginPage() {
 	})
 	const formik = useFormik({
 		initialValues: {
-			email: 'dangnhatminh@gmail.com',
-			password: 'Minhnha@11',
+			email: '',
+			password: '',
 			errMessage: null,
 		},
 		validationSchema: validationSchema,
 		onSubmit(values) {
 			const { email, password } = values
-			console.log(email, password)
 			dispatch(authFetchEmailLogin({ email, password }))
 		},
 	})
 
-	if (isLogin) return <Navigate to="/" />
+	if (isLogin) {
+		console.log(Boolean(firstLogin))
+
+		if (!Boolean(firstLogin)) {
+			setLocalStorageItem({
+				key: 'meet:firstLogin',
+				value: true,
+			})
+			return <Navigate to={RouterPath.CONFIRM_URL} />
+		}
+		return <Navigate to="/" />
+	}
 	return (
-		<div className="Singn-up relative h-[100vh] overflow-hidden z-1">
+		<div className="Singn-up relative h-[100vh] overflow-hidden max-2xl:overflow-auto z-1">
 			<img
 				src={bgL1}
 				className="max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2"
@@ -158,6 +176,14 @@ export default function LoginPage() {
 						Lost your password ?
 						<span className="text-primary font-bold "> Forgot now</span>
 					</Link>
+					{err && (
+						<motion.div
+							{...Animate.getAnimationValues('opacity', 200)}
+							className="tip error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic"
+						>
+							{err}
+						</motion.div>
+					)}
 					<div className="mt-10">
 						<Button
 							type="submit"
@@ -169,14 +195,14 @@ export default function LoginPage() {
 							Sign Now
 						</Button>
 					</div>
-					<div className="flex items-center justify-center  text-gray-70  mt-20	">
+					<div className="flex items-center justify-center  text-gray-70  my-20	">
 						-or-
 					</div>
-					<div className="flex gap-5 justify-center items-center   ">
+					<div className="flex gap-18 justify-center items-center   ">
 						<button
-						onClick={loginWithGoogle}
+							onClick={loginWithGoogle}
 							type="button"
-							className="flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
+							className="border-[1px] border-gray-70  p-4 rounded-md flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
 						>
 							<img className={'w-30 h-30 mx-3'} src={googleIcon} />
 							<p>Google</p>
@@ -184,7 +210,7 @@ export default function LoginPage() {
 						<button
 							disabled={true}
 							type="button"
-							className="opacity-25 flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
+							className="border-[1px] border-gray-70  p-4 rounded-md opacity-25 flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
 						>
 							<img className={'block w-30 h-30 mx-3'} src={facbookIcon} />
 							<p>Facebook</p>

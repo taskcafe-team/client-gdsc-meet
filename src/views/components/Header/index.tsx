@@ -72,19 +72,19 @@ const Header: React.FC<HeaderProps> = ({
 					<ThemeButton />
 				</div>
 				<div className="text-gray-70 font-roboto text-24 font-normal dark:text-white transition">
-					<a href="/Question">
+					<Link to="/Question">
 						<BiFile />
-					</a>
+					</Link>
 				</div>
 				<div className="relative before:w-[40px] before:h-[40px] before:absolute before:top-[60%] group text-gray-70 font-roboto text-24  font-normal dark:text-white transition">
 					{isLogin ? (
-						<a href="/profile">
+						<Link to={RouterPath.PROFILE_URL}>
 							<img
 								className="w-30 h-30 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
 								src={UDetail?.avatar ? UDetail?.avatar : Avatar}
 								alt="Bordered avatar"
 							/>
-						</a>
+						</Link>
 					) : (
 						<a href="/auth/login">
 							<IoMdPerson />

@@ -14,6 +14,9 @@ import entity2 from 'assets/static/images/icons/entity.svg'
 import { Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Button from 'components/Button'
+import { Animate } from 'utils/mockAnimation'
+import { authFetchGoogleLoginVerify } from 'contexts/auth'
+import { useAppDispatch } from 'contexts/hooks'
 
 interface IUser {
 	UserName: string
@@ -28,8 +31,11 @@ const inituser: IUser = {
 }
 export default function SignupPage() {
 	const [loading, setLoading] = useState(false)
+	const [err,setErr] = useState('')
 	const navigate = useNavigate()
 	const Toastily = useToastily()
+	const query = useLocation()
+	const dispatch = useAppDispatch()
 	// init container animate
 	const container = {
 		hidden: { opacity: 1, scale: 0 },
@@ -42,6 +48,13 @@ export default function SignupPage() {
 			},
 		},
 	}
+	const loginWithGoogle = useCallback(() => {
+		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
+	}, [])
+	useLayoutEffect(() => {
+		const { search } = query
+		if (search) dispatch(authFetchGoogleLoginVerify(search))
+	}, [])
 	const item = {
 		hidden: { y: '-100%', opacity: 0, scale: 0 },
 		visible: {
@@ -78,11 +91,10 @@ export default function SignupPage() {
 				if (res.metadata.status === 200) {
 					Toastily({ content: 'Register Success' })
 					navigate(RouterPath.LOGIN_URL)
-				} else
-					Toastily({
-						type: 'error',
-						content: 'can not register please try again',
-					})
+				} else{
+					setErr(res.metadata.message)
+				}
+					
 			} catch (error) {
 				// -- empty
 			} finally {
@@ -91,7 +103,7 @@ export default function SignupPage() {
 		},
 	})
 	return (
-		<div className="Singn-up relative h-[100vh] overflow-hidden z-1">
+		<div className="Singn-up relative h-[100vh] overflow-hidden max-2xl:overflow-auto z-1">
 			<img
 				src={bgL1}
 				className="max-lg:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
@@ -180,6 +192,11 @@ export default function SignupPage() {
 							) : null}
 						</p>
 					</div>
+					{
+						err && <motion.div {...Animate.getAnimationValues('opacity', 200)}  className="tip error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
+						{err}
+						</motion.div>
+					}
 					<div className="mt-10">
 						<Button
 							type="submit"
@@ -194,17 +211,19 @@ export default function SignupPage() {
 					<div className="flex items-center justify-center  text-gray-70  mt-20	">
 						-or-
 					</div>
-					<div className="flex gap-5 justify-center items-center   ">
-						<button
+					<div className="flex gap-18 justify-center items-center   ">
+					<button
+							onClick={loginWithGoogle}
 							type="button"
-							className="flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
+							className="border-[1px] border-gray-70  p-4 rounded-md flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"
 						>
 							<img className={'w-30 h-30 mx-3'} src={googleIcon} />
 							<p>Google</p>
 						</button>
 						<button
+							disabled={true}
 							type="button"
-							className="flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
+							className="border-[1px] border-gray-70  p-4 rounded-md opacity-25 flex justify-center items-center  text-20  gap-6 text-gray-500  px-10 py-3 w-full "
 						>
 							<img className={'block w-30 h-30 mx-3'} src={facbookIcon} />
 							<p>Facebook</p>
