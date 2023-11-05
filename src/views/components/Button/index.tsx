@@ -14,6 +14,7 @@ const Button: React.FC<IButton> = ({
 	loading = false,
 	...rest
 }) => {
+	
 	return (
 		<button
 			className={`flex items-center justify-center rounded-md gap-2

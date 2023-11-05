@@ -44,7 +44,7 @@ export const meetingFetchGetInstant = createAsyncThunk(
 	}
 )
 
-export const MeetingFetchCreateInstant = createAsyncThunk(
+export const meetingFetchCreateInstant = createAsyncThunk(
 	MEETING_FETCH_CREATE_INSTANT,
 	async (request: RequestCreateMeetingBody, { dispatch }) => {
 		dispatch(meetingFetching())

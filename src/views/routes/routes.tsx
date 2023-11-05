@@ -9,6 +9,7 @@ import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
+import ConfirmPage from 'pages/auth/ConfirmPage'
 
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -68,6 +69,11 @@ const privateRoutes: CustomRouteProps[] = [
 		element: getDefaultLayout(<MeetingPage />),
 		loader: undefined,
 	},
+	{
+		path:RouterPath.CONFIRM_URL,
+		element:getPublicLayout(<ConfirmPage/>),
+		loader:undefined,
+	}
 ]
 
 export const getRoutes = (isLogin: boolean) => {
