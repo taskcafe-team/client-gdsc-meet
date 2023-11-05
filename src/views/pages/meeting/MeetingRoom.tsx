@@ -5,45 +5,64 @@ import {
 	LiveKitRoom,
 	ParticipantTile,
 	RoomAudioRenderer,
+	VideoConference,
 	useTracks,
 } from '@livekit/components-react'
-import { Track } from 'livekit-client'
+import {
+	RemoteTrack,
+	Room,
+	RoomEvent,
+	Track,
+	VideoPresets,
+} from 'livekit-client'
 import { Card, Box } from '@mui/material'
 
 type MeetingRoomProps = {
 	token: string
+	videoAllowed: boolean
+	audioAllowed: boolean
 }
 
-function MyVideoConference() {
-	const tracks = useTracks(
-		[
-			{ source: Track.Source.Camera, withPlaceholder: true },
-			{ source: Track.Source.ScreenShare, withPlaceholder: false },
-		],
-		{ onlySubscribed: false }
-	)
-	return (
-		<GridLayout tracks={tracks}>
-			<ParticipantTile />
-		</GridLayout>
-	)
-}
+export default function MeetingRoom({
+	token,
+	videoAllowed,
+	audioAllowed,
+}: MeetingRoomProps) {
+	const [room, setRoom] = useState<Room | null>(null)
 
-export default function MeetingRoom({ token }: MeetingRoomProps) {
+	const connect = useCallback(async () => {
+		const _room = new Room({
+			adaptiveStream: true,
+			dynacast: true,
+			videoCaptureDefaults: {
+				resolution: VideoPresets.h720.resolution,
+			},
+		})
+		await _room.connect('https://gdsc-meet.us.to:7880', token)
+		await _room.localParticipant.enableCameraAndMicrophone()
+		setRoom(_room)
+	}, [])
+
+	useLayoutEffect(() => {
+		connect()
+	}, [])
+
 	return (
-		<Box sx={{ p: 4 }} width="1000px">
+		<Box sx={{ p: 3, maxWidth: '100vw' }}>
 			<Card sx={{ width: 1, height: 1 }}>
-				<LiveKitRoom
-					video={true}
-					audio={true}
-					token={token}
-					connectOptions={{ autoSubscribe: true }}
-					serverUrl={'https://gdsc-meet.us.to:7880'}
-				>
-					<MyVideoConference />
-					<RoomAudioRenderer />
-					<ControlBar />
-				</LiveKitRoom>
+				{room && (
+					<LiveKitRoom
+						room={room}
+						video={videoAllowed}
+						audio={audioAllowed}
+						connectOptions={{ autoSubscribe: true }}
+						token={undefined}
+						serverUrl={undefined}
+					>
+						<VideoConference />
+						<RoomAudioRenderer />
+					</LiveKitRoom>
+				)}
 			</Card>
 		</Box>
 	)

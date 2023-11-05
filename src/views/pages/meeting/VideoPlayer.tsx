@@ -8,15 +8,16 @@ export default function VideoPlayer({
 	const videoRef = useRef<HTMLVideoElement>(null)
 
 	const startCamera = () => {
-		navigator.mediaDevices
-			.getUserMedia({ video: true, audio: true })
-			.then((stream) => {
-				if (videoRef.current) {
-					videoRef.current.srcObject = stream
-					videoRef.current.volume = 0
-				}
-			})
-			.catch((error) => console.log('Something went wrong! ', error))
+		if (navigator.mediaDevices)
+			navigator.mediaDevices
+				.getUserMedia({ video: true, audio: true })
+				.then((stream) => {
+					if (videoRef.current) {
+						videoRef.current.srcObject = stream
+						videoRef.current.volume = 0
+					}
+				})
+				.catch((error) => console.log('Something went wrong! ', error))
 	}
 
 	const stopCamera = () => {
@@ -41,9 +42,17 @@ export default function VideoPlayer({
 	useLayoutEffect(() => {
 		if (videoAllowed) startCamera()
 		else stopCamera()
-
-		return () => stopCamera()
 	}, [videoAllowed])
+
+	useLayoutEffect(() => {
+		return () => {
+			if (navigator.mediaDevices)
+				navigator.mediaDevices
+					.getUserMedia({ video: false, audio: false })
+					.catch(() => {})
+					.finally(() => stopCamera)
+		}
+	}, [])
 
 	return (
 		<video

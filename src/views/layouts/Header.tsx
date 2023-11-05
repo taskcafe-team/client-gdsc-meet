@@ -76,7 +76,7 @@ function Header() {
 			setLocalStorageItem({ key: 'access_token', value: null })
 			dispatch(authLogout())
 		} else if (setting == 'Profile') {
-			navigate('/profile')
+			navigate(RouterPath.PROFILE_URL)
 		}
 	}
 

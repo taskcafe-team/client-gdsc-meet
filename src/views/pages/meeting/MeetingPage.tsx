@@ -14,6 +14,10 @@ export default function MeetingPage() {
 	const loading = useAppSelector((s) => s.meeting.loading)
 	const ditpatch = useAppDispatch()
 	const navigate = useNavigate()
+
+	const [videoAllowed, setVideoAllowed] = useState(true)
+	const [audioAllowed, setAudioAllowed] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
 	const [token, setToken] = useState('')
 
 	const { friendlyId } = useParams() // router blocked friendlyId null
@@ -31,9 +35,9 @@ export default function MeetingPage() {
 		if (res.metadata.status == 200) setToken(res.data.token)
 	}, [friendlyId])
 
-	const btnJoinMeetingClick = (isLoading, setIsLoading) => {
+	const btnJoinMeetingClick = () => {
 		setIsLoading(true)
-		getAccessToken().then(() => setIsLoading(false))
+		getAccessToken().finally(() => setIsLoading(false))
 	}
 
 	useLayoutEffect(() => {
@@ -42,9 +46,34 @@ export default function MeetingPage() {
 
 	if (loading) return <Loading />
 	return (
-		<Box display="flex" justifyContent="center" alignItems="center" p={5}>
-			{token ? <MeetingRoom token={token} /> : ''}
-			{!token ? <PreJoin btnJoinMeetingClick={btnJoinMeetingClick} /> : ''}
+		<Box
+			width={1}
+			height={1}
+			display="flex"
+			justifyContent="center"
+			alignItems="center"
+		>
+			{token ? (
+				<MeetingRoom
+					token={token}
+					videoAllowed={videoAllowed}
+					audioAllowed={audioAllowed}
+				/>
+			) : (
+				''
+			)}
+			{!token ? (
+				<PreJoin
+					videoAllowed={videoAllowed}
+					audioAllowed={audioAllowed}
+					setAudioAllowed={setAudioAllowed}
+					setVideoAllowed={setVideoAllowed}
+					btnJoinMeetingClick={btnJoinMeetingClick}
+					isLoading={isLoading}
+				/>
+			) : (
+				''
+			)}
 		</Box>
 	)
 }

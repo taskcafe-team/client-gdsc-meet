@@ -4,45 +4,50 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Card, Grid, IconButton } from '@mui/material'
 import VideoPlayer from './VideoPlayer'
 
-export default function PreJoin({ btnJoinMeetingClick }) {
-	const [videoAllowed, setVideoAllowed] = useState(true)
-	const [audioAllowed, setAudioAllowed] = useState(true)
-	const [isLoading, setIsLoading] = useState(false)
+type PreJoinProps = {
+	videoAllowed: boolean
+	audioAllowed: boolean
+	setAudioAllowed: React.Dispatch<React.SetStateAction<boolean>>
+	setVideoAllowed: React.Dispatch<React.SetStateAction<boolean>>
+	btnJoinMeetingClick: React.MouseEventHandler<HTMLButtonElement>
+	isLoading: boolean
+}
 
-	const _btnJoinMeetingClick = useCallback(() => {
-		btnJoinMeetingClick(isLoading, setIsLoading)
-	}, [btnJoinMeetingClick, isLoading])
-
+export default function PreJoin(props: PreJoinProps) {
 	return (
 		<Card>
-			<Box sx={{ p: 3 }} width="550px" height="400px">
+			<Box sx={{ p: 3 }} maxWidth="550px" height="400px">
 				<Card sx={{ width: 1, height: 1, bgcolor: 'black' }}>
-					<VideoPlayer videoAllowed={videoAllowed} flipX={true} width="100%" />
+					<VideoPlayer
+						videoAllowed={props.videoAllowed}
+						flipX={true}
+						width="100%"
+					/>
 				</Card>
 			</Box>
 			<Box sx={{ p: 3, pt: 0 }}>
 				<Grid container justifyContent="center" spacing={1}>
 					<Grid item>
 						<IconButton
-							disabled={isLoading}
-							onClick={() => setVideoAllowed(!videoAllowed)}
+							disabled={props.isLoading}
+							onClick={() => props.setVideoAllowed(!props.videoAllowed)}
 						>
-							{videoAllowed ? <Videocam /> : <VideocamOff />}
+							{props.videoAllowed ? <Videocam /> : <VideocamOff />}
 						</IconButton>
 					</Grid>
 					<Grid item>
 						<IconButton
-							disabled={isLoading}
-							onClick={() => setAudioAllowed(!audioAllowed)}
+							disabled={props.isLoading}
+							onClick={() => props.setAudioAllowed(!props.audioAllowed)}
 						>
-							{audioAllowed ? <Mic /> : <MicOff />}
+							{props.audioAllowed ? <Mic /> : <MicOff />}
 						</IconButton>
 					</Grid>
 					<Grid item>
 						<LoadingButton
-							loading={isLoading}
+							loading={props.isLoading}
 							variant="outlined"
-							onClick={_btnJoinMeetingClick}
+							onClick={props.btnJoinMeetingClick}
 						>
 							Join Meeting
 						</LoadingButton>
