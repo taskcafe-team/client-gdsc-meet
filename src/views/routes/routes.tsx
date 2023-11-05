@@ -70,10 +70,10 @@ const privateRoutes: CustomRouteProps[] = [
 		loader: undefined,
 	},
 	{
-		path:RouterPath.CONFIRM_URL,
-		element:getPublicLayout(<ConfirmPage/>),
-		loader:undefined,
-	}
+		path: RouterPath.CONFIRM_URL,
+		element: getPublicLayout(<ConfirmPage />),
+		loader: undefined,
+	},
 ]
 
 export const getRoutes = (isLogin: boolean) => {

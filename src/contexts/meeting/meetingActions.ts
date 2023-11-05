@@ -1,4 +1,5 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { type NavigateFunction } from 'react-router-dom'
 import {
 	MEETING_FETCHING,
 	MEETING_FETCH_CREATE_INSTANT,
@@ -6,10 +7,12 @@ import {
 	MEETING_FETCH_INSTANT,
 	MEETING_FETCH_SUCESS,
 	MEETING_ADD_INSTANT,
+	MEETING_FETCH_CREATE_INSTANT_AND_JOIN,
 } from './meetingConstants'
 import { MeetingInfo } from './meetingTypes'
 
 import MeetingApi, { RequestCreateMeetingBody } from 'api/http-rest/meetingApi'
+import RouterPath from 'views/routes/routesContants'
 
 export interface MeetingFetchDetail {
 	type: string
@@ -53,6 +56,25 @@ export const meetingFetchCreateInstant = createAsyncThunk(
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingFetchSuccess())
 			dispatch(meetingAddInstant(res.data as MeetingInfo))
+		} else {
+			console.log(res.metadata)
+		}
+	}
+)
+
+export const meetingFetchCreateInstantAndJoin = createAsyncThunk(
+	MEETING_FETCH_CREATE_INSTANT_AND_JOIN,
+	async (
+		request: RequestCreateMeetingBody & { navigate: NavigateFunction },
+		{ dispatch }
+	) => {
+		dispatch(meetingFetching())
+		const res = await MeetingApi.createMeeting(request)
+		const { status } = res.metadata
+		if (status.toString().match(/(2|3)../)) {
+			dispatch(meetingFetchSuccess())
+			dispatch(meetingAddInstant(res.data as MeetingInfo))
+			request.navigate(RouterPath.getPreMeetingPath(res.data.friendlyId))
 		} else {
 			console.log(res.metadata)
 		}

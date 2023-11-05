@@ -13,7 +13,6 @@ const ThemeButton: React.FC = () => {
 	useEffect(() => {
 		setMounted(true)
 	}, [])
-	
 
 	const handleModel = async () => {
 		if (theme === 'light') {

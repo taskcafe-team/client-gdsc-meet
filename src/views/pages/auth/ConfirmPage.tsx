@@ -58,7 +58,7 @@ const features = [
 		description:
 			'This functional task is to generate important keywords from the meeting, creating a concise, easy-to-understand summary of the meeting content.',
 	},
-    {
+	{
 		lable: 'Fouder',
 		description:
 			'feature that automatically stores important data after a meeting. Once the meeting concludes, it automatically records and stores the data on the cloud or a server, ensuring no loss of vital information, making it convenient for reference and sharing',
@@ -149,7 +149,6 @@ export default function ConfirmPage() {
 
 						<div className="feature-contianer">
 							<div className="feature-contianer__header flex  gap-6">
-                                
 								<div className="feature-item">
 									<div
 										className={`Tabinfo-room__item w-max transition-all flex  
