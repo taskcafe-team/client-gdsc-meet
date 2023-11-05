@@ -15,7 +15,7 @@ type PublicLayoutProps = { children?: ReactNode; type?: 'full' | 'wrapper' }
 
 function PublicLayout({ children, type }: PublicLayoutProps) {
 	return (
-		<LayoutWapper className="max-h-[100vh] overflow-hidden">
+		<LayoutWapper className="max-h-[100vh] overflow-hidden max-lg:overflow-auto">
 			<Header type={type} />
 			<Box flex={1} display="flex" alignItems="stretch">
 				<Box flex={1}>
