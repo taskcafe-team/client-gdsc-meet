@@ -31,7 +31,7 @@ const inituser: IUser = {
 }
 export default function SignupPage() {
 	const [loading, setLoading] = useState(false)
-	const [err,setErr] = useState('')
+	const [err, setErr] = useState('')
 	const navigate = useNavigate()
 	const Toastily = useToastily()
 	const query = useLocation()
@@ -91,10 +91,9 @@ export default function SignupPage() {
 				if (res.metadata.status === 200) {
 					Toastily({ content: 'Register Success' })
 					navigate(RouterPath.LOGIN_URL)
-				} else{
+				} else {
 					setErr(res.metadata.message)
 				}
-					
 			} catch (error) {
 				// -- empty
 			} finally {
@@ -192,11 +191,14 @@ export default function SignupPage() {
 							) : null}
 						</p>
 					</div>
-					{
-						err && <motion.div {...Animate.getAnimationValues('opacity', 200)}  className="tip error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
-						{err}
+					{err && (
+						<motion.div
+							{...Animate.getAnimationValues('opacity', 200)}
+							className="tip error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic"
+						>
+							{err}
 						</motion.div>
-					}
+					)}
 					<div className="mt-10">
 						<Button
 							type="submit"
@@ -212,7 +214,7 @@ export default function SignupPage() {
 						-or-
 					</div>
 					<div className="flex gap-18 justify-center items-center   ">
-					<button
+						<button
 							onClick={loginWithGoogle}
 							type="button"
 							className="border-[1px] border-gray-70  p-4 rounded-md flex justify-center items-center text-20  gap-6 text-gray-500  px-10 py-3 w-full"

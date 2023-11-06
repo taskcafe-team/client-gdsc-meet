@@ -151,7 +151,7 @@ export default function HomePage() {
 										onChange={(e) => setFriendlyId(e.target.value)}
 										type="text"
 										maxLength={12}
-										placeholder="xxx-xxx-xxx"
+										placeholder="xxx-xxxx-xxx"
 										className="block  outline-none px-8 py-12 rounded-md max-sm:w-full bg-gray-100 dark:bg-gray-60 bg-gray-10"
 									/>
 								</div>
@@ -192,7 +192,6 @@ export default function HomePage() {
 											onClick={() => setOpinion(item.lable)}
 										>
 											<p className="text-xl">{item.lable}</p>
-
 										</div>
 									))}
 							</div>
