@@ -63,9 +63,9 @@ module.exports = (async () => {
 			],
 		},
 		plugins: [
-			new PurgeCSSPlugin({
-				paths: glob.sync(`./src/**/*`, { nodir: true }),
-			}),
+			// new PurgeCSSPlugin({
+			// 	paths: glob.sync(`./src/**/*`, { nodir: true }),
+			// }),
 			new HtmlWebpackPlugin({
 				title: 'gdsc meet',
 				template: 'index.production.html',

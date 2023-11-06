@@ -2,7 +2,9 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 html,
 body,
 div,
@@ -128,11 +130,8 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-*{
+* {
 	user-select: none;
 }
 /* custom material */
@@ -151,4 +150,3 @@ table {
 		) !important; /* Thay đổi màu sắc cho chế độ tối */
 	}
 }
-

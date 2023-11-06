@@ -106,6 +106,7 @@ module.exports = async (env, arg) => {
 				...(WebpackConfigWithMode?.module?.rules ?? []),
 			],
 			unsafeCache: true,
+			noParse: /[\\/]src\/assets\/static[\\/]|libs[\\/]socket.io.min.js/,
 		},
 		plugins: [
 			new CleanWebpackPlugin(),
