@@ -4,8 +4,6 @@ import axios, {
 	type AxiosRequestConfig,
 	type CreateAxiosDefaults,
 } from 'axios'
-import env from '_/config/env/env.json'
-const ENV = JSON.parse(JSON.stringify(env))
 
 import { REQUEST_TIMEOUT_MS } from './apiConstants'
 import {
@@ -19,7 +17,7 @@ import { ApiResponse } from './apiResponses'
 import { convertObjectToQueryParams } from 'utils/urlUtils'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
-	baseURL: `${'https://gdsc-meet.us.to:5000'}`,
+	baseURL: `${import.meta.env.API_BASE_URL}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,

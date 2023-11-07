@@ -47,10 +47,8 @@ export default function LoginPage() {
 	const firstLogin = useMemo(() => getLocalStorageItem('meet:firstLogin'), [])
 
 	const loginWithGoogle = useCallback(() => {
-		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
+		window.open(import.meta.env.API_LOGIN_GOOGLE_URL, '_self')
 	}, [])
-
-	console.log(authErr)
 
 	useLayoutEffect(() => {
 		if (authErr) {

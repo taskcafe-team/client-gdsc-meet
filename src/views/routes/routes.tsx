@@ -103,7 +103,7 @@ export default function Router() {
 	return (
 		<Routes>
 			{getRoutes(isLogin)}
-			{/* <Route path="*" element={<Navigate to="/" />} /> */}
+			<Route path="*" element={<Navigate to="/" />} />
 		</Routes>
 	)
 }
