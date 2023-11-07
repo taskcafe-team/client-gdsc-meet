@@ -43,17 +43,17 @@ type CustomRouteProps = RouteProps
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
-		element: getPublicLayout(<SignupPage />),
+		element: getDefaultLayout(<SignupPage />),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: getPublicLayout(<LoginPage />),
+		element: getDefaultLayout(<LoginPage />),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getPublicLayout(<HomePage />, 'wrapper'),
+		element: getDefaultLayout(<HomePage />),
 		loader: undefined,
 	},
 ]
@@ -71,7 +71,7 @@ const privateRoutes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.CONFIRM_URL,
-		element: getPublicLayout(<ConfirmPage />),
+		element: getDefaultLayout(<ConfirmPage />),
 		loader: undefined,
 	},
 ]

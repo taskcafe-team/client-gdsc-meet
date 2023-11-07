@@ -15,11 +15,10 @@ import {
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import MenuIcon from '@mui/icons-material/Menu'
-import AdbIcon from '@mui/icons-material/Adb'
+import GroupsIcon from '@mui/icons-material/Groups'
 
 import { useAppDispatch, useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
-import { setLocalStorageItem } from 'utils/localStorageUtils'
 import { authLogout } from 'contexts/auth'
 
 const pages: string[] = []
@@ -27,7 +26,7 @@ const settings = ['Profile', 'Logout']
 
 export const Logo = () => (
 	<React.Fragment>
-		<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+		<GroupsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 		<Typography
 			variant="h6"
 			noWrap
@@ -57,32 +56,18 @@ function Header() {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>()
 	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>()
 
-	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) =>
 		setAnchorElNav(event.currentTarget)
-	}
-	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) =>
 		setAnchorElUser(event.currentTarget)
-	}
+	const handleCloseNavMenu = () => setAnchorElNav(null)
 
-	const handleCloseNavMenu = () => {
-		setAnchorElNav(null)
-	}
-
+	const handleLoginClick = () => navigate(RouterPath.LOGIN_URL)
 	const handleClickUserMenu = (setting: string) => {
 		setAnchorElUser(null)
-		setAnchorElNav(null)
-
-		if (setting == 'Logout') {
-			setLocalStorageItem({ key: 'access_token', value: null })
-			dispatch(authLogout())
-		} else if (setting == 'Profile') {
-			navigate(RouterPath.PROFILE_URL)
-		}
+		if (setting === 'Logout') dispatch(authLogout())
+		if (setting === 'Profile') navigate(`/${RouterPath.PROFILE_URL}`)
 	}
-
-	const handleLoginClick = useCallback(() => {
-		navigate(RouterPath.LOGIN_URL)
-	}, [navigate])
 
 	return (
 		<AppBar position="static" color="default" elevation={0}>
@@ -102,9 +87,9 @@ function Header() {
 						</IconButton>
 						<Menu
 							id="menu-appbar"
-							keepMounted
 							anchorEl={anchorElNav}
 							anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+							keepMounted
 							transformOrigin={{ vertical: 'top', horizontal: 'left' }}
 							open={Boolean(anchorElNav)}
 							onClose={handleCloseNavMenu}
@@ -117,7 +102,18 @@ function Header() {
 							))}
 						</Menu>
 					</Box>
-					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+						{pages.map((page) => (
+							<Button
+								key={page}
+								onClick={handleCloseNavMenu}
+								sx={{ my: 2, display: 'block' }}
+							>
+								{page}
+							</Button>
+						))}
+					</Box>
+					<GroupsIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 					<Typography
 						variant="h5"
 						noWrap
@@ -134,20 +130,8 @@ function Header() {
 							textDecoration: 'none',
 						}}
 					>
-						LOGO
+						GDSC MEET
 					</Typography>
-					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map((page) => (
-							<Button
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, display: 'block' }}
-							>
-								{page}
-							</Button>
-						))}
-					</Box>
-
 					<Box sx={{ flexGrow: 0 }}>
 						{isLogin ? (
 							<Tooltip title="Open settings">
@@ -164,8 +148,8 @@ function Header() {
 						<Menu
 							sx={{ mt: '45px' }}
 							id="menu-appbar"
-							keepMounted
 							anchorEl={anchorElUser}
+							keepMounted
 							anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 							transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 							open={Boolean(anchorElUser)}
@@ -175,7 +159,7 @@ function Header() {
 								settings.map((setting) => (
 									<MenuItem
 										key={setting}
-										onClick={() => handleClickUserMenu(setting)}
+										onClick={(e) => handleClickUserMenu(setting)}
 									>
 										<Typography textAlign="center">{setting}</Typography>
 									</MenuItem>

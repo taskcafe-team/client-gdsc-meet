@@ -1,204 +1,134 @@
-/* eslint-disable import/no-unresolved */
 import React from 'react'
-import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import Button from 'components/Button'
-import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
-import Bg from 'assets/static/images/backgrouds/bg.png'
-import Bgtop from 'assets/static/images/backgrouds/HomeLightTl1.svg'
-import BgBottom from 'assets/static/images/backgrouds/HomeLightBr.svg'
-import BgDarktop from 'assets/static/images/backgrouds/HomeDarkTl1.svg'
-import BgDarkBottom from 'assets/static/images/backgrouds/HomeDarkBr.svg'
-import { motion } from 'framer-motion'
-import { useTheme } from 'next-themes'
-import { BiDialpad, BiMeteor } from 'react-icons/bi'
-import { listRoom } from 'utils/mockNameRoom'
-import useToastily from 'hooks/useToastily'
 import {
+	Box,
+	Button,
+	Container,
+	Divider,
+	FormControl,
+	InputAdornment,
+	OutlinedInput,
+	Typography,
+	styled,
+} from '@mui/material'
+import CallIcon from '@mui/icons-material/Call'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
+import RouterPath from 'views/routes/routesContants'
+import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
+import {
+	meetingFetchCreateInstant,
 	meetingFetchCreateInstantAndJoin,
-	meetingFetchGetInstant,
 } from 'contexts/meeting'
-import { redirect } from 'react-router-dom'
+import useToastily from 'hooks/useToastily'
 
-const DEFAUFT = 'Defauft'
+const MainContent = styled(Box)(
+	() => `
+    width: 100%;
+    display: flex;s
+    flex: 1;
+    flex-direction: column;
+  `
+)
+
+const TopWrapper = styled(Box)(
+	() => `
+    display: flex;
+    width: 100%;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  `
+)
 
 export default function HomePage() {
 	const navigate = useNavigate()
-	const isLogin = useAppSelector((s) => s.auth.isLogin)
-	const toastily = useToastily()
 	const dispatch = useAppDispatch()
-	const { theme } = useTheme()
+	const toast = useToastily()
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const meetingErr = useAppSelector((s) => s.meeting.error)
 	const [friendLyId, setFriendlyId] = useState('')
-	const user = useAppSelector((s) => s.user)
-	const meetingroom = useAppSelector((s) => s.meeting.meetings)
-	const [opinion, setOpinion] = useState(DEFAUFT)
+
 	const validationLogin = useCallback(() => {
 		return isLogin
 	}, [isLogin])
-	const container = {
-		hidden: { opacity: 1, scale: 0 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			transition: {
-				delayChildren: 0.3,
-				staggerChildren: 0.2,
-			},
-		},
-	}
-	const item = {
-		hidden: { y: '-100%', opacity: 0, scale: 0 },
-		visible: {
-			y: '-20%',
-			x: '+10%',
-			opacity: 1,
-			scale: 1,
-		},
-	}
+
+	useEffect(() => {
+		if (meetingErr) toast({ content: meetingErr.message, type: 'error' })
+	}, [meetingErr])
 
 	const createMeeting = useCallback(async () => {
 		dispatch(meetingFetchCreateInstantAndJoin({ navigate }))
-	}, [opinion, meetingroom])
+	}, [])
 
-	const handleJoinRoom = useCallback(
-		(e) => {
-			e.preventDefault()
-			dispatch(meetingFetchGetInstant(opinion))
-		},
-		[opinion]
-	)
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		if (validationLogin()) navigate(RouterPath.getPreMeetingPath(friendLyId))
+	}
 
 	return (
-		<main
-			className={`Home h-[100vh] w-full bg-lprimary backdrop-blur-30 relative overflow-hidden max-2xl:overflow-auto max-2xl:overflow-x-hidden  max-lg:bg-none ${
-				theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
-			}`}
-		>
-			<motion.ul
-				className="container max-lg:hidden"
-				variants={container}
-				initial="hidden"
-				animate="visible"
-			>
-				<motion.li className="item" variants={item}>
-					<motion.div
-						whileHover={{ scale: 0.6 }}
-						whileTap={{
-							opacity: 0.8,
-
-							borderRadius: '100%',
-						}}
-					>
+		<MainContent>
+			<TopWrapper>
+				<Container maxWidth="md">
+					<Box textAlign="center">
 						<img
-							src={Bg}
-							alt="background"
-							className="select-none max-lg:hidden h-[100vh] object-fill opacity-30 absolute left-0 top-0 z-1 max-lg:object-cover"
-						></img>
-					</motion.div>
-				</motion.li>
-			</motion.ul>
-			<img
-				src={theme === 'light' ? Bgtop : BgDarktop}
-				alt="background"
-				className="select-none max-lg:hidden h-[120vh] max-2xl:w-[123vw] max-2xl:h-[160vh]  max-2xl:max-w-[200%]  object-contain object-left-top absolute left-[-17%] top-[-5%] z-2"
-			></img>
-
-			<img
-				src={theme === 'light' ? BgBottom : BgDarkBottom}
-				alt="background"
-				className="select-none max-2xl:hidden h-[100vh] w-[40%] object-contain object-right-bottom absolute bottom-[-6%] right-[-4%] z-2"
-			></img>
-			<div className=" mt-[10vh] max-sm:mt-[5vh] transition-opacity contianer absolute z-100 top-0 left-0 w-[60%] max-2xl:w-[80%] max-lg:w-full  z-3 ">
-				<div className="py-[16px] px-[53px] max-sm:py-[20px] max-sm:px-[20px] max-lg:flex max-lg:justify-center max-lg:items-center max-lg:flex-col">
-					<motion.div
-						initial={{ opacity: 0, translateY: '20%' }}
-						animate={{ opacity: 1, translateY: '0%' }}
-						transition={{
-							type: 'keyframes',
-							stiffness: 260,
-							damping: 60,
-						}}
-					>
-						<h2 className="select-none max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]">
-							Meetings and video calling for everyone.
-						</h2>
-						<p className="select-none max-w-[800px] max-lg:max-w-[600px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
-							GDSC Meet is a versatile video conferencing and meeting service
-							that offers secure and high-quality video calling and
-							collaboration features, catering to users across a wide range of
-							devices and platforms for a seamless communication experience.
-						</p>
-						<img
+							style={{ display: 'inline-block' }}
+							alt="Oline Meeting Images"
+							width="400px"
 							src={online_meeting_illustration}
-							alt=""
-							className="w-[20vh] hidden max-sm:block mx-auto"
 						/>
-						<div className="Home__function flex items-center gap-12 my-26 max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center">
-							<Button
-								className="max-md:w-full text-white bg-lprimary"
-								onClick={createMeeting}
-							>
-								<BiMeteor width={30} height={30} fontSize={20} />
-								New meeting
-							</Button>
-							<p>or</p>
-							<div className="Connect  transition-colors border-none max-sm:flex-col max-sm:w-full max-sm:items-start flex items-center gap-2  border dark:border-none  px-2 py-2 rounded-md">
-								<div className="Connect__Group flex items-center max-sm:w-full bg-lprimary dark:bg-gray-80  rounded-md ">
-									<div className="p-6">
-										<BiDialpad className="block text-20 text-white" />
-									</div>
-									<input
+						<Typography variant="h3" sx={{ my: 2 }}>
+							Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
+						</Typography>
+						<Typography
+							variant="h6"
+							color="text.secondary"
+							fontWeight="normal"
+							sx={{ mb: 4 }}
+						>
+							Chúng tôi đã thiết kế lại Google Meet - dịch vụ tổ chức cuộc họp
+							kinh doanh với độ bảo mật cao - để cung cấp miễn phí cho mọi
+							người.
+						</Typography>
+					</Box>
+					<Container maxWidth="sm">
+						<Box sx={{ textAlign: 'center', mt: 3, p: 4 }}>
+							<form onSubmit={handleSubmit}>
+								<FormControl
+									variant="outlined"
+									fullWidth
+									onSubmit={(e) => {
+										e.preventDefault()
+										console.log('Submit')
+									}}
+								>
+									<OutlinedInput
 										value={friendLyId}
 										onChange={(e) => setFriendlyId(e.target.value)}
 										type="text"
-										maxLength={12}
+										required={true}
 										placeholder="xxx-xxxx-xxx"
-										className="block  outline-none px-8 py-12 rounded-md max-sm:w-full bg-gray-100 dark:bg-gray-60 bg-gray-10"
+										endAdornment={
+											<InputAdornment position="end">
+												<Button size="small" variant="contained" type="submit">
+													Join Meeting
+												</Button>
+											</InputAdornment>
+										}
+										startAdornment={
+											<InputAdornment position="start">
+												<CallIcon />
+											</InputAdornment>
+										}
 									/>
-								</div>
-								<Button
-									className="max-sm:w-full  bg-lprimary  text-white"
-									onClick={handleJoinRoom}
-								>
-									Join Now
-								</Button>
-							</div>
-						</div>
-					</motion.div>
-					<motion.div
-						initial={{ opacity: 0, translateY: '20%' }}
-						animate={{ opacity: 1, translateY: '0%' }}
-						transition={{
-							type: 'keyframes',
-							stiffness: 260,
-							damping: 80,
-						}}
-					>
-						<h2 className="select-none max-w-[600px] text-46 my-[20px] max-md:max-w-none text-left max-lg:text-center leading-tight py-2 max-sm:text-[25px]">
-							Meeting opinions
-						</h2>
-						<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10 ">
-							<div className="select-none Tabinfo-room__body flex flex-wrap gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
-								{listRoom &&
-									listRoom.map((item, index) => (
-										<div
-											key={`roomname_${index}`}
-											className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
-									${
-										opinion === item.lable
-											? 'bg-lprimary text-white'
-											: 'bg-green-10 text-green-50'
-									}
-									`}
-											onClick={() => setOpinion(item.lable)}
-										>
-											<p className="text-xl">{item.lable}</p>
-										</div>
-									))}
-							</div>
-						</div>
-					</motion.div>
-				</div>
-			</div>
-		</main>
+								</FormControl>
+							</form>
+							<Divider sx={{ my: 4 }}>OR</Divider>
+							<Button variant="outlined" onClick={createMeeting}>
+								Create Meeting
+							</Button>
+						</Box>
+					</Container>
+				</Container>
+			</TopWrapper>
+		</MainContent>
 	)
 }

@@ -32,9 +32,6 @@ export const userFetchUpdateMe = createAsyncThunk(
 	USER_FETCH_UPDATE_ME,
 	async (request: RequestUpdateMe, { dispatch }) => {
 		const res = await UserApi.updateMe(request)
-		const { status } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(userFetchMe())
-		}
+		dispatch(userFetchMe())
 	}
 )

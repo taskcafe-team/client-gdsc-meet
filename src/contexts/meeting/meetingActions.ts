@@ -13,10 +13,11 @@ import { MeetingInfo } from './meetingTypes'
 
 import MeetingApi, { RequestCreateMeetingBody } from 'api/http-rest/meetingApi'
 import RouterPath from 'views/routes/routesContants'
+import { CommonError } from 'contexts/types'
 
-export interface MeetingFetchDetail {
+export interface MeetingFetchError {
 	type: string
-	payload: MeetingInfo
+	payload: CommonError
 }
 
 export interface MeetingAddInstant {
@@ -27,7 +28,8 @@ export interface MeetingAddInstant {
 /*----------- Action -----------*/
 export const meetingFetching = createAction(MEETING_FETCHING)
 export const meetingFetchSuccess = createAction(MEETING_FETCH_SUCESS)
-export const meetingFetchError = createAction(MEETING_FETCH_ERROR)
+export const meetingFetchError =
+	createAction<MeetingFetchError['payload']>(MEETING_FETCH_ERROR)
 export const meetingAddInstant =
 	createAction<MeetingAddInstant['payload']>(MEETING_ADD_INSTANT)
 
@@ -52,13 +54,11 @@ export const meetingFetchCreateInstant = createAsyncThunk(
 	async (request: RequestCreateMeetingBody, { dispatch }) => {
 		dispatch(meetingFetching())
 		const res = await MeetingApi.createMeeting(request)
-		const { status } = res.metadata
+		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingFetchSuccess())
 			dispatch(meetingAddInstant(res.data as MeetingInfo))
-		} else {
-			console.log(res.metadata)
-		}
+		} else dispatch(meetingFetchError({ code: status, message }))
 	}
 )
 
@@ -70,13 +70,11 @@ export const meetingFetchCreateInstantAndJoin = createAsyncThunk(
 	) => {
 		dispatch(meetingFetching())
 		const res = await MeetingApi.createMeeting(request)
-		const { status } = res.metadata
+		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingFetchSuccess())
 			dispatch(meetingAddInstant(res.data as MeetingInfo))
 			request.navigate(RouterPath.getPreMeetingPath(res.data.friendlyId))
-		} else {
-			console.log(res.metadata)
-		}
+		} else dispatch(meetingFetchError({ code: status, message }))
 	}
 )

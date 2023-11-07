@@ -23,14 +23,14 @@ export default function MeetingPage() {
 	const { friendlyId } = useParams() // router blocked friendlyId null
 
 	const fetchMeeting = useCallback(async () => {
-		if (!friendlyId) return
+		if (!friendlyId) return navigate('/')
 		ditpatch(meetingFetchGetInstant(friendlyId))
 		const res = await MeetingApi.getMeeting(friendlyId)
 		if (!res.metadata.status.toString().match(/2\d\d/)) navigate('/')
 	}, [])
 
 	const getAccessToken = useCallback(async () => {
-		if (!friendlyId) return
+		if (!friendlyId) return navigate('/')
 		const res = await MeetingApi.getAccessToken(friendlyId)
 		if (res.metadata.status == 200) setToken(res.data.token)
 	}, [friendlyId])

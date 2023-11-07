@@ -12,22 +12,15 @@ interface InputFileUploadProps {
 
 function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 	const uploadFRef = React.useRef<HTMLInputElement>(null)
-
 	return (
-		<Avatar
-			variant="rounded"
-			sx={{
-				width: '100%',
-				height: '100%',
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-				overflow: 'hidden',
-				position: 'absolute',
-				backgroundColor: 'rgba(0,0,0,0.5)',
-				top: 0,
-				left: 0,
-			}}
+		<Box
+			display="flex"
+			justifyContent="center"
+			alignItems="center"
+			position="absolute"
+			top={0}
+			left={0}
+			sx={{ width: 1, height: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}
 		>
 			<Button
 				component="label"
@@ -43,7 +36,7 @@ function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 					hidden
 				/>
 			</Button>
-		</Avatar>
+		</Box>
 	)
 }
 
@@ -111,26 +104,28 @@ export default function ProfilePage() {
 
 	return (
 		<Box>
-			<Grid container p={3} maxWidth={'800px'} m={'auto'}>
-				<Grid item xs={12}>
+			<Grid container p={3} direction="column" maxWidth={'1000px'} m={'auto'}>
+				<Grid item>
 					<Typography variant="h6">User Information</Typography>
-					<Box display="flex" py={2}>
+					<Box
+						display="flex"
+						flexDirection={{ xs: 'column', sm: 'row' }}
+						py={2}
+					>
 						<Box
+							sx={{ width: 130, height: 130 }}
+							overflow="hidden"
+							position="relative"
+							borderRadius={5}
 							mr={3}
-							sx={{ position: 'relative' }}
+							mb={{ xs: 2, sm: 0 }}
 							onMouseLeave={() => setCanUpload(false)}
 						>
 							<Avatar
 								variant="rounded"
+								sx={{ width: 1, height: 1, fontSize: 48 }}
 								onMouseEnter={() => setCanUpload(true)}
 								src={previewImage || user.avatar || ''}
-								sx={{
-									width: { xs: '100px', md: '130px' },
-									height: { xs: '100px', md: '130px' },
-									fontSize: '42px',
-									backgroundColor: 'blue',
-									opacity: 0.7,
-								}}
 								alt={fullname.toUpperCase()}
 							></Avatar>
 							{canUpload && (
@@ -140,35 +135,37 @@ export default function ProfilePage() {
 								/>
 							)}
 						</Box>
-						<Grid container spacing={2}>
-							<Grid item xs={6}>
-								<TextField
-									value={firstName}
-									onChange={(e) => setFirstName(e.target.value)}
-									variant="outlined"
-									label="First Name"
-									fullWidth
-								/>
+						<Box sx={{ flex: 1 }}>
+							<Grid container spacing={2}>
+								<Grid item xs={6}>
+									<TextField
+										value={firstName}
+										onChange={(e) => setFirstName(e.target.value)}
+										variant="outlined"
+										label="First Name"
+										fullWidth
+									/>
+								</Grid>
+								<Grid item xs={6}>
+									<TextField
+										value={lastName}
+										onChange={(e) => setLastName(e.target.value)}
+										variant="outlined"
+										label="Last Name"
+										fullWidth
+									/>
+								</Grid>
+								<Grid item xs={6}>
+									<TextField
+										label="Email"
+										disabled
+										value={email}
+										variant="outlined"
+										fullWidth
+									/>
+								</Grid>
 							</Grid>
-							<Grid item xs={6}>
-								<TextField
-									value={lastName}
-									onChange={(e) => setLastName(e.target.value)}
-									variant="outlined"
-									label="Last Name"
-									fullWidth
-								/>
-							</Grid>
-							<Grid item xs={6}>
-								<TextField
-									label="Email"
-									disabled
-									value={email}
-									variant="outlined"
-									fullWidth
-								/>
-							</Grid>
-						</Grid>
+						</Box>
 					</Box>
 				</Grid>
 

@@ -3,19 +3,19 @@ export default class RouterPath {
 	static readonly BASE_URL = ''
 
 	static readonly AUTH = `/auth`
-	static readonly LOGIN_URL = `${this.BASE_URL}/${this.AUTH}/login`
-	static readonly SINGUP_URL = `${this.BASE_URL}/${this.AUTH}/signup`
+	static readonly LOGIN_URL = `${this.AUTH}/login`
+	static readonly SINGUP_URL = `${this.AUTH}/signup`
 	static readonly FORGOT_PASSWORD_URL = `${this.AUTH}/forgot-password`
 	static readonly RESET_PASSWORD_URL = `${this.AUTH}/reset-password`
 
-	static readonly USER = `/user`
+	static readonly USER = `user`
 	static readonly PROFILE_URL = `${this.USER}/profile`
 	static readonly CONFIRM_URL = `${this.USER}/confirm`
 
-	static readonly MEETING = `/meeting`
-	static readonly MEETING_URL = `{this.BASE_URL}/${this.MEETING}/:friendlyId`
+	static readonly MEETING = `meeting`
+	static readonly MEETING_URL = `${this.MEETING}/:friendlyId`
 
-	static readonly FORGOTPASSWORD_URL = `/forgotpassword`
+	static readonly FORGOTPASSWORD_URL = `forgotpassword`
 
 	static readonly getPreMeetingPath = (friendlyId: string) =>
 		`meeting/${friendlyId}`

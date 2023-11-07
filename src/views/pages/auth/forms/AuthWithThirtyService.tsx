@@ -13,7 +13,7 @@ export default function AuthWithThirtyService({
 	loginBtnLoading,
 }: AuthWithThirtyServiceProps) {
 	const googleHandler = async () => {
-		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
+		window.open(import.meta.env.API_LOGIN_GOOGLE_URL, '_self')
 	}
 
 	const twitterHandler = async () => {

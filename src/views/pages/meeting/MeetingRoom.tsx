@@ -28,6 +28,7 @@ export default function MeetingRoom({
 	videoAllowed,
 	audioAllowed,
 }: MeetingRoomProps) {
+	const navigate = useNavigate()
 	const [room, setRoom] = useState<Room | null>(null)
 
 	const connect = useCallback(async () => {
@@ -38,7 +39,7 @@ export default function MeetingRoom({
 				resolution: VideoPresets.h720.resolution,
 			},
 		})
-		await _room.connect('https://gdsc-meet.us.to:7880', token)
+		await _room.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
 		await _room.localParticipant.enableCameraAndMicrophone()
 		setRoom(_room)
 	}, [])
@@ -52,6 +53,7 @@ export default function MeetingRoom({
 			<Card sx={{ width: 1, height: 1 }}>
 				{room && (
 					<LiveKitRoom
+						onDisconnected={() => navigate('/')}
 						room={room}
 						video={videoAllowed}
 						audio={audioAllowed}

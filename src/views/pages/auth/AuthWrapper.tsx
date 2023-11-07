@@ -5,18 +5,8 @@ import { Logo } from 'views/layouts/Header'
 
 export default function AuthWrapper({ children }: { children: ReactNode }) {
 	return (
-		<Grid
-			width={1}
-			height={1}
-			container
-			direction="column"
-			justifyContent="flex-end"
-		>
-			<Grid item xs={12}>
-				<Box px="48px" py="12px" display="flex" alignItems="center">
-					<Logo />
-				</Box>
-			</Grid>
+		<Grid container direction={'column'} py={3}>
+			<Grid item xs={12}></Grid>
 			<Grid item xs={12} px={{ xs: '22px', md: '0' }}>
 				<Grid
 					item
@@ -33,7 +23,7 @@ export default function AuthWrapper({ children }: { children: ReactNode }) {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={12} sx={{ m: 3, mt: 1 }}></Grid>
+			<Grid item xs={12}></Grid>
 		</Grid>
 	)
 }
