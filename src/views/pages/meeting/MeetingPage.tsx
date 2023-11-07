@@ -1,9 +1,9 @@
-import React from 'react'
-import { Box } from '@mui/material'
+import { LocalUserChoices } from '@livekit/components-react'
 import '@livekit/components-styles'
+import { Box } from '@mui/material'
 
-const PreJoin = lazy(() => import('./PreJoin'))
-const MeetingRoom = lazy(() => import('./MeetingRoom'))
+const PreJoinTab = lazy(() => import('./PreJoinTab'))
+const MeetingRoomTab = lazy(() => import('./MeetingRoomTab'))
 
 import MeetingApi from 'api/http-rest/meetingApi'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
@@ -35,9 +35,10 @@ export default function MeetingPage() {
 		if (res.metadata.status == 200) setToken(res.data.token)
 	}, [friendlyId])
 
-	const btnJoinMeetingClick = () => {
-		setIsLoading(true)
-		getAccessToken().finally(() => setIsLoading(false))
+	const handlePreJoinSubmit = (values: LocalUserChoices) => {
+		setVideoAllowed(values.videoEnabled)
+		setAudioAllowed(values.audioEnabled)
+		getAccessToken()
 	}
 
 	useLayoutEffect(() => {
@@ -47,6 +48,7 @@ export default function MeetingPage() {
 	if (loading) return <Loading />
 	return (
 		<Box
+			sx={{ backgroundColor: '#111' }}
 			width={1}
 			height={1}
 			display="flex"
@@ -54,25 +56,13 @@ export default function MeetingPage() {
 			alignItems="center"
 		>
 			{token ? (
-				<MeetingRoom
+				<MeetingRoomTab
 					token={token}
 					videoAllowed={videoAllowed}
 					audioAllowed={audioAllowed}
 				/>
 			) : (
-				''
-			)}
-			{!token ? (
-				<PreJoin
-					videoAllowed={videoAllowed}
-					audioAllowed={audioAllowed}
-					setAudioAllowed={setAudioAllowed}
-					setVideoAllowed={setVideoAllowed}
-					btnJoinMeetingClick={btnJoinMeetingClick}
-					isLoading={isLoading}
-				/>
-			) : (
-				''
+				<PreJoinTab handlePreJoinSubmit={handlePreJoinSubmit} />
 			)}
 		</Box>
 	)

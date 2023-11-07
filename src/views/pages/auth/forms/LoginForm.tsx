@@ -28,8 +28,8 @@ import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authFetchEmailLogin } from 'contexts/auth'
 
 const loginFormValueInit: LoginFormValueInit = {
-	email: 'dangnhatminh@gmail.com',
-	password: 'MyP@ssw0rd',
+	email: '',
+	password: '',
 	errMessage: null,
 }
 

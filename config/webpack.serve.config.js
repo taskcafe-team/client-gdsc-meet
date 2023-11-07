@@ -12,6 +12,7 @@ const serverInitial = new WebpackDevServer(
 		static: './dist',
 		historyApiFallback: true,
 		port: process.env.PORT || 8080,
+		allowedHosts: 'all',
 	}
 )
 

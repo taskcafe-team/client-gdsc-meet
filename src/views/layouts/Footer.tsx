@@ -7,11 +7,10 @@ function Copyright() {
 	return (
 		<Typography variant="body2" color="text.secondary">
 			{'Copyright © '}
-			<Link color="inherit" href="https://mui.com/">
-				Your Website
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
+			<Link color="inherit" href="https://www.gdscmeet.live">
+				Gdsc Meet
+			</Link>
+			{` ${new Date().getFullYear()}.`}
 		</Typography>
 	)
 }
@@ -30,9 +29,9 @@ export default function Footer() {
 						: theme.palette.grey[800],
 			}}
 		>
-			<Container maxWidth="md">
+			<Container maxWidth="xl">
 				<Typography variant="body1">
-					My sticky footer can be found here.
+					Gdsc Meet footer can be found here.
 				</Typography>
 				<Copyright />
 			</Container>

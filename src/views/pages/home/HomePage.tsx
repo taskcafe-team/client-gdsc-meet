@@ -67,15 +67,15 @@ export default function HomePage() {
 	return (
 		<MainContent>
 			<TopWrapper>
-				<Container maxWidth="md">
+				<Container maxWidth="sm">
 					<Box textAlign="center">
 						<img
 							style={{ display: 'inline-block' }}
 							alt="Oline Meeting Images"
-							width="400px"
+							width="300px"
 							src={online_meeting_illustration}
 						/>
-						<Typography variant="h3" sx={{ my: 2 }}>
+						<Typography variant="h4" sx={{ my: 2 }}>
 							Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
 						</Typography>
 						<Typography
@@ -84,21 +84,17 @@ export default function HomePage() {
 							fontWeight="normal"
 							sx={{ mb: 4 }}
 						>
-							Chúng tôi đã thiết kế lại Google Meet - dịch vụ tổ chức cuộc họp
-							kinh doanh với độ bảo mật cao - để cung cấp miễn phí cho mọi
-							người.
+							GDSC Meet - dịch vụ tổ chức cuộc họp kinh doanh với độ bảo mật
+							cao.
 						</Typography>
 					</Box>
 					<Container maxWidth="sm">
-						<Box sx={{ textAlign: 'center', mt: 3, p: 4 }}>
+						<Box sx={{ textAlign: 'center', mt: 3, py: 2, px: { md: 4 } }}>
 							<form onSubmit={handleSubmit}>
 								<FormControl
 									variant="outlined"
 									fullWidth
-									onSubmit={(e) => {
-										e.preventDefault()
-										console.log('Submit')
-									}}
+									onSubmit={(e) => e.preventDefault()}
 								>
 									<OutlinedInput
 										value={friendLyId}
@@ -121,8 +117,8 @@ export default function HomePage() {
 									/>
 								</FormControl>
 							</form>
-							<Divider sx={{ my: 4 }}>OR</Divider>
-							<Button variant="outlined" onClick={createMeeting}>
+							<Divider sx={{ my: 2 }}>OR</Divider>
+							<Button size="medium" variant="outlined" onClick={createMeeting}>
 								Create Meeting
 							</Button>
 						</Box>
