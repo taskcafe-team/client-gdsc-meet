@@ -10,6 +10,7 @@ import { userFetchMe } from 'contexts/user'
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
 import ConfirmPage from 'pages/auth/ConfirmPage'
+import ForgotpasswordPage from 'pages/auth/ForgotpasswordPage'
 
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -49,6 +50,11 @@ const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.LOGIN_URL,
 		element: getPublicLayout(<LoginPage />),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.FORGOTPASSWORD_URL,
+		element: getPublicLayout(<ForgotpasswordPage />),
 		loader: undefined,
 	},
 	{
@@ -103,7 +109,7 @@ export default function Router() {
 	return (
 		<Routes>
 			{getRoutes(isLogin)}
-			{/* <Route path="*" element={<Navigate to="/" />} /> */}
+			<Route path="*" element={<Navigate to="/" />} />
 		</Routes>
 	)
 }

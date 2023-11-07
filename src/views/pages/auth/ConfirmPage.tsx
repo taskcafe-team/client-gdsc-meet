@@ -175,8 +175,8 @@ export default function ConfirmPage() {
 		validationSchema: validationSchema,
 		onSubmit(values) {
 			setSaving(true)
-			console.log(values);
-			
+			console.log(values)
+
 			dispatch(
 				userFetchUpdateMe({
 					firstName: values.firstName || undefined,
@@ -214,7 +214,6 @@ export default function ConfirmPage() {
 							className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]"
 						>
 							Feature
-
 						</motion.h2>
 
 						<motion.div
@@ -323,7 +322,6 @@ export default function ConfirmPage() {
 											<span>{formik.errors.lastName}</span>
 										) : null}
 									</p>
-
 								</div>
 								<div className="Form__group px-2 mb-10">
 									<input

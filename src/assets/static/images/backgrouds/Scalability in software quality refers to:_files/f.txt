@@ -1,0 +1,1 @@
+YAHOO.SA.apps[0].cb.sacb0({"q":"Which software quality attribute focuses on the ease of making changes or updates to the software system? A. Performance B. Availability C. Modifiability D. Scalability E. Security","l":{"gprid":"v78ehBE2Scmje2FkavDWJA"},"r":[]})

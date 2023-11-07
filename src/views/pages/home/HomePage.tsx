@@ -32,6 +32,12 @@ export default function HomePage() {
 	const meetingroom = useAppSelector((s) => s.meeting.meetings)
 	const [opinion, setOpinion] = useState(DEFAUFT)
 	const validationLogin = useCallback(() => {
+		if (!isLogin) {
+			return toastily({
+				type: 'warning',
+				content: 'Please sign in',
+			})
+		}
 		return isLogin
 	}, [isLogin])
 	const container = {
@@ -56,13 +62,18 @@ export default function HomePage() {
 	}
 
 	const createMeeting = useCallback(async () => {
-		dispatch(meetingFetchCreateInstantAndJoin({ navigate }))
+		if (validationLogin()) {
+			dispatch(meetingFetchCreateInstantAndJoin({ navigate }))
+		}
 	}, [opinion, meetingroom])
 
 	const handleJoinRoom = useCallback(
 		(e) => {
 			e.preventDefault()
-			dispatch(meetingFetchGetInstant(opinion))
+			if (validationLogin()) {
+				dispatch(meetingFetchGetInstant(friendLyId))
+			}
+			setFriendlyId('')
 		},
 		[opinion]
 	)
@@ -192,7 +203,6 @@ export default function HomePage() {
 											onClick={() => setOpinion(item.lable)}
 										>
 											<p className="text-xl">{item.lable}</p>
-
 										</div>
 									))}
 							</div>
