@@ -35,8 +35,15 @@ type ResponseAccessToken = {
 }
 
 export default class MeetingApi extends Api {
+	static readonly meetingURL = 'meeting'
+
+	static async getMyMeetings() {
+		const path = `${this.meetingURL}`
+		return await Api.get<MeetingInfo[]>(path)
+	}
+
 	static async getMeeting(friendlyId: string) {
-		const path = `meeting/${friendlyId}`
+		const path = `${this.meetingURL}/${friendlyId}`
 		return Api.get<ResponseSuccessDataCreateMeeting>(path)
 	}
 
@@ -48,11 +55,16 @@ export default class MeetingApi extends Api {
 			endDate: request.endDate || null,
 			status: request.status || MeetingStatus.PUBLIC,
 		}
-		return Api.post<ResponseMeetingDto>('meeting', body)
+		return Api.post<ResponseMeetingDto>(`${this.meetingURL}`, body)
+	}
+
+	static async deleteMeetings(request: { ids: string[] }) {
+		const path = `${this.meetingURL}`
+		return Api.delete(path, request)
 	}
 
 	static async getAccessToken(friendlyId: string) {
-		const path = `meeting/${friendlyId}/access-token`
+		const path = `${this.meetingURL}/${friendlyId}/access-token`
 		return Api.get<ResponseAccessToken>(path)
 	}
 }

@@ -36,6 +36,10 @@ export default function MeetingRoomTab({
 
 	const [room, setRoom] = useState<Room | null>(null)
 
+	const socket = () => {
+		if (!room) return
+	}
+
 	const connect = useCallback(async () => {
 		const _room = new Room({
 			adaptiveStream: true,

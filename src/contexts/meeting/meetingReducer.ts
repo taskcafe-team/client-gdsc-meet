@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {
 	meetingAddInstant,
+	meetingAddInstants,
 	meetingFetchError,
 	meetingFetchSuccess,
 	meetingFetching,
@@ -32,6 +33,9 @@ const meetingSlice = createSlice({
 			})
 			.addCase(meetingAddInstant, (state, action) => {
 				state.meetings.push(action.payload)
+			})
+			.addCase(meetingAddInstants, (state, action) => {
+				state.meetings = [...action.payload]
 			})
 	},
 })
