@@ -27,7 +27,6 @@ interface InputFileUploadProps {
 
 function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 	const uploadFRef = React.useRef<HTMLInputElement>(null)
-	console.log('this', onChangeFile)
 
 	return (
 		<Box
@@ -252,8 +251,8 @@ export default function ConfirmPage() {
 							<Box
 								position="relative"
 								sx={{
-									minWidth: { xs: '120px', md: '120px' },
-									minHeight: { xs: '120px', md: '120px' },
+									minWidth: { xs: '100px', md: '100px' },
+									minHeight: { xs: '100px', md: '100px' },
 								}}
 								overflow="hidden"
 								borderRadius={10}

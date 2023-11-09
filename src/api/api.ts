@@ -19,7 +19,7 @@ import { ApiResponse } from './apiResponses'
 import { convertObjectToQueryParams } from 'utils/urlUtils'
 
 const apiRequestConfig: CreateAxiosDefaults<any> = {
-	baseURL: `${'https://gdsc-meet.me-dangnhatminh.id.vn:5000'}`,
+	baseURL: `${'https://www.gdscmeet.live:5000/'}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,

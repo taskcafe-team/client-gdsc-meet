@@ -4,6 +4,7 @@ export interface ApiResponseError {
 }
 
 export interface ReponseMatadata {
+	code: string
 	status: number
 	success: boolean
 	message: string

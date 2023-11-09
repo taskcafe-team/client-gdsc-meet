@@ -47,7 +47,7 @@ export default function LoginPage() {
 	const firstLogin = useMemo(() => getLocalStorageItem('meet:firstLogin'), [])
 
 	const loginWithGoogle = useCallback(() => {
-		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
+		window.open('https://www.gdscmeet.live:5000/auth/google/login', '_self')
 	}, [])
 
 	console.log(authErr)
@@ -100,7 +100,7 @@ export default function LoginPage() {
 		<div className="Singn-up relative h-[100vh] overflow-hidden max-2xl:overflow-auto z-1">
 			<img
 				src={bgL1}
-				className="max-lg:hidden absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2"
+				className="max-2xl:hidden object-left-bottom  absolute bottom-[-20%] left-[-5%] h-[100vh]  z-2"
 			/>
 			<motion.ul
 				className="container max-lg:hidden"
@@ -108,7 +108,7 @@ export default function LoginPage() {
 				initial="hidden"
 				animate="visible"
 			>
-				<motion.li className="mt-[20vh]" variants={item}>
+				<motion.li className="mt-[20vh] max-2xl:mt-[5vh]" variants={item}>
 					<motion.div
 						whileHover={{ scale: 0.6 }}
 						whileTap={{
@@ -125,7 +125,7 @@ export default function LoginPage() {
 					</motion.div>
 				</motion.li>
 			</motion.ul>
-			<main className="mt-[10vh] transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
+			<main className="mt-[10vh]  transition-opacity py-[16px] px-[53px] ml-[45%] max-lg:px-0 max-lg:ml-[0%] max-lg:mx-0 max-lg:flex max-lg:justify-center">
 				<form
 					onSubmit={formik.handleSubmit}
 					action=""

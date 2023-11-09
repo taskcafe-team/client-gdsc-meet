@@ -15,7 +15,7 @@ import { Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Button from 'components/Button'
 import { Animate } from 'utils/mockAnimation'
-import { authFetchGoogleLoginVerify } from 'contexts/auth'
+import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
 import { useAppDispatch } from 'contexts/hooks'
 
 interface IUser {
@@ -49,7 +49,7 @@ export default function SignupPage() {
 		},
 	}
 	const loginWithGoogle = useCallback(() => {
-		window.open('https://gdsc-meet.us.to:5000/auth/google/login', '_self')
+		window.open('https://www.gdscmeet.live:5000/auth/google/login', '_self')
 	}, [])
 	useLayoutEffect(() => {
 		const { search } = query
@@ -90,7 +90,8 @@ export default function SignupPage() {
 
 				if (res.metadata.status === 200) {
 					Toastily({ content: 'Register Success' })
-					navigate(RouterPath.LOGIN_URL)
+					dispatch(authFetchEmailLogin(body))
+					navigate(`/${RouterPath.CONFIRM_URL}`)
 				} else {
 					setErr(res.metadata.message)
 				}
@@ -105,7 +106,7 @@ export default function SignupPage() {
 		<div className="Singn-up relative h-[100vh] overflow-hidden max-2xl:overflow-auto z-1">
 			<img
 				src={bgL1}
-				className="max-lg:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
+				className="max-2xl:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
 			/>
 			<motion.ul
 				className="container max-lg:hidden"
@@ -124,7 +125,7 @@ export default function SignupPage() {
 					>
 						<img
 							src={entity2}
-							className="absolute top-[50%] max-h-[70vh] max-w-[35vw] block z-3 rotate-45"
+							className="absolute  top-[50%] max-h-[70vh] max-w-[35vw] block z-3 rotate-45"
 						/>
 					</motion.div>
 				</motion.li>

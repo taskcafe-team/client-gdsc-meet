@@ -6,6 +6,7 @@ import {
 	authFetchEmailLogin,
 	authLogout,
 	authFetchError,
+	authFetchEmailForgotPass,
 } from './authActions'
 
 const initialState: AuthDetailState = {
@@ -43,6 +44,18 @@ const authSlice = createSlice({
 			.addCase(authFetchEmailLogin.fulfilled, (state) => {
 				state.loading = false
 				state.error = undefined
+			})
+			.addCase(authFetchEmailForgotPass.fulfilled, (state) => {
+				state.loading = false
+				state.error = undefined
+			})
+			.addCase(authFetchEmailForgotPass.pending, (state) => {
+				state.loading = true
+				state.error = undefined
+			})
+			.addCase(authFetchEmailForgotPass.rejected, (state, action) => {
+				state.loading = false
+				state.error = action.payload as any
 			})
 	},
 })

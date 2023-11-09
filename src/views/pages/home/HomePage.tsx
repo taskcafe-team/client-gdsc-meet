@@ -18,9 +18,29 @@ import {
 	meetingFetchGetInstant,
 } from 'contexts/meeting'
 import { redirect } from 'react-router-dom'
+import Tag from 'components/Tag/Tag'
 
 const DEFAUFT = 'Defauft'
-
+const container = {
+	hidden: { opacity: 1, scale: 0 },
+	visible: {
+		opacity: 1,
+		scale: 1,
+		transition: {
+			delayChildren: 0.3,
+			staggerChildren: 0.2,
+		},
+	},
+}
+const item = {
+	hidden: { y: '-100%', opacity: 0, scale: 0 },
+	visible: {
+		y: '-20%',
+		x: '+10%',
+		opacity: 1,
+		scale: 1,
+	},
+}
 export default function HomePage() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -40,26 +60,6 @@ export default function HomePage() {
 		}
 		return isLogin
 	}, [isLogin])
-	const container = {
-		hidden: { opacity: 1, scale: 0 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			transition: {
-				delayChildren: 0.3,
-				staggerChildren: 0.2,
-			},
-		},
-	}
-	const item = {
-		hidden: { y: '-100%', opacity: 0, scale: 0 },
-		visible: {
-			y: '-20%',
-			x: '+10%',
-			opacity: 1,
-			scale: 1,
-		},
-	}
 
 	const createMeeting = useCallback(async () => {
 		if (validationLogin()) {
@@ -80,7 +80,7 @@ export default function HomePage() {
 
 	return (
 		<main
-			className={`Home h-[100vh] w-full bg-lprimary backdrop-blur-30 relative overflow-hidden max-2xl:overflow-auto max-2xl:overflow-x-hidden  max-lg:bg-none ${
+			className={`Home h-[100vh] w-full bg-lprimary backdrop-blur-30 relative  max-2xl:overflow-auto max-2xl:overflow-x-hidden  max-lg:bg-none ${
 				theme === 'light' ? 'max-lg: bg-while' : 'max-lg:bg-black'
 			}`}
 		>
@@ -110,7 +110,7 @@ export default function HomePage() {
 			<img
 				src={theme === 'light' ? Bgtop : BgDarktop}
 				alt="background"
-				className="select-none max-lg:hidden h-[120vh] max-2xl:w-[123vw] max-2xl:h-[160vh]  max-2xl:max-w-[200%]  object-contain object-left-top absolute left-[-17%] top-[-5%] z-2"
+				className="select-none max-lg:hidden h-[130vh] max-2xl:w-[123vw] max-2xl:h-[160vh]  max-2xl:max-w-[200%]  object-contain object-left-top absolute left-[-17%] top-[-5%] z-2"
 			></img>
 
 			<img
@@ -184,26 +184,19 @@ export default function HomePage() {
 							damping: 80,
 						}}
 					>
-						<h2 className="select-none max-w-[600px] text-46 my-[20px] max-md:max-w-none text-left max-lg:text-center leading-tight py-2 max-sm:text-[25px]">
+						<h2 className="select-none max-w-[600px] text-46 my-[20px] max-2xl:my-10 max-md:max-w-none text-left max-lg:text-center leading-tight py-2 max-sm:text-[25px]">
 							Meeting opinions
 						</h2>
-						<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10 ">
-							<div className="select-none Tabinfo-room__body flex flex-wrap gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
+						<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10  ">
+							<div className="Tabinfo-room__body flex flex-wrap justify-start max-2xl:justify-center gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
 								{listRoom &&
 									listRoom.map((item, index) => (
-										<div
-											key={`roomname_${index}`}
-											className={`Tabinfo-room__item w-[122px] transition-all flex  overflow-hidden justify-center gap-2 h-[40px]  ml-4 text-xs  items-center font-bold leading-sm uppercase px-3 py-1  rounded-full cursor-pointer
-									${
-										opinion === item.lable
-											? 'bg-lprimary text-white'
-											: 'bg-green-10 text-green-50'
-									}
-									`}
+										<Tag
+											label={item.lable}
+											active={opinion === item.lable}
+											key={`tag_${index}`}
 											onClick={() => setOpinion(item.lable)}
-										>
-											<p className="text-xl">{item.lable}</p>
-										</div>
+										/>
 									))}
 							</div>
 						</div>

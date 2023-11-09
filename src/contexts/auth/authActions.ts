@@ -1,6 +1,11 @@
-import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
+import {
+	createAction,
+	createAsyncThunk,
+	isRejectedWithValue,
+} from '@reduxjs/toolkit'
 import {
 	AUTH_FETCHING,
+	AUTH_FETCH_EMAIL_FORGOTPASSWORD,
 	AUTH_FETCH_EMAIL_LOGIN,
 	AUTH_FETCH_ERROR,
 	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
@@ -59,6 +64,23 @@ export const authFetchGoogleLoginVerify = createAsyncThunk(
 			})
 			dispatch(userFetchMe())
 			dispatch(authFetchSucess())
+		}
+	}
+)
+
+export const authFetchEmailForgotPass = createAsyncThunk(
+	AUTH_FETCH_EMAIL_FORGOTPASSWORD,
+	async (request: { email: string }, { dispatch, rejectWithValue }) => {
+		dispatch(authFetching())
+		const res = await AuthApi.forgotPasswordWithEmail(request)
+		const { status } = res.metadata
+
+		if (status.toString().match(/(2|3)..../)) {
+			return res
+		} else {
+			const message = res.metadata?.message || 'Something went wrong!'
+			const code = (res.metadata?.code ||res.metadata?.status ) || 'Nan'
+			return rejectWithValue({ message, code })
 		}
 	}
 )
