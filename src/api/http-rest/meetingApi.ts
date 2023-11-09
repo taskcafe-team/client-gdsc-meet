@@ -1,4 +1,5 @@
 import Api from 'api/api'
+import { ApiResponse } from 'api/apiResponses'
 import { MeetingInfo } from 'contexts/meeting'
 import { generateName } from 'utils/personalNameUtils'
 
@@ -9,7 +10,6 @@ export enum MeetingStatus {
 
 export type ResponseMeetingDto = {
 	id: string
-	friendlyId: string
 	title: string | null
 	startTime: string
 	endTime: string | null
@@ -35,19 +35,21 @@ type ResponseAccessToken = {
 }
 
 export default class MeetingApi extends Api {
-	static readonly meetingURL = 'meeting'
+	static readonly meetingURL = 'meetings'
 
 	static async getMyMeetings() {
 		const path = `${this.meetingURL}`
 		return await Api.get<MeetingInfo[]>(path)
 	}
 
-	static async getMeeting(friendlyId: string) {
-		const path = `${this.meetingURL}/${friendlyId}`
+	static async getMeeting(meetingId: string) {
+		const path = `${this.meetingURL}/${meetingId}`
 		return Api.get<ResponseSuccessDataCreateMeeting>(path)
 	}
 
-	static async createMeeting(request: RequestCreateMeetingBody) {
+	static async createMeeting(
+		request: RequestCreateMeetingBody
+	): Promise<ApiResponse<ResponseMeetingDto>> {
 		const body: RequestCreateMeetingBody = {
 			title: request.title || generateName(),
 			description: request.description || null,
@@ -63,8 +65,8 @@ export default class MeetingApi extends Api {
 		return Api.delete(path, request)
 	}
 
-	static async getAccessToken(friendlyId: string) {
-		const path = `${this.meetingURL}/${friendlyId}/access-token`
+	static async getAccessToken(meetingId: string) {
+		const path = `${this.meetingURL}/${meetingId}/access-token`
 		return Api.get<ResponseAccessToken>(path)
 	}
 }

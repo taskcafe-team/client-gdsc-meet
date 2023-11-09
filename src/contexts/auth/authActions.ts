@@ -60,5 +60,6 @@ export const authFetchGoogleLoginVerify = createAsyncThunk(
 			dispatch(userFetchMe())
 			dispatch(authFetchSucess())
 		}
+		return res
 	}
 )

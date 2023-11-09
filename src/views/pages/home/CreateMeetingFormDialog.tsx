@@ -1,24 +1,28 @@
+import React from 'react'
+import { generateName } from 'utils/personalNameUtils'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
+import { meetingFetchCreateInstant } from 'contexts/meeting'
+import { MeetingStatus, ResponseMeetingDto } from 'api/http-rest/meetingApi'
 import {
+	Box,
 	Button,
+	Input,
+	Typography,
+	FormLabel,
+	FormHelperText,
+	Textarea,
+	FormControl,
+	Switch,
+} from '@mui/joy'
+import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
 	DialogActions,
-	Box,
-	FormGroup,
-	FormControlLabel,
-	Switch,
 } from '@mui/material'
-import React from 'react'
-import { StyledInput, Label, TextareaAutosize } from './Component'
-import { generateName } from 'utils/personalNameUtils'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { LoadingButton } from '@mui/lab'
-import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { meetingFetchCreateInstantAndJoin } from 'contexts/meeting'
-import { MeetingStatus } from 'api/http-rest/meetingApi'
-import { Typography } from '@mui/joy'
+import RouterPath from 'views/routes/routesContants'
+import useToastily from 'hooks/useToastily'
+import { ApiResponse } from 'api/apiResponses'
 
 type CreateMeetingFormProps = {
 	open: boolean
@@ -27,8 +31,9 @@ type CreateMeetingFormProps = {
 
 export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 	const dispatch = useAppDispatch()
-	const meetingFetching = useAppSelector((s) => s.meeting.loading)
+	const [fetching, setFetching] = useState(false)
 	const navigate = useNavigate()
+	const toast = useToastily()
 
 	const [meetingTitle, setMeetingTitle] = useState(generateName())
 	const [meetingDescription, setMeetingDescription] = useState('')
@@ -36,19 +41,25 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 	// const [meetingStartDate, setMeetingStartDate] = useState<Date>(new Date())
 	// const [meetingEndDate, setMeetingEndDate] = useState<Date>()
 
-	const handleClose = () => {
-		props.setOpen(false)
-	}
-
 	const handleSubmitCreateMeeting = useCallback(async () => {
-		const request = {
-			title: meetingTitle || undefined,
-			description: meetingDescription || undefined,
-			stauts: isLook ? MeetingStatus.PRIVATE : MeetingStatus.PUBLIC,
-			navigate,
-		}
-		dispatch(meetingFetchCreateInstantAndJoin(request))
-		props.setOpen(false)
+		setFetching(true)
+		dispatch(
+			meetingFetchCreateInstant({
+				title: meetingTitle || undefined,
+				description: meetingDescription || undefined,
+				status: isLook ? MeetingStatus.PRIVATE : MeetingStatus.PUBLIC,
+			})
+		)
+			.then((res) => {
+				const payload = res.payload as ApiResponse<ResponseMeetingDto>
+				if (payload.metadata.success)
+					navigate(RouterPath.getPreMeetingPath(payload.data.id))
+				else throw new Error(payload.metadata.message)
+			})
+			.catch((err) =>
+				toast({ content: err.message || 'Something wrong!', type: 'error' })
+			)
+			.finally(() => setFetching(false))
 	}, [meetingTitle, meetingDescription, isLook])
 
 	return (
@@ -56,59 +67,68 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 			fullWidth
 			maxWidth="xs"
 			open={props.open}
-			onClose={handleClose}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
+			onClose={() => props.setOpen(false)}
 		>
-			<DialogTitle id="alert-dialog-title">
-				<Typography component="h4" level="h4">
-					Create Meeting
-				</Typography>
-			</DialogTitle>
+			<DialogTitle fontWeight="bold">Create Meeting</DialogTitle>
 			<DialogContent>
-				<FormGroup>
-					<Box pb={1}>
-						<Label>Title</Label>
-						<StyledInput
-							placeholder="Input meeting title"
+				<Box pb={1}>
+					<FormControl>
+						<FormLabel>Title</FormLabel>
+						<Input
+							disabled={fetching}
+							placeholder="No Title"
 							value={meetingTitle}
 							onChange={(e) => setMeetingTitle(e.target.value)}
 						/>
-					</Box>
-					<Box pb={1}>
-						<Label>Description</Label>
-						<TextareaAutosize
+					</FormControl>
+				</Box>
+				<Box pb={1}>
+					<FormControl>
+						<FormLabel>Description</FormLabel>
+						<Textarea
+							disabled={fetching}
+							minRows={2}
+							maxRows={10}
+							placeholder="No Description"
 							value={meetingDescription}
 							onChange={(e) => setMeetingDescription(e.target.value)}
-							aria-label="empty textarea"
-							placeholder="Empty"
 						/>
-					</Box>
-					<Box>
-						<FormControlLabel
-							value={isLook}
-							onChange={(e) =>
-								setIsLook((e.target as HTMLInputElement).checked)
+					</FormControl>
+				</Box>
+				<Box>
+					<FormControl>
+						<Typography
+							component="label"
+							startDecorator={
+								<Switch
+									disabled={fetching}
+									checked={isLook}
+									onChange={(e) => setIsLook(e.target.checked)}
+									sx={{ mr: 1 }}
+								/>
 							}
-							control={<Switch defaultChecked />}
-							label="Look Meeting"
-						/>
-					</Box>
-				</FormGroup>
+						>
+							Look Meeting
+						</Typography>
+					</FormControl>
+				</Box>
 			</DialogContent>
 			<DialogActions>
-				<Button disabled={meetingFetching} size="small" onClick={handleClose}>
+				<Button
+					disabled={fetching}
+					variant="outlined"
+					onClick={() => props.setOpen(false)}
+				>
 					Cancel
 				</Button>
-				<LoadingButton
-					loading={meetingFetching}
+				<Button
+					loading={fetching}
 					type="submit"
-					size="small"
-					variant="contained"
+					variant="solid"
 					onClick={handleSubmitCreateMeeting}
 				>
 					Create
-				</LoadingButton>
+				</Button>
 			</DialogActions>
 		</Dialog>
 	)

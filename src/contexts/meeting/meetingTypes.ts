@@ -3,7 +3,6 @@ import { CommonState } from '../types'
 
 export interface MeetingInfo {
 	id: string
-	friendlyId: string
 	title: string | null
 	startTime: string
 	endTime: string | null

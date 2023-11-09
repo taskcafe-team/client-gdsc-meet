@@ -36,5 +36,5 @@ export const SIGNUP_SUBMIT_PATH = 'users'
 export const SUPER_USER_SUBMIT_PATH = `${SIGNUP_SUBMIT_PATH}/super`
 export const EMAIL_VERIFICATION_PATH = `users/verifyEmailVerificationToken`
 
-export const getMeetingAccessTokenPath = (friendlyId: string) =>
-	`meeting/${friendlyId}`
+export const getMeetingAccessTokenPath = (meetingId: string) =>
+	`meeting/${meetingId}`

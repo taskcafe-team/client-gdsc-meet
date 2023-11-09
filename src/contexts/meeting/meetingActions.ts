@@ -14,7 +14,10 @@ import {
 } from './meetingConstants'
 import { MeetingInfo } from './meetingTypes'
 
-import MeetingApi, { RequestCreateMeetingBody } from 'api/http-rest/meetingApi'
+import MeetingApi, {
+	RequestCreateMeetingBody,
+	ResponseMeetingDto,
+} from 'api/http-rest/meetingApi'
 import RouterPath from 'views/routes/routesContants'
 import { CommonError } from 'contexts/types'
 
@@ -59,9 +62,9 @@ export const meetingFetchMyMeetings = createAsyncThunk(
 
 export const meetingFetchGetInstant = createAsyncThunk(
 	MEETING_FETCH_INSTANT,
-	async (friendlyId: string, { dispatch }) => {
+	async (meetingId: string, { dispatch }) => {
 		dispatch(meetingFetching())
-		const res = await MeetingApi.getMeeting(friendlyId)
+		const res = await MeetingApi.getMeeting(meetingId)
 		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingFetchSuccess())
@@ -72,43 +75,34 @@ export const meetingFetchGetInstant = createAsyncThunk(
 
 export const meetingFetchCreateInstant = createAsyncThunk(
 	MEETING_FETCH_CREATE_INSTANT,
-	async (request: RequestCreateMeetingBody, { dispatch }) => {
-		dispatch(meetingFetching())
-		const res = await MeetingApi.createMeeting(request)
-		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingFetchSuccess())
-			dispatch(meetingAddInstant(res.data as MeetingInfo))
-		} else dispatch(meetingFetchError({ code: status, message }))
-	}
-)
-
-export const meetingFetchCreateInstantAndJoin = createAsyncThunk(
-	MEETING_FETCH_CREATE_INSTANT_AND_JOIN,
 	async (
-		request: RequestCreateMeetingBody & { navigate: NavigateFunction },
-		{ dispatch }
+		request: RequestCreateMeetingBody,
+		{ dispatch, fulfillWithValue, rejectWithValue }
 	) => {
-		dispatch(meetingFetching())
 		const res = await MeetingApi.createMeeting(request)
 		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingFetchSuccess())
+		if (status.toString().match(/(2|3)../))
 			dispatch(meetingAddInstant(res.data as MeetingInfo))
-			request.navigate(RouterPath.getPreMeetingPath(res.data.friendlyId))
-		} else dispatch(meetingFetchError({ code: status, message }))
+		else return rejectWithValue(res)
+		return fulfillWithValue(res)
 	}
 )
 
 export const meetingFetchDeleteInstants = createAsyncThunk(
 	MEETING_FETCH_DELETE_INSTANCES,
-	async (request: string[], { dispatch }) => {
+	async (
+		request: string[],
+		{ dispatch, fulfillWithValue, rejectWithValue }
+	) => {
 		dispatch(meetingFetching())
-		const res = await MeetingApi.deleteMeetings({ ids: request })
-		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingFetchSuccess())
-			dispatch(meetingFetchMyMeetings())
-		} else dispatch(meetingFetchError({ code: status, message }))
+		const res = await MeetingApi.deleteMeetings({ ids: request }).catch(
+			() => null
+		)
+		return fulfillWithValue(res)
+		// const { status, message } = res.metadata
+		// if (status.toString().match(/(2|3)../)) {
+		// 	dispatch(meetingFetchSuccess())
+		// 	dispatch(meetingFetchMyMeetings())
+		// } else dispatch(meetingFetchError({ code: status, message }))
 	}
 )

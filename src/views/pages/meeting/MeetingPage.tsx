@@ -20,20 +20,20 @@ export default function MeetingPage() {
 	const [isLoading, setIsLoading] = useState(false)
 	const [token, setToken] = useState('')
 
-	const { friendlyId } = useParams() // router blocked friendlyId null
+	const { meetingId } = useParams() // router blocked meetingId null
 
 	const fetchMeeting = useCallback(async () => {
-		if (!friendlyId) return navigate('/')
-		ditpatch(meetingFetchGetInstant(friendlyId))
-		const res = await MeetingApi.getMeeting(friendlyId)
+		if (!meetingId) return navigate('/')
+		ditpatch(meetingFetchGetInstant(meetingId))
+		const res = await MeetingApi.getMeeting(meetingId)
 		if (!res.metadata.status.toString().match(/2\d\d/)) navigate('/')
 	}, [])
 
 	const getAccessToken = useCallback(async () => {
-		if (!friendlyId) return navigate('/')
-		const res = await MeetingApi.getAccessToken(friendlyId)
+		if (!meetingId) return navigate('/')
+		const res = await MeetingApi.getAccessToken(meetingId)
 		if (res.metadata.status == 200) setToken(res.data.token)
-	}, [friendlyId])
+	}, [meetingId])
 
 	const handlePreJoinSubmit = (values: LocalUserChoices) => {
 		setVideoAllowed(values.videoEnabled)

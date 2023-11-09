@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import {
 	meetingAddInstant,
 	meetingAddInstants,
+	meetingFetchCreateInstant,
 	meetingFetchError,
 	meetingFetchSuccess,
 	meetingFetching,
@@ -23,7 +24,7 @@ const meetingSlice = createSlice({
 			.addCase(meetingFetching, (state) => {
 				state.loading = true
 			})
-			.addCase(meetingFetchSuccess, (state, action) => {
+			.addCase(meetingFetchSuccess, (state) => {
 				state.loading = false
 				state.error = undefined
 			})
