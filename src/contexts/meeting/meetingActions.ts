@@ -63,13 +63,12 @@ export const meetingFetchMyMeetings = createAsyncThunk(
 export const meetingFetchGetInstant = createAsyncThunk(
 	MEETING_FETCH_INSTANT,
 	async (meetingId: string, { dispatch }) => {
-		dispatch(meetingFetching())
 		const res = await MeetingApi.getMeeting(meetingId)
 		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingFetchSuccess())
 			dispatch(meetingAddInstant(res.data as MeetingInfo))
 		} else dispatch(meetingFetchError({ code: status, message }))
+		return res
 	}
 )
 

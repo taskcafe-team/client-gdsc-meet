@@ -1,11 +1,18 @@
 import React from 'react'
-import { Box, Container, Divider } from '@mui/material'
 import CallIcon from '@mui/icons-material/Call'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
 import useToastily from 'hooks/useToastily'
 import CreateMeetingFormDialog from './CreateMeetingFormDialog'
-import { Button, Checkbox, Input, Stack, Typography } from '@mui/joy'
+import {
+	Divider,
+	Box,
+	Button,
+	Checkbox,
+	Input,
+	Stack,
+	Typography,
+} from '@mui/joy'
 import {
 	MeetingInfo,
 	meetingFetchDeleteInstants,
@@ -36,12 +43,12 @@ export default function HomePage() {
 	)
 
 	return (
-		<Container fixed>
+		<Box sx={{ my: 2, mx: 2 }}>
 			<CreateMeetingFormDialog
 				open={openCreateMeetingForm}
 				setOpen={setOpenCreateMeetingForm}
 			/>
-			<Container maxWidth="sm">
+			<Box maxWidth="sm" margin="auto">
 				<Box textAlign="center">
 					<img
 						style={{ display: 'inline-block' }}
@@ -56,7 +63,7 @@ export default function HomePage() {
 						GDSC Meet - dịch vụ tổ chức cuộc họp kinh doanh với độ bảo mật cao.
 					</Typography>
 				</Box>
-				<Container maxWidth="sm">
+				<Box maxWidth="sm">
 					<Box sx={{ textAlign: 'center', mt: 3 }}>
 						<form onSubmit={hanldeSubmitJoinMeeting}>
 							<Stack
@@ -89,12 +96,12 @@ export default function HomePage() {
 							</Stack>
 						</form>
 					</Box>
-				</Container>
-				<Container maxWidth="sm">
+				</Box>
+				<Box maxWidth="sm">
 					<ListMeeting />
-				</Container>
-			</Container>
-		</Container>
+				</Box>
+			</Box>
+		</Box>
 	)
 }
 
@@ -142,7 +149,7 @@ export function ListMeeting() {
 
 	if (!isLogin) return null
 	return (
-		<Box py={2}>
+		<Box sx={{ mb: 4 }}>
 			<Divider sx={{ my: 2 }}>
 				<Typography level="h3" sx={{ my: 2 }} textAlign="center">
 					My Meetings

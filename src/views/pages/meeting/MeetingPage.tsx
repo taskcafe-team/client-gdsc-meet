@@ -9,18 +9,21 @@ import MeetingApi from 'api/http-rest/meetingApi'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { Loading } from 'views/routes/routes'
 import { meetingFetchGetInstant } from 'contexts/meeting'
+import { Room, VideoPresets } from 'livekit-client'
+import useToastily from 'hooks/useToastily'
 
 export default function MeetingPage() {
 	const loading = useAppSelector((s) => s.meeting.loading)
 	const ditpatch = useAppDispatch()
 	const navigate = useNavigate()
+	const { meetingId } = useParams() // router blocked meetingId null
+	const toast = useToastily()
 
 	const [videoAllowed, setVideoAllowed] = useState(true)
 	const [audioAllowed, setAudioAllowed] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
 	const [token, setToken] = useState('')
-
-	const { meetingId } = useParams() // router blocked meetingId null
+	const [roomConnect, setRoomConnect] = useState<Room | null>(null)
 
 	const fetchMeeting = useCallback(async () => {
 		if (!meetingId) return navigate('/')

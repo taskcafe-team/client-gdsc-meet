@@ -8,7 +8,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 
-RUN yarn install --network ...
+RUN yarn install
 
 COPY . ./
 
