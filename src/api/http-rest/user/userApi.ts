@@ -1,6 +1,6 @@
 import type { AxiosPromise } from 'axios'
-import Api from '../api'
-import type { ApiResponse } from '../apiResponses'
+import Api from '../common/api'
+import type { ApiResponse } from '../common/apiResponses'
 
 export interface LoginUserRequest {
 	email: string

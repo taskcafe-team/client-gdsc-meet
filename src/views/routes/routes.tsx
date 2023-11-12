@@ -9,8 +9,9 @@ import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
-import ConfirmPage from 'pages/auth/ConfirmPage'
+import MeetingLayout from 'views/layouts/MeetingLayout'
 
+const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
 const LoginPage = lazy(() => import('views/pages/auth/LoginPage'))
@@ -37,9 +38,9 @@ const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
 	<PublicLayout type={type}>{e}</PublicLayout>
 )
+const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
 
 type CustomRouteProps = RouteProps
-
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
@@ -66,7 +67,7 @@ const privateRoutes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.MEETING_URL,
-		element: getDefaultLayout(<MeetingPage />),
+		element: getMeetingLayout(<MeetingPage />),
 		loader: undefined,
 	},
 	{

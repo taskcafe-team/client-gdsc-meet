@@ -1,22 +1,24 @@
-import React from 'react'
-import { LocalUserChoices, PreJoin } from '@livekit/components-react'
-import { Box } from '@mui/material'
-import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import 'assets/styles/meetingpage.css'
+import {
+	LiveKitRoom,
+	LocalUserChoices,
+	PreJoin,
+} from '@livekit/components-react'
+import { Box } from '@mui/material'
+import { useAppSelector } from 'contexts/hooks'
 import { Room, VideoPresets } from 'livekit-client'
 import useToastily from 'hooks/useToastily'
-import MeetingApi, { ResponseMeetingDto } from 'api/http-rest/meetingApi'
-import { meetingFetchGetInstant } from 'contexts/meeting'
-import { ApiResponse } from 'api/apiResponses'
-import { Button, DialogTitle, Drawer, ModalClose } from '@mui/joy'
-import DrawerMeeting from './DrawerMeeting'
+import MeetingApi from 'api/http-rest/meeting/meetingApi'
+
+import MeetingManagementBar from './MeetingManagementBar'
+import { setLocalStorageItem } from 'utils/localStorageUtils'
 
 type PreJoinTabProps = {
 	// videoAllowed: boolean
 	// audioAllowed: boolean
 	// btnJoinMeetingClick: React.MouseEventHandler<HTMLButtonElement>
 	// isLoading: boolean
-	handlePreJoinSubmit?: (values: LocalUserChoices) => void
+	// handlePreJoinSubmit?: (values: LocalUserChoices) => void
 	onConnected?: (room: Room) => void
 }
 
@@ -42,21 +44,19 @@ export default function PreJoinTab(props: PreJoinTabProps) {
 
 		await _room
 			.connect(import.meta.env.API_WEBRTC_SOCKET_URL, _token)
+			.then((res) => console.log(res))
 			.catch(() => toast({ content: 'Connect Meeting Error', type: 'error' }))
 			.finally(() => setConnectingRoom(false))
 		await _room.localParticipant.enableCameraAndMicrophone()
 		return _room
 	}, [])
 
-	const getRoomToken = useCallback(
-		async (_meetingId: string) => {
-			setFetchingToken(true)
-			const _roomtoken = await MeetingApi.getAccessToken(_meetingId)
-			if (!('data' in _roomtoken)) return null
-			return _roomtoken.data
-		},
-		[meetingId]
-	)
+	const getRoomToken = useCallback(async (_meetingId: string) => {
+		setFetchingToken(true)
+		const _roomtoken = await MeetingApi.getAccessToken(_meetingId)
+		if (!('data' in _roomtoken)) return null
+		return _roomtoken.data
+	}, [])
 
 	const hanldeSubmitJoin = useCallback(async () => {
 		if (fetchingToken || connectingRoom) return
@@ -64,6 +64,8 @@ export default function PreJoinTab(props: PreJoinTabProps) {
 
 		const res = await getRoomToken(meetingId)
 		if (!res) return toast({ content: 'Get token error', type: 'error' })
+		setLocalStorageItem({ key: 'meeting-api-token', value: res.token })
+
 		const _room = await connectToRoom(res.token)
 		if (props.onConnected) props.onConnected(_room)
 	}, [])
@@ -91,7 +93,6 @@ export default function PreJoinTab(props: PreJoinTabProps) {
 					audioEnabled: true,
 				}}
 			/>
-			<DrawerMeeting />
 		</Box>
 	)
 }

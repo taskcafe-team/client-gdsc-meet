@@ -31,9 +31,7 @@ export default function MeetingInfoModal({
 		navigate(RouterPath.getPreMeetingPath(meeting.id))
 	}, [])
 
-	useEffect(() => {
-		console.log(meetingInfo)
-	}, [meetingInfo])
+	useEffect(() => {}, [meetingInfo])
 
 	return (
 		<Modal open={Boolean(meeting)} onClose={() => setMeetingInfo(null)}>

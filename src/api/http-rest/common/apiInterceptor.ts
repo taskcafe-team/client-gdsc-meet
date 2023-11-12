@@ -1,5 +1,5 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { getLocalStorageItem } from '../utils/localStorageUtils'
+import { getLocalStorageItem } from '../../../utils/localStorageUtils'
 import useToastily from 'hooks/useToastily'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {

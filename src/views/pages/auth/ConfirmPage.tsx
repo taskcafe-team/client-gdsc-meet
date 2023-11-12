@@ -27,8 +27,6 @@ interface InputFileUploadProps {
 
 function InputFileUpload({ onChangeFile }: InputFileUploadProps) {
 	const uploadFRef = React.useRef<HTMLInputElement>(null)
-	console.log('this', onChangeFile)
-
 	return (
 		<Box
 			display="flex"

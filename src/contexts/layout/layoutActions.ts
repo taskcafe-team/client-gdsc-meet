@@ -9,8 +9,8 @@ import {
 	MEETING_FETCH_MY_INSTANTS,
 	MEETING_ADD_INSTANTS,
 	MEETING_FETCH_DELETE_INSTANCES,
-} from './meetingConstants'
-import { MeetingInfo } from './meetingTypes'
+} from './layoutConstants'
+import { MeetingInfo } from './layoutTypes'
 
 import MeetingApi from 'api/http-rest/meeting/meetingApi'
 import { CommonError } from 'contexts/types'
@@ -50,7 +50,7 @@ export const meetingFetchMyMeetings = createAsyncThunk(
 		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingFetchSuccess())
-			dispatch(meetingAddInstants(res.data))
+			dispatch(meetingAddInstants(res.data as MeetingInfo[]))
 		} else dispatch(meetingFetchError({ code: status, message }))
 	}
 )
@@ -61,7 +61,7 @@ export const meetingFetchGetInstant = createAsyncThunk(
 		const res = await MeetingApi.getMeeting(meetingId)
 		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingAddInstant(res.data))
+			dispatch(meetingAddInstant(res.data as MeetingInfo))
 		} else dispatch(meetingFetchError({ code: status, message }))
 		return res
 	}

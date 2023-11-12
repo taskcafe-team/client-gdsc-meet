@@ -1,8 +1,7 @@
 import React from 'react'
 import { generateName } from 'utils/personalNameUtils'
-import { useAppDispatch, useAppSelector } from 'contexts/hooks'
+import { useAppDispatch } from 'contexts/hooks'
 import { meetingFetchCreateInstant } from 'contexts/meeting'
-import { MeetingStatus, ResponseMeetingDto } from 'api/http-rest/meetingApi'
 import {
 	Box,
 	Button,
@@ -22,7 +21,11 @@ import {
 } from '@mui/material'
 import RouterPath from 'views/routes/routesContants'
 import useToastily from 'hooks/useToastily'
-import { ApiResponse } from 'api/apiResponses'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import {
+	MeetingType,
+	ResponseMeetingDto,
+} from 'api/http-rest/meeting/meetingApiType'
 
 type CreateMeetingFormProps = {
 	open: boolean
@@ -47,7 +50,7 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 			meetingFetchCreateInstant({
 				title: meetingTitle || undefined,
 				description: meetingDescription || undefined,
-				status: isLook ? MeetingStatus.PRIVATE : MeetingStatus.PUBLIC,
+				type: isLook ? MeetingType.PRIVATE : MeetingType.PUBLIC,
 			})
 		)
 			.then((res) => {

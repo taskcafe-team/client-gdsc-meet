@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { UserInfoState } from './userTypes'
-import { UserRole } from 'api/http-rest/userApi'
+import { UserRole } from 'api/http-rest/user/userApi'
 import { userFetchMe } from './userActions'
 
 const initialState: UserInfoState = {

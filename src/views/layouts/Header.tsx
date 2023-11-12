@@ -21,7 +21,7 @@ import { useAppDispatch, useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
 import { authLogout } from 'contexts/auth'
 
-const pages: string[] = []
+const pages: string[] = ['Profile', 'Logout']
 const settings = ['Profile', 'Logout']
 
 export const Logo = () => (

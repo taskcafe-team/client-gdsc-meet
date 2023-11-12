@@ -11,7 +11,7 @@ import {
 	apiFailureRequestInterceptor,
 	apiSuccessResponseInterceptor,
 	apiFailureResponseInterceptor,
-} from './interceptor'
+} from './apiInterceptor'
 import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
 import { convertObjectToQueryParams } from 'utils/urlUtils'

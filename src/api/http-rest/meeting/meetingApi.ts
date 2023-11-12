@@ -1,50 +1,24 @@
-import Api from 'api/api'
-import { ApiResponse } from 'api/apiResponses'
-import { MeetingInfo } from 'contexts/meeting'
+import Api from 'api/http-rest/common/api'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
 import { generateName } from 'utils/personalNameUtils'
-
-export enum MeetingStatus {
-	PUBLIC = 'PUBLIC',
-	PRIVATE = 'PRIVATE',
-}
-
-export type ResponseMeetingDto = {
-	id: string
-	title: string | null
-	startTime: string
-	endTime: string | null
-	description: string | null
-	status: MeetingStatus
-}
-
-export type ResponseSuccessDataCreateMeeting = ResponseMeetingDto
-
-export type RequestCreateMeetingBody = {
-	title?: string | null
-	description?: string | null
-	startDate?: string | null
-	endDate?: string | null
-	status?: MeetingStatus | null
-}
-
-type ResponseAccessToken = {
-	permissions: {
-		status: string
-	}
-	token: string
-}
+import {
+	MeetingType,
+	RequestCreateMeetingBody,
+	ResponseMeetingDto,
+	ResponseAccessToken,
+} from './meetingApiType'
 
 export default class MeetingApi extends Api {
 	static readonly meetingURL = 'meetings'
 
 	static async getMyMeetings() {
 		const path = `${this.meetingURL}`
-		return await Api.get<MeetingInfo[]>(path)
+		return await Api.get<ResponseMeetingDto[]>(path)
 	}
 
 	static async getMeeting(meetingId: string) {
 		const path = `${this.meetingURL}/${meetingId}`
-		return Api.get<ResponseSuccessDataCreateMeeting>(path)
+		return Api.get<ResponseMeetingDto>(path)
 	}
 
 	static async createMeeting(
@@ -55,7 +29,7 @@ export default class MeetingApi extends Api {
 			description: request.description || null,
 			startDate: request.startDate || null,
 			endDate: request.endDate || null,
-			status: request.status || MeetingStatus.PUBLIC,
+			type: request.type || MeetingType.PUBLIC,
 		}
 		return Api.post<ResponseMeetingDto>(`${this.meetingURL}`, body)
 	}

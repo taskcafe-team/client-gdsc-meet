@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
 import { authFetchGoogleLoginVerify } from 'contexts/auth'
 import { ResponseLoginSuccess } from 'api/http-rest'
-import { ApiResponse } from 'api/apiResponses'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
 import useToastily from 'hooks/useToastily'
 
 export default function LoginPage() {

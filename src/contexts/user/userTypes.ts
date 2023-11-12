@@ -1,4 +1,4 @@
-import { UserRole } from 'api/http-rest/userApi'
+import { UserRole } from 'api/http-rest/user/userApi'
 import { CommonState } from '../types'
 
 export interface UserInfo {

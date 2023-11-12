@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
-import Api from 'api/api'
-import { CreateUserRequest, LoginUserRequest } from './userApi'
-import { ApiResponse } from 'api/apiResponses'
+import Api from 'api/http-rest/common/api'
+import { CreateUserRequest, LoginUserRequest } from '../user/userApi'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
 
 export type ResponseDataRegisterSuccess = {
 	id: string
