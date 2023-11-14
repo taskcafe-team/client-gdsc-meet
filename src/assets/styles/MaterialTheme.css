@@ -1,0 +1,20 @@
+/* custom material */
+
+  /* Override MUI input styles for border color on focus state */
+.MuiInput-root .MuiInput-input:focus {
+    border-color: #5F54E5 !important; /* Màu sắc khi focus */
+  }
+  
+@media (prefers-color-scheme: dark) {
+	.Input::before {
+		border-color: rgba(
+			95,
+			99,
+			104,
+			1
+		) !important; /* Thay đổi màu sắc cho chế độ tối */
+	}
+}
+.bg-primary{
+
+}

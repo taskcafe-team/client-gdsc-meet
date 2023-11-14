@@ -11,6 +11,7 @@ import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
 
+const ForgotpasswordPage = lazy(() => import( 'pages/auth/ForgotpasswordPage'))
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -35,8 +36,14 @@ export const Loading = () => {
 }
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
-	<PublicLayout type={type}>{e}</PublicLayout>
+export const getPublicLayout = (
+	children: ReactNode,
+	type: 'full' | 'wrapper' = 'full',
+	hidden: 'hidden' | 'full' = 'hidden'
+) => (
+	<PublicLayout type={type} hidden={hidden}>
+		{children}
+	</PublicLayout>
 )
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
 
@@ -44,37 +51,44 @@ type CustomRouteProps = RouteProps
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
-		element: getDefaultLayout(<SignupPage />),
+		element: getPublicLayout(<SignupPage />,'full'),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: getDefaultLayout(<LoginPage />),
+		element: getPublicLayout(<LoginPage />,'full'),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
+		element: getPublicLayout(<HomePage />, 'wrapper'),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.CONFIRM_URL,
+		element: getPublicLayout(<ConfirmPage/>,'full'),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.FORGOT_PASSWORD_URL,
+		element: getPublicLayout(<ForgotpasswordPage/>,'wrapper'),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.PROFILE_URL,
+		element: getPublicLayout(<ProfilePage />,'full','full'),
 		loader: undefined,
 	},
 ]
 
 const privateRoutes: CustomRouteProps[] = [
-	{
-		path: RouterPath.PROFILE_URL,
-		element: getDefaultLayout(<ProfilePage />),
-		loader: undefined,
-	},
+	
 	{
 		path: RouterPath.MEETING_URL,
 		element: getMeetingLayout(<MeetingPage />),
 		loader: undefined,
 	},
-	{
-		path: RouterPath.CONFIRM_URL,
-		element: getDefaultLayout(<ConfirmPage />),
-		loader: undefined,
-	},
+	
 ]
 
 export const getRoutes = (isLogin: boolean) => {

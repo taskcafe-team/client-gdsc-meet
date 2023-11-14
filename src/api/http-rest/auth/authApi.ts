@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import Api from 'api/http-rest/common/api'
-import { CreateUserRequest, LoginUserRequest } from '../user/userApi'
+import { CreateUserRequest, ForgotPasswordRequest, LoginUserRequest, ResetPasswordRequest } from '../user/userApi'
 import { ApiResponse } from 'api/http-rest/common/apiResponses'
 
 export type ResponseDataRegisterSuccess = {
@@ -25,6 +25,8 @@ export class AuthApi extends Api {
 	private static emailLoginlUrl = `${this.authUrl}/email/login`
 	private static registerUrl = `${this.authUrl}/email/register`
 	private static googleAuthVeryfyUrl = `auth/google/verify`
+	private static forgotPasswordUrl = `${this.authUrl}/email/forgot-password`
+	private static resetPasswordUrl = `${this.authUrl}/email/reset-password`
 
 	static async loginWithEmail(request: LoginUserRequest) {
 		return this.post<ResponseLoginSuccess>(this.emailLoginlUrl, request)
@@ -38,6 +40,18 @@ export class AuthApi extends Api {
 
 	static async googleAuthVerify(search: string) {
 		return Api.get<ResponseLoginSuccess>(this.googleAuthVeryfyUrl + search)
+	}
+
+	static async forgotPasswordWithEmail<T>(
+		request: ForgotPasswordRequest
+	): Promise<ApiResponse<T>> {
+		return Api.get<T>(this.forgotPasswordUrl,request)
+	}
+
+	static async resetPassword<T>(
+		request:ResetPasswordRequest
+	): Promise<ApiResponse<T>>{
+		return Api.post(this.resetPasswordUrl,request)
 	}
 }
 

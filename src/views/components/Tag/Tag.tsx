@@ -8,7 +8,7 @@ export default function Tag({ label, active, ...rest }) {
 	return (
 		<div className="Tag" {...rest}>
 			<div
-				className={`Tabinfo-room__item w-max transition-all flex justify-center gap-2 h-[40px] ml-4 text-xs items-center font-bold leading-sm uppercase px-10 py-1 rounded-full cursor-pointer ${
+				className={`Tabinfo-room__item w-max transition-all flex justify-center gap-2 h-[40px] ml-4 text-xs items-center font-bold leading-sm uppercase px-10 py-1 rounded-full cursor-pointer hover:bg-lprimary hover:text-white ${
 					active ? 'bg-lprimary text-white' : 'bg-green-10 text-green-50'
 				}`}
 			>

@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import * as Yup from 'yup'
-import { AuthApi, ResponseDataRegisterSuccess } from 'api/http-rest'
+import {
+	AuthApi,
+	ResponseDataRegisterSuccess,
+	ResponseLoginSuccess,
+} from 'api/http-rest'
 import RouterPath from 'views/routes/routesContants'
 import useToastily from 'hooks/useToastily'
 import bgL1 from 'assets/static/images/icons/bgl1.svg'
@@ -15,8 +19,9 @@ import { Input } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Button from 'components/Button'
 import { Animate } from 'utils/mockAnimation'
-import { authFetchGoogleLoginVerify } from 'contexts/auth'
+import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
 import { useAppDispatch } from 'contexts/hooks'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
 
 interface IUser {
 	UserName: string
@@ -33,47 +38,27 @@ export default function SignupPage() {
 	const [loading, setLoading] = useState(false)
 	const [err, setErr] = useState('')
 	const navigate = useNavigate()
-	const Toastily = useToastily()
+	const toast = useToastily()
 	const query = useLocation()
 	const dispatch = useAppDispatch()
-	// init container animate
-	const container = {
-		hidden: { opacity: 1, scale: 0 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			transition: {
-				delayChildren: 0.3,
-				staggerChildren: 0.2,
-			},
-		},
-	}
+
 	const loginWithGoogle = useCallback(() => {
-		window.open(import.meta.env.API_LOGIN_GOOGLE_URL, '_self')
+		window.open('https://www.gdscmeet.live:5000/auth/google/login', '_self')
 	}, [])
 	useLayoutEffect(() => {
 		const { search } = query
-		if (search) dispatch(authFetchGoogleLoginVerify(search))
+		if (search.match('google'))
+			dispatch(authFetchGoogleLoginVerify(search))
+				.then((res) => {
+					const payload = res.payload as ApiResponse<ResponseLoginSuccess>
+					if (payload.metadata.success) {
+					} else throw new Error(payload.metadata.message)
+				})
+				.catch((err) =>
+					toast({ content: err.message || 'Something wrong!', type: 'error' })
+				)
 	}, [])
-	const item = {
-		hidden: { y: '-100%', opacity: 0, scale: 0 },
-		visible: {
-			y: '-20%',
-			x: '+10%',
-			opacity: 1,
-			scale: 1,
-		},
-	}
-	// validate input
-	const validationSchema = Yup.object().shape({
-		UserName: Yup.string().email('Invalid email address').required('Required'),
-		Password: Yup.string()
-			.min(4, 'Password must be 8 characters long')
-			.required('Required'),
-		Repassword: Yup.string()
-			.required('Please re-type your password')
-			.oneOf([Yup.ref('Password')], 'Passwords does not match'),
-	})
+
 	const formik = useFormik({
 		initialValues: inituser,
 		validationSchema: validationSchema,
@@ -89,8 +74,9 @@ export default function SignupPage() {
 				setLoading(false)
 
 				if (res.metadata.status === 200) {
-					Toastily({ content: 'Register Success' })
-					navigate(RouterPath.LOGIN_URL)
+					toast({ content: 'Register Success' })
+					dispatch(authFetchEmailLogin(body))
+					navigate(`/${RouterPath.CONFIRM_URL}`)
 				} else {
 					setErr(res.metadata.message)
 				}
@@ -105,7 +91,7 @@ export default function SignupPage() {
 		<div className="Singn-up relative h-[100vh] overflow-hidden max-2xl:overflow-auto z-1">
 			<img
 				src={bgL1}
-				className="max-lg:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
+				className="max-2xl:hidden absolute bottom-[-20%] left-[-5%]  h-[100vh]  z-2"
 			/>
 			<motion.ul
 				className="container max-lg:hidden"
@@ -124,7 +110,7 @@ export default function SignupPage() {
 					>
 						<img
 							src={entity2}
-							className="absolute top-[50%] max-h-[70vh] max-w-[35vw] block z-3 rotate-45"
+							className="absolute  top-[50%] max-h-[70vh] max-w-[35vw] block z-3 rotate-45"
 						/>
 					</motion.div>
 				</motion.li>
@@ -150,11 +136,14 @@ export default function SignupPage() {
 							placeholder="UserName"
 							className="Input text-18 border-b-2 w-full dark:text-white dark:border-white p-6"
 						/>
-						<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
+						<motion.p
+							{...Animate.getAnimationValues('opacity', 200)}
+							className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic"
+						>
 							{formik.touched.UserName && formik.errors.UserName ? (
 								<span>{formik.errors.UserName}</span>
 							) : null}
-						</p>
+						</motion.p>
 					</div>
 					<div className="Form__group px-2 mb-10">
 						<Input
@@ -168,11 +157,14 @@ export default function SignupPage() {
 							placeholder="Password"
 							className="Input text-18 rounded-sm border-b-2  w-full dark:text-white dark:border-white p-6"
 						/>
-						<p className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic">
+						<motion.p
+							{...Animate.getAnimationValues('opacity', 200)}
+							className="error text-red-50 text-14 min-h-[20px] mx-6 my-2 italic"
+						>
 							{formik.touched.Password && formik.errors.Password ? (
 								<span>{formik.errors.Password}</span>
 							) : null}
-						</p>
+						</motion.p>
 					</div>
 					<div className="Form__group px-2 mb-10 ">
 						<Input
@@ -242,4 +234,35 @@ export default function SignupPage() {
 			</main>
 		</div>
 	)
+}
+// validate input
+const validationSchema = Yup.object().shape({
+	UserName: Yup.string().email('Invalid email address').required('Required'),
+	Password: Yup.string()
+		.min(4, 'Password must be 8 characters long')
+		.required('Required'),
+	Repassword: Yup.string()
+		.required('Please re-type your password')
+		.oneOf([Yup.ref('Password')], 'Passwords does not match'),
+})
+// init container animate
+const container = {
+	hidden: { opacity: 1, scale: 0 },
+	visible: {
+		opacity: 1,
+		scale: 1,
+		transition: {
+			delayChildren: 0.3,
+			staggerChildren: 0.2,
+		},
+	},
+}
+const item = {
+	hidden: { y: '-100%', opacity: 0, scale: 0 },
+	visible: {
+		y: '-20%',
+		x: '+10%',
+		opacity: 1,
+		scale: 1,
+	},
 }

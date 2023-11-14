@@ -127,19 +127,3 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-/* custom material */
-
-.Input::before {
-	border-color: #d1d1d6 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-	.Input::before {
-		border-color: rgba(
-			95,
-			99,
-			104,
-			1
-		) !important; /* Thay đổi màu sắc cho chế độ tối */
-	}
-}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState, useLayoutEffect } from 'react'
 import { generateName } from 'utils/personalNameUtils'
 import { useAppDispatch } from 'contexts/hooks'
 import { meetingFetchCreateInstant } from 'contexts/meeting'
@@ -8,7 +8,6 @@ import {
 	Input,
 	Typography,
 	FormLabel,
-	FormHelperText,
 	Textarea,
 	FormControl,
 	Switch,
@@ -26,68 +25,85 @@ import {
 	MeetingType,
 	ResponseMeetingDto,
 } from 'api/http-rest/meeting/meetingApiType'
+import { DEFAUFT } from './HomePage'
 
 type CreateMeetingFormProps = {
+	opinion?: string
 	open: boolean
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
+export default function CreateMeetingFormDialog({
+	opinion = DEFAUFT,
+	open,
+	setOpen,
+}: CreateMeetingFormProps) {
 	const dispatch = useAppDispatch()
 	const [fetching, setFetching] = useState(false)
+	const [meetingTitle, setMeetingTitle] = useState('')
+	const [meetingDescription, setMeetingDescription] = useState('')
+	const [isLook, setIsLook] = useState(true)
 	const navigate = useNavigate()
 	const toast = useToastily()
 
-	const [meetingTitle, setMeetingTitle] = useState(generateName())
-	const [meetingDescription, setMeetingDescription] = useState('')
-	const [isLook, setIsLook] = useState(true)
-	// const [meetingStartDate, setMeetingStartDate] = useState<Date>(new Date())
-	// const [meetingEndDate, setMeetingEndDate] = useState<Date>()
-
 	const handleSubmitCreateMeeting = useCallback(async () => {
 		setFetching(true)
-		dispatch(
-			meetingFetchCreateInstant({
-				title: meetingTitle || undefined,
-				description: meetingDescription || undefined,
-				type: isLook ? MeetingType.PRIVATE : MeetingType.PUBLIC,
-			})
-		)
-			.then((res) => {
-				const payload = res.payload as ApiResponse<ResponseMeetingDto>
-				if (payload.metadata.success)
-					navigate(RouterPath.getPreMeetingPath(payload.data.id))
-				else throw new Error(payload.metadata.message)
-			})
-			.catch((err) =>
-				toast({ content: err.message || 'Something wrong!', type: 'error' })
+		try {
+			const res = await dispatch(
+				meetingFetchCreateInstant({
+					title: meetingTitle || undefined,
+					description: meetingDescription || undefined,
+					type: isLook ? MeetingType.PRIVATE : MeetingType.PUBLIC,
+				})
 			)
-			.finally(() => setFetching(false))
+
+			const payload = res.payload as ApiResponse<ResponseMeetingDto>
+
+			if (payload.metadata.success) {
+				navigate(RouterPath.getPreMeetingPath(payload.data.id))
+			} else {
+				throw new Error(payload.metadata.message)
+			}
+		} catch (err: any) {
+			toast({ content: err.message || 'Something wrong!', type: 'error' })
+		} finally {
+			setFetching(false)
+		}
 	}, [meetingTitle, meetingDescription, isLook])
 
+	const handleTitle = useCallback(() => {
+		const initTitle: string =
+			opinion === DEFAUFT ? generateName() : opinion || ''
+		setMeetingTitle(initTitle)
+	}, [opinion])
+
+	useLayoutEffect(() => {
+		handleTitle()
+	}, [opinion])
+
 	return (
-		<Dialog
-			fullWidth
-			maxWidth="xs"
-			open={props.open}
-			onClose={() => props.setOpen(false)}
-		>
+		<Dialog fullWidth maxWidth="xs" open={open} onClose={() => setOpen(false)}>
 			<DialogTitle fontWeight="bold">Create Meeting</DialogTitle>
 			<DialogContent>
 				<Box pb={1}>
 					<FormControl>
-						<FormLabel>Title</FormLabel>
+						<label className="text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
+							Title
+						</label>
 						<Input
 							disabled={fetching}
 							placeholder="No Title"
 							value={meetingTitle}
 							onChange={(e) => setMeetingTitle(e.target.value)}
+							className="border-primary"
 						/>
 					</FormControl>
 				</Box>
 				<Box pb={1}>
 					<FormControl>
-						<FormLabel>Description</FormLabel>
+						<label className="text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
+							Description
+						</label>
 						<Textarea
 							disabled={fetching}
 							minRows={2}
@@ -120,7 +136,7 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 				<Button
 					disabled={fetching}
 					variant="outlined"
-					onClick={() => props.setOpen(false)}
+					onClick={() => setOpen(false)}
 				>
 					Cancel
 				</Button>

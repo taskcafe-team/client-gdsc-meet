@@ -1,13 +1,15 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import {
 	AUTH_FETCHING,
+	AUTH_FETCH_EMAIL_FORGOTPASSWORD,
 	AUTH_FETCH_EMAIL_LOGIN,
 	AUTH_FETCH_ERROR,
 	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
+	AUTH_FETCH_RESETPASSWORD,
 	AUTH_FETCH_SUCESS,
 	AUTH_LOGOUT,
 } from './authConstants'
-import { AuthApi } from 'api/http-rest'
+import { AuthApi, ResetPasswordRequest } from 'api/http-rest'
 import { userFetchMe } from 'contexts/user'
 import {
 	removeLocalStorageItem,
@@ -61,5 +63,42 @@ export const authFetchGoogleLoginVerify = createAsyncThunk(
 			dispatch(authFetchSucess())
 		}
 		return res
+	}
+)
+
+export const authFetchEmailForgotPass = createAsyncThunk(
+	AUTH_FETCH_EMAIL_FORGOTPASSWORD,
+	async (request: { email: string }, { dispatch, rejectWithValue }) => {
+		dispatch(authFetching())
+		const res:any = await AuthApi.forgotPasswordWithEmail(request)
+		const { status } = res.metadata
+
+		if (status.toString().match(/(2|3)..../)) {
+			return res
+		} else {
+			const message = res.metadata?.message || 'Something went wrong!'
+			const code = (res.metadata?.code || res.metadata?.status) || 'Nan'
+			return rejectWithValue({ message, code })
+		}
+	}
+)
+
+export const authResetPassword = createAsyncThunk(
+	AUTH_FETCH_RESETPASSWORD,
+	async (request: ResetPasswordRequest, { dispatch, rejectWithValue }) => {
+		try {
+			const response:any = await AuthApi.resetPassword(request)
+			if (response.metadata?.status.toString().match(/(2|3)../)) {
+				return response
+			} else {
+				const message = response.metadata?.message || 'Something went wrong!'
+				const code =
+					(response.metadata?.code || response.metadata?.status) || 'Nan'
+				return rejectWithValue({ message, code })
+			}
+		} catch (error) {
+			// Handle network errors or any other exceptions
+			return rejectWithValue({ message: 'Network error', code: 'NetworkError' })
+		}
 	}
 )
