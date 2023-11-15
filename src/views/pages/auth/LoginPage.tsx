@@ -22,12 +22,9 @@ export default function LoginPage() {
 			dispatch(authFetchGoogleLoginVerify(search))
 				.then((res) => {
 					const payload = res.payload as ApiResponse<ResponseLoginSuccess>
-					if (payload.metadata.success) {
-					} else throw new Error(payload.metadata.message)
+					if (!payload.success) throw new Error(payload.metadata.message)
 				})
-				.catch((err) =>
-					toast({ content: err.message || 'Something wrong!', type: 'error' })
-				)
+				.catch((err) => toast({ content: err.message, type: 'error' }))
 	}, [])
 
 	if (isLogin) return <Navigate to="/" />

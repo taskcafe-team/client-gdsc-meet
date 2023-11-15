@@ -53,15 +53,13 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 				type: isLook ? MeetingType.PRIVATE : MeetingType.PUBLIC,
 			})
 		)
-			.then((res) => {
-				const payload = res.payload as ApiResponse<ResponseMeetingDto>
-				if (payload.metadata.success)
-					navigate(RouterPath.getPreMeetingPath(payload.data.id))
-				else throw new Error(payload.metadata.message)
+			.then((result) => {
+				const response = result.payload as ApiResponse<ResponseMeetingDto>
+				if (response.success)
+					navigate(RouterPath.getPreMeetingPath(response.data.id))
+				else throw new Error(response.metadata.message)
 			})
-			.catch((err) =>
-				toast({ content: err.message || 'Something wrong!', type: 'error' })
-			)
+			.catch((err) => toast({ content: err.message, type: 'error' }))
 			.finally(() => setFetching(false))
 	}, [meetingTitle, meetingDescription, isLook])
 

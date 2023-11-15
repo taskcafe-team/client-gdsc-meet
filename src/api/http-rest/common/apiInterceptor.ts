@@ -1,6 +1,7 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getLocalStorageItem } from '../../../utils/localStorageUtils'
 import useToastily from 'hooks/useToastily'
+import { ApiResponse } from './apiResponses'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 	config.headers = config.headers ?? {}
@@ -18,12 +19,26 @@ export const apiFailureRequestInterceptor = async (error: any) => {
 export const apiSuccessResponseInterceptor = (
 	response: AxiosResponse
 ): AxiosResponse['data'] => {
-	const status = response.data.metadata
-	return response.data
+	// ----[ Format the response from the server ]---- //
+	const { message, success, error, timestamp } = response.data
+	const status = response.status
+	const isFormat = success ?? message ?? error ?? timestamp ?? status ?? false
+	const _response: ApiResponse = {
+		metadata: {
+			status: isFormat ? status : 500,
+			message: isFormat ? message : 'Something went wrong',
+			code: isFormat ? error?.code : undefined,
+		},
+		success: isFormat ? success : false,
+		data: isFormat ? response.data : undefined,
+		timestamp: isFormat ? timestamp : undefined,
+	}
+	// ----------------------------------------------- //
+
+	return _response
 }
 
 export const apiFailureResponseInterceptor = async (error: any) => {
-	const Toastily = useToastily()
-	Toastily({ content: 'Something went wrong', type: 'error' })
+	console.log('--- Axios Error ---')
 	return
 }
