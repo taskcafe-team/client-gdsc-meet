@@ -38,9 +38,4 @@ export default class MeetingApi extends Api {
 		const path = `${this.meetingURL}`
 		return Api.delete(path, request)
 	}
-
-	static async getAccessToken(meetingId: string) {
-		const path = `${this.meetingURL}/${meetingId}/access-token`
-		return Api.get<ResponseAccessToken>(path)
-	}
 }

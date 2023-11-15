@@ -1,3 +1,5 @@
+import { RoomType } from 'api/webrtc/webRTCTypes'
+
 export enum MeetingType {
 	PUBLIC = 'PUBLIC',
 	PRIVATE = 'PRIVATE',
@@ -21,8 +23,7 @@ export type RequestCreateMeetingBody = {
 }
 
 export type ResponseAccessToken = {
-	permissions: {
-		status: string
-	}
-	token: string
+	roomId: string
+	roomType: RoomType
+	roomToken: string
 }

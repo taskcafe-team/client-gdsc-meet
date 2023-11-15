@@ -20,6 +20,7 @@ import {
 } from 'contexts/meeting'
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
+import MeetingChat from 'views/containers/meeting/MeetingChat'
 
 export default function HomePage() {
 	const [openCreateMeetingForm, setOpenCreateMeetingForm] = useState(false)
@@ -64,6 +65,7 @@ export default function HomePage() {
 					</Typography>
 				</Box>
 				<Box maxWidth="sm">
+					<MeetingChat />
 					<Box sx={{ textAlign: 'center', mt: 3 }}>
 						<form onSubmit={hanldeSubmitJoinMeeting}>
 							<Stack
@@ -72,7 +74,7 @@ export default function HomePage() {
 								spacing={1}
 							>
 								<Input
-									value={meetingId}
+									value={meetingId.trim()}
 									onChange={(e) => setMeetingId(e.target.value)}
 									required
 									fullWidth
@@ -155,7 +157,6 @@ export function ListMeeting() {
 					My Meetings
 				</Typography>
 			</Divider>
-
 			{showMeeting && (
 				<MeetingInfoModal
 					meetingInfo={showMeeting}

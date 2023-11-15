@@ -1,44 +1,66 @@
+import { Loading } from 'views/routes/routes'
+import { Room, VideoPresets } from 'livekit-client'
+import { Stack } from '@mui/joy'
 import '@livekit/components-styles'
 
-const PreJoinTab = lazy(() => import('./PreJoinTab'))
-
-import MeetingApi from 'api/http-rest/meeting/meetingApi'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { Loading } from 'views/routes/routes'
 import { meetingFetchGetInstant } from 'contexts/meeting'
-import { Room, VideoPresets } from 'livekit-client'
-import MeetingManagementBar from './MeetingManagementBar'
-import { Container, Grid, Sheet, Stack } from '@mui/joy'
-import MeetingSideBar from './MeetingSideBar'
-import React from 'react'
+import useToastily from 'hooks/useToastily'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
+import { RoomType } from 'api/webrtc/webRTCTypes'
+import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+
+const MeetingSideBar = lazy(() => import('./MeetingSideBar'))
+const PreJoinRoom = lazy(() => import('./PreJoinRoom'))
+const MeetingRoom = lazy(() => import('./MeetingRoom'))
+const WaitingRoom = lazy(() => import('./WaitingRoom'))
+
+enum MeetingRoomType {
+	PREJOIN = 'prejoin',
+	MEETING = 'meeting',
+	WAITING = 'waiting',
+}
 
 export default function MeetingPage() {
-	const loading = useAppSelector((s) => s.meeting.loading)
+	const { meetingId } = useParams()
+	if (!meetingId) return <Navigate to="/" />
+
 	const ditpatch = useAppDispatch()
 	const navigate = useNavigate()
-	const { meetingId } = useParams()
-	const [roomConnect, setRoomConnect] = useState<Room | null>(null)
+	const toast = useToastily()
 
-	const fetchMeeting = useCallback(async () => {
-		if (!meetingId) return navigate('/')
-		ditpatch(meetingFetchGetInstant(meetingId))
-		const res = await MeetingApi.getMeeting(meetingId)
-		if (!res.metadata.status.toString().match(/2\d\d/)) navigate('/')
-	}, [])
+	const [roomType, setRoomType] = useState(RoomType.DEFAULT)
+	const [fetching, setFetching] = useState(true)
+
+	const connectToMeeting = useCallback(async () => {}, [])
 
 	useLayoutEffect(() => {
-		fetchMeeting()
+		setFetching(true)
+		ditpatch(meetingFetchGetInstant(meetingId))
+			.then((res) => {
+				const r = res.payload?.['metadata']?.['status'] || null
+				if (!r) return navigate('/')
+			})
+			.finally(() => setFetching(false))
 	}, [])
-
-	if (loading) return <Loading />
+	if (fetching) return <Loading />
 	return (
-		<Stack direction="row" width={1} height={1} p={1} bgcolor={'#111'}>
-			<Stack width={1} height={1} justifyContent="center" alignItems="center">
-				<PreJoinTab onConnected={(r) => setRoomConnect(r)} />
-			</Stack>
-			<Stack height={1} justifyContent="center" alignItems="center">
-				{(roomConnect && <MeetingSideBar room={roomConnect} />) || ''}
-			</Stack>
+		<Stack direction="row" width={1} height={1} p={1}>
+			{roomType === RoomType.DEFAULT && <PreJoinRoom />}
+			{roomType === RoomType.WAITING && <WaitingRoom />}
+			{roomType === RoomType.MEETING && <MeetingRoom room={new Room()} />}
 		</Stack>
 	)
+}
+
+{
+	//TODO: Remove
+	/* <Stack direction="row" width={1} height={1} p={1} bgcolor={'#111'}>
+<Stack width={1} height={1} justifyContent="center" alignItems="center">
+  {roomType === RoomType.DEFAULT && <PreJoinRoom />}
+  {roomType === RoomType.WAITING && <WaitingRoom />}
+  {roomType === RoomType.MEETING && <MeetingRoom room={new Room()} />}
+</Stack>
+<Stack height={1}>MeetingSideBar</Stack>
+</Stack> */
 }

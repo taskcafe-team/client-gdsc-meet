@@ -34,4 +34,8 @@ export class WebRTCListenerFactory<T extends RegisterActionsType> {
 	public on<key extends keyof T>(type: key, cb: (payload: T[key]) => void) {
 		this.event.on(type as string, cb)
 	}
+
+	public removeAllListeners() {
+		this.event.removeAllListeners()
+	}
 }

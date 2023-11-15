@@ -1,6 +1,24 @@
-import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
+import {
+	ParticipantRole,
+	ParticipantUsecaseDTO,
+} from '../../api/http-rest/participant/participantDTOs'
 
-export interface ParticipantMetadata {
+export enum RoomType {
+	DEFAULT = 'default',
+	MEETING = 'meeting',
+	WAITING = 'waiting',
+}
+
+export type RoomDTO = {
+	id: string
+	type: RoomType
+}
+
+export type AccessTokenMetadata = ParticipantUsecaseDTO & {
+	room: RoomDTO
+}
+
+export type ParticipantMetadata = {
 	id: string
 	meetingId: string
 	name: string
@@ -9,11 +27,13 @@ export interface ParticipantMetadata {
 }
 
 // ----- DTOs ----- //
-export interface ParticipantRequestJoinDTO {
+export type ParticipantRequestJoinDTO = {
 	participantId: string
 }
 
-export interface ParticipantSendMessageDTO {
-	sendby: string
-	message: string
+export type ParticipantSendMessageDTO = {
+	roomId: string
+	roomType: RoomType
+	senderId: string
+	content: string
 }

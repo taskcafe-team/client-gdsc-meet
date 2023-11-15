@@ -62,7 +62,7 @@ export const meetingFetchGetInstant = createAsyncThunk(
 		const { status, message } = res.metadata
 		if (status.toString().match(/(2|3)../)) {
 			dispatch(meetingAddInstant(res.data))
-		} else dispatch(meetingFetchError({ code: status, message }))
+		}
 		return res
 	}
 )

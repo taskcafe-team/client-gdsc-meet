@@ -6,34 +6,18 @@ import {
 	Sheet,
 	Stack,
 } from '@mui/joy'
-import React from 'react'
-import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
 import { Typography } from '@mui/material'
-import ParticipantApi from 'api/http-rest/participant/participantApi'
+import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
 
-interface ChatBoxProps {
-	// onSendMessage?: (message: string) => void
+type ChatBoxProps = {
+	title: string
 	messages: ChatMessageCardProps[]
+	onSend?: (content: string) => Promise<void> | void
 }
-
-export default function ChatBox({ messages }: ChatBoxProps) {
-	const { meetingId } = useParams()
-	if (!meetingId) return <Navigate to="/" />
-
-	const [sending, setSending] = useState(false)
+export default function ChatBox({ title, messages, onSend }: ChatBoxProps) {
 	const [newMess, setNewMess] = useState('')
-
-	const sendMessage = useCallback(async () => {
-		if (newMess.length === 0) return
-		setSending(true)
-		await ParticipantApi.sendMessage(meetingId, {
-			message: newMess,
-		}).finally(() => {
-			setNewMess('')
-			setSending(false)
-		})
-	}, [newMess])
+	const [sending, setSending] = useState(false)
 
 	return (
 		<Stack height={1} overflow="hidden">
@@ -44,7 +28,7 @@ export default function ChatBox({ messages }: ChatBoxProps) {
 					fontWeight="bold"
 					color="Highlight"
 				>
-					Waiting Chat
+					{title}
 				</Typography>
 			</Sheet>
 			<Stack flex={1} overflow="hidden">
@@ -61,13 +45,19 @@ export default function ChatBox({ messages }: ChatBoxProps) {
 				</Box>
 			</Stack>
 			<form
-				onSubmit={(e) => {
+				onSubmit={async (e) => {
 					e.preventDefault()
-					sendMessage()
+					if (sending) return
+					setSending(true)
+					const content = newMess
+					setNewMess('')
+					if (onSend) await onSend(content)
+					setSending(false)
 				}}
 			>
-				<Stack direction="row">
+				<Stack direction="row" width={1}>
 					<Input
+						fullWidth
 						value={newMess}
 						onChange={(e) => setNewMess(e.target.value)}
 						placeholder="Input message here"

@@ -1,30 +1,132 @@
 import { Chat } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
-import { Sheet, Stack, Badge, IconButton, Avatar, Tooltip, Box } from '@mui/joy'
-import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect'
-import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
+import { Sheet, Stack, Badge, IconButton, Tooltip, Box } from '@mui/joy'
+import { Room, VideoPresets } from 'livekit-client'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
-import { ParticipantSendMessageDTO } from 'api/webrtc/webRTCTypes'
-import { LocalParticipant, RemoteParticipant, Room } from 'livekit-client'
-import ChatBox from 'views/containers/meeting/ChatBox'
+import WaitingChatBox from 'views/containers/meeting/WaitingChatBox'
+import MeetingChatBox from 'views/containers/meeting/MeetingChatBox'
+import { ParticipantMetadata, RoomType } from 'api/webrtc/webRTCTypes'
 import { ChatMessageCardProps } from 'views/containers/meeting/ChatMessageCard'
+import { ParticipantRole } from '../../../api/http-rest/participant/participantDTOs' //TODO: Fix Room Type
+import { CreateTokenDTO } from 'api/http-rest/participant/participantApi'
+import { MeetingType } from 'api/http-rest/meeting/meetingApiType' //TODO: Fix Room Type
+import useToastily from 'hooks/useToastily'
 
 enum ManagementTabs {
-	Chat = 'chat',
-	Participant = 'participant',
+	WAITING_CHAT = 'WAITING_CHAT',
+	MEETING_CHAT = 'MEETING_CHAT',
 }
 
-interface MeetingSideBarProps {
-	room: Room
+type MeetingSideBarProps = {
+	participant: {
+		id: string
+		role: ParticipantRole
+	}
+	tokens: CreateTokenDTO[]
 }
-export default function MeetingSideBar({ room }: MeetingSideBarProps) {
-	const webrtcListener = useMemo(() => new WebRTCListenerFactory(room), [room])
 
+const getTabs = (role: ParticipantRole, tokens: CreateTokenDTO[]) => {
+	const MeetingSideBarTab = [
+		{
+			id: 1,
+			title: ManagementTabs.WAITING_CHAT,
+			icon: <Chat />,
+			permission: [ParticipantRole.HOST, ParticipantRole.PARTICIPANT],
+			component: WaitingChatBox,
+		},
+		{
+			id: 2,
+			title: ManagementTabs.MEETING_CHAT,
+			icon: <Chat />,
+			permission: [ParticipantRole.HOST, ParticipantRole.PARTICIPANT],
+			component: MeetingChatBox,
+		},
+	]
+
+	return MeetingSideBarTab.filter((tab) => tab.permission.includes(role))
+}
+
+export default function MeetingSideBar({
+	participant,
+	tokens,
+}: MeetingSideBarProps) {
+	const isHost = useMemo(
+		() => participant.role === ParticipantRole.HOST,
+		[participant]
+	)
+	const role = useMemo(() => participant.role, [participant])
+	const isWaitingRoom = useMemo(() => {
+		if (tokens.length <= 0) return true
+		return tokens.length > 1 ? false : tokens[0].roomType === RoomType.WAITING
+	}, [tokens])
+
+	const toast = useToastily()
+	const [rooms, setRooms] = useState<Map<RoomType, Room>>(new Map())
+
+	const [meetingRoom, setMeetingRoom] = useState<Room | null>(null)
+	const [waitingRoom, setWaitingRoom] = useState<Room | null>(null)
+
+	const connect = useCallback(async () => {
+		const connectPromis = tokens.map(async (t) => {
+			const _room = new Room({
+				adaptiveStream: true,
+				dynacast: true,
+				videoCaptureDefaults: {
+					resolution: VideoPresets.h540.resolution,
+				},
+			})
+
+			await _room
+				.connect(import.meta.env.API_WEBRTC_SOCKET_URL, t.roomToken)
+				.catch(() => console.log('Connect Error'))
+			await _room.localParticipant.enableCameraAndMicrophone()
+
+			rooms.set(t.roomType, _room)
+			setRooms(new Map(rooms))
+		})
+		Promise.all(connectPromis)
+	}, [])
+
+	useLayoutEffect(() => {
+		connect()
+	}, [connect])
+
+	// const tokens = useMemo(() => {
+	// 	const _t = new Map<RoomType, CreateTokenDTO>()
+	// 	props.tokens.forEach((t) => _t.set(t.roomType, t))
+	// 	return _t
+	// }, [props])
+	// const webrtcListener = useMemo(() => new WebRTCListenerFactory(room), [room])
+
+	// // Local Participant Info
+	// const metadata = useMemo(() => {
+	// 	const meta = JSON.parse(room.localParticipant.metadata || '')
+	// 	const metaObject = meta as ParticipantMetadata
+	// 	return { ...metaObject }
+	// }, [room])
+
+	// const [tabs, setTabs] = useState(getTabs(metadata.role))
 	const [showBar, setShowBar] = useState(true)
-	const [currentTab, setCurrentTab] = useState(ManagementTabs.Chat)
-	const [waitingChat, setWaitingChat] = useState<ChatMessageCardProps[]>([])
-	const [countWaitMessOfWaitingChat, setCountWaitMessOfWaitingChat] =
-		useState(0)
+	const [currentTab, setCurrentTab] = useState(ManagementTabs.WAITING_CHAT)
+	const [unreadMessages, setUnreadMessages] = useState<
+		Map<ManagementTabs, number>
+	>(new Map())
+
+	const chatBoxChangeMessage = useCallback(
+		(chatTab: ManagementTabs, messages: ChatMessageCardProps[]) => {
+			if (!showBar)
+				setUnreadMessages((prev) => {
+					prev.set(chatTab, prev.get(chatTab) ? prev.get(chatTab)! + 1 : 0)
+					return new Map(prev)
+				})
+			else
+				setUnreadMessages((prev) => {
+					prev.set(chatTab, 0)
+					return new Map(prev)
+				})
+		},
+		[unreadMessages]
+	)
 
 	const toggleTab = (tab: ManagementTabs) => {
 		// Toggle Show Tab
@@ -33,75 +135,10 @@ export default function MeetingSideBar({ room }: MeetingSideBarProps) {
 			setCurrentTab(tab)
 			setShowBar(true)
 		}
-
-		// Handle when tab showed
-		if (showBar)
-			if (currentTab === ManagementTabs.Chat)
-				setCountWaitMessOfWaitingChat((pre) => 0)
 	}
-
-	const getDisplayType = (tab: ManagementTabs) => {
-		return currentTab === tab ? undefined : 'none'
-	}
-
-	const pushWaitingMessages = useCallback(
-		(newMess: ChatMessageCardProps) => {
-			setWaitingChat((prevChat) => {
-				const length = prevChat.length
-
-				if (length === 0) return [...prevChat, newMess]
-				else {
-					const lastmess = prevChat[length - 1]
-					const lastSenderId = lastmess.messageContent.senderId
-					const currentSenderId = newMess.messageContent.senderId
-
-					if (lastSenderId === currentSenderId) {
-						const contents = newMess.messageContent.contents
-						lastmess.messageContent.contents.push(...contents)
-						return [...prevChat.slice(0, length - 1), lastmess]
-					} else return [...prevChat, newMess]
-				}
-			})
-
-			if (showBar) {
-				if (currentTab === ManagementTabs.Chat) setCountWaitMessOfWaitingChat(0)
-			} else setCountWaitMessOfWaitingChat((prevCount) => prevCount + 1)
-		},
-		[waitingChat, currentTab, showBar]
-	)
-
-	const listenSendMessage = useCallback(
-		(payload: ParticipantSendMessageDTO) => {
-			const localId = room.localParticipant.identity
-			let sender: LocalParticipant | RemoteParticipant | undefined = undefined
-			if (payload.sendby == localId) sender = room.localParticipant
-			else sender = room.participants.get(payload.sendby)
-			if (!sender) return
-
-			const newMessage: ChatMessageCardProps = {
-				position: localId === sender.identity ? 'right' : 'left',
-				messageContent: {
-					senderId: sender.identity,
-					name: sender.name || 'No name',
-					avatar: '',
-					contents: [payload.message],
-				},
-			}
-
-			pushWaitingMessages(newMessage)
-		},
-		[room, pushWaitingMessages]
-	)
-
-	useEnhancedEffect(() => {
-		webrtcListener.on(
-			SendMessageActionEnum.ParticipantSendMessage,
-			listenSendMessage
-		)
-	}, [webrtcListener])
 
 	return (
-		<Stack direction="row" spacing={1}>
+		<Stack direction="row" spacing={1} height={1}>
 			<Sheet
 				variant="plain"
 				sx={{
@@ -112,40 +149,71 @@ export default function MeetingSideBar({ room }: MeetingSideBarProps) {
 					display: showBar ? undefined : 'none',
 				}}
 			>
-				<Box display={getDisplayType(ManagementTabs.Chat)}>
-					<ChatBox messages={waitingChat} />
-				</Box>
+				{role !== ParticipantRole.HOST}
+				{/* {tabs.map((tab, i) => {
+					return (
+						<Box
+							key={i}
+							height={1}
+							overflow="hidden"
+							display={currentTab === tab.title ? undefined : 'none'}
+						>
+							<tab.component
+								room={room}
+								webrtcListener={webrtcListener}
+								onMessageChange={(m) => chatBoxChangeMessage(tab.title, m)}
+							/>
+						</Box>
+					)
+				})} */}
 			</Sheet>
 
-			<Sheet
-				sx={{
-					borderRadius: 15,
-					p: 2,
-					display: 'flex',
-					flexDirection: 'column',
-					gap: 2,
-					'& button': { borderRadius: '50%', padding: 0 },
-				}}
-			>
-				<IconButton
-					onClick={() => setShowBar(!showBar)}
-					variant="outlined"
-					sx={{ width: '40px', height: '40px' }}
+			<Box>
+				<Sheet
+					sx={{
+						borderRadius: 15,
+						p: 2,
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 2,
+						'& button': { borderRadius: '50%', padding: 0 },
+					}}
 				>
-					<MenuIcon />
-				</IconButton>
-				<Tooltip title="Chat" variant="solid" placement="left">
 					<IconButton
-						variant="soft"
+						onClick={() => setShowBar(!showBar)}
+						variant="outlined"
 						sx={{ width: '40px', height: '40px' }}
-						onClick={() => toggleTab(ManagementTabs.Chat)}
 					>
-						<Badge badgeContent={countWaitMessOfWaitingChat} size="sm">
-							<Chat />
-						</Badge>
+						<MenuIcon />
 					</IconButton>
-				</Tooltip>
-			</Sheet>
+
+					{/* {tabs.map((tab, i) => {
+						return (
+							<Tooltip
+								key={i}
+								title={tab.title}
+								variant="solid"
+								placement="left"
+							>
+								<IconButton
+									variant={
+										showBar && tab.title == currentTab ? 'solid' : 'soft'
+									}
+									sx={{ width: '40px', height: '40px' }}
+									onClick={() => toggleTab(tab.title)}
+								>
+									<Badge
+										badgeContent={unreadMessages.get(tab.title) || 0}
+										size="sm"
+									>
+										{tab.icon}
+									</Badge>
+								</IconButton>
+							</Tooltip>
+						)
+					})} */}
+				</Sheet>
+			</Box>
 		</Stack>
 	)
 }
