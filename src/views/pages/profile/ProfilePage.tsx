@@ -15,6 +15,7 @@ import HistoryMeet from './components/HistoryMeet'
 import Idea from 'assets/static/images/backgrouds/idea.svg'
 import { meetingRecords } from 'utils/mockHistoryRoom'
 import FormInfomation from 'components/FormInfomation/FormInfomation'
+import FilesMeet from './components/FilesMeet'
 
 export interface IFeature {
 	label: string
@@ -30,7 +31,7 @@ const features: IFeature[] = [
 	{
 		label: 'Founder',
 		description: 'Keep track of founders and their details.',
-		component: <></>,
+		component: <FilesMeet></FilesMeet>,
 	},
 	{
 		label: 'Information',
@@ -79,8 +80,8 @@ const ProfilePage: React.FC = () => {
 	}, [query])
 
 	return (
-		<main className="mt-[10vh] max-2xl:mt-[20vh]">
-			<div className="container mx-auto w-full mt-[10vh] px-[53px] max-2xl:px-10  flex gap-10 max-lg:flex-col-reverse">
+		<main className="mt-[10vh] max-2xl:mt-[20vh] max-sm:mt-[5vh]">
+			<div className="container mx-auto w-full mt-[10vh] px-[53px] max-2xl:px-10  flex gap-10 max-lg:flex-col">
 				<div className="content w-[30%] max-sm:w-full">
 					<div className="Review">
 						

@@ -10,6 +10,7 @@ import { userFetchMe } from 'contexts/user'
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
+import Document from 'pages/document/Document'
 
 const ForgotpasswordPage = lazy(() => import( 'pages/auth/ForgotpasswordPage'))
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
@@ -76,7 +77,12 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.PROFILE_URL,
-		element: getPublicLayout(<ProfilePage />,'full','full'),
+		element: getPublicLayout(<ProfilePage />,'full',),
+		loader: undefined,
+	},
+	{
+		path: RouterPath.DOCUMENT_URL,
+		element: getPublicLayout(<Document />,'full'),
 		loader: undefined,
 	},
 ]

@@ -1,10 +1,10 @@
 /* custom material */
 
-  /* Override MUI input styles for border color on focus state */
+/* Override MUI input styles for border color on focus state */
 .MuiInput-root .MuiInput-input:focus {
-    border-color: #5F54E5 !important; /* Màu sắc khi focus */
-  }
-  
+	border-color: #5f54e5 !important; /* Màu sắc khi focus */
+}
+
 @media (prefers-color-scheme: dark) {
 	.Input::before {
 		border-color: rgba(
@@ -15,6 +15,35 @@
 		) !important; /* Thay đổi màu sắc cho chế độ tối */
 	}
 }
-.bg-primary{
+.bg-primary {
+}
 
+/* Works on Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #5f54e5;
+}
+
+/* For desktop browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+	width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #5f54e5;
+	border-radius: 20px;
+}
+
+/* For mobile devices (width <= 600px, you can adjust this breakpoint) */
+@media only screen and (max-width: 600px) {
+	*::-webkit-scrollbar {
+		width: 0;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background-color: transparent;
+	}
 }

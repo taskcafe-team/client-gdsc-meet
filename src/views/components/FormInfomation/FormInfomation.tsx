@@ -17,7 +17,7 @@ interface InputFileUploadProps {
 interface FormInfomationProps {
 	lable?: string
 }
-const FormInfomation = ({ lable, ...rest }:FormInfomationProps) => {
+const FormInfomation = ({ lable, ...rest }: FormInfomationProps) => {
 	const dispatch = useAppDispatch()
 	const user = useAppSelector((s) => s.user)
 
@@ -84,7 +84,7 @@ const FormInfomation = ({ lable, ...rest }:FormInfomationProps) => {
 			<Grid item>
 				<motion.h2
 					{...Animate.getAnimationValues('opacity', 800)}
-					className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]"
+					className="max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:my-4 max-sm:text-[25px]"
 				>
 					User Details
 				</motion.h2>
@@ -122,17 +122,16 @@ const FormInfomation = ({ lable, ...rest }:FormInfomationProps) => {
 						disabled
 						value={email}
 						className="bg-white border border-gray-30 text-gray-80 dark:bg-gray-80 text-16 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						
 					/>
 					<input
 						value={lastName}
-                        placeholder='Last name'
+						placeholder="Last name"
 						onChange={(e) => setLastName(e.target.value)}
 						className="bg-white border border-gray-30 text-gray-80 dark:bg-gray-80 text-16 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 					/>
 					<input
 						value={firstName}
-                        placeholder='First name'
+						placeholder="First name"
 						onChange={(e) => setFirstName(e.target.value)}
 						className="bg-white border border-gray-30 text-gray-80 dark:bg-gray-80 text-16 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 					/>

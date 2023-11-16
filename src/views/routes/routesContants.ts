@@ -15,6 +15,8 @@ export default class RouterPath {
 	static readonly MEETING = `meeting`
 	static readonly MEETING_URL = `${this.MEETING}/:meetingId`
 
+	static readonly DOCUMENT_URL = `${this.USER}/document`
+
 	static readonly FORGOTPASSWORD_URL = `forgotpassword`
 
 	static readonly getPreMeetingPath = (meetingId: string) =>
