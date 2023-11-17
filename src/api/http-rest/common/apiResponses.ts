@@ -1,11 +1,15 @@
-export interface ReponseMatadata {
-	status: number
+export type ApiResponseError = {
+	code: number | string
 	message: string
-	code?: string
 }
 
-export interface ApiResponse<T = undefined> {
-	metadata: ReponseMatadata
+export type ResponseMetadata = {
+	status: number
+	error?: ApiResponseError
+}
+
+export type ApiResponse<T = undefined> = {
+	metadata: ResponseMetadata
 	success: boolean
 	data: T
 	timestamp: number

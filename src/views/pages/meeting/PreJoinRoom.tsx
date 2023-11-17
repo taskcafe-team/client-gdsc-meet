@@ -1,66 +1,81 @@
-import 'assets/styles/meetingpage.css'
 import { LocalUserChoices, PreJoin } from '@livekit/components-react'
-import { Box, Sheet, Stack, Container } from '@mui/joy'
+import { Sheet, Stack, Container, CircularProgress } from '@mui/joy'
 import { useAppSelector } from 'contexts/hooks'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
 import useToastily from 'hooks/useToastily'
-import ChatBox from 'views/containers/meeting/ChatBox'
-import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
-import { Room, VideoPresets } from 'livekit-client'
-import { ChatMessageCardProps } from 'views/containers/meeting/ChatMessageCard'
-import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
-import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import WaitingChatBox from 'views/containers/meeting/WaitingChatBox'
+import { RoomType } from 'api/webrtc/webRTCTypes'
+import { MeetingContext } from 'views/containers/meeting/MeetingContext'
+import { Room, VideoPresets } from 'livekit-client'
 
-type PreJoinRoomProps = {
-	onSubmit?: (values: {
-		userChoice: Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>
-		redirectTo: RoomType
-	}) => Promise<void>
-}
+const Loading = () => (
+	<Stack justifyContent="center" alignItems="center" width={1} height={1}>
+		<CircularProgress />
+	</Stack>
+)
 
-export default function PreJoinRoom({ onSubmit }: PreJoinRoomProps) {
-	const { meetingId } = useParams()
-	if (!meetingId) return <Navigate to="/" />
+export default function PreJoinRoom() {
+	const toast = useToastily()
+	const navigate = useNavigate()
 
+	const [loading, setLoading] = useState(false)
+	const [loadingRoom, setLoadingRoom] = useState(true)
+
+	const { currentRoom, meetingId, setState, registerRoom } =
+		useContext(MeetingContext)
 	const user = useAppSelector((s) => s.user)
 	const fullname = `${user.firstName + ' ' + user.lastName}`.trim()
 
-	const toast = useToastily()
-	const [loading, setLoading] = useState(false)
-	const [roomType, setRoomType] = useState<RoomType | null>(null)
+	const fetchGetTokenAndSaveSessionStore = useCallback(async () => {
+		const res = await ParticipantApi.getAccessToken(meetingId)
+		if (!res.success) return null
+		const { tokens, participant } = res.data
+		tokens.forEach((t) => ParticipantApi.setMeetingApiToken(t))
+		let roomtype = RoomType.WAITING
+		if (participant.role === ParticipantRole.HOST) roomtype = RoomType.MEETING
+		else roomtype = tokens[0].roomType ?? RoomType.WAITING
+		return roomtype
+	}, [])
 
-	const joinRoom = useCallback(
-		async (values: Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>) => {
-			const res = await ParticipantApi.getAccessToken(meetingId)
-			const { participant, tokens } = res?.data
-			if (!participant || !tokens)
-				return toast({ content: 'Join Meeting Error', type: 'error' })
-			tokens.forEach((t) => ParticipantApi.setMeetingApiToken(t))
-			let _roomType = RoomType.WAITING
-			if (participant.role === ParticipantRole.HOST)
-				_roomType = RoomType.MEETING
-			else _roomType = tokens[0].roomType ?? RoomType.WAITING
-			setRoomType(_roomType)
-		},
-		[]
-	)
-
-	const hanldeSubmitJoin = useCallback(
+	const submitJoinRoom = useCallback(
 		async (values: Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>) => {
 			if (loading) return
 			setLoading(true)
-			joinRoom(values)
-			if (onSubmit)
-				await onSubmit({
-					userChoice: values,
-					redirectTo: roomType ?? RoomType.WAITING,
-				})
-			setLoading(false)
+			const roomtype = await fetchGetTokenAndSaveSessionStore()
+			if (!roomtype)
+				return toast({ content: 'Join Meeting Error', type: 'error' })
+			setState?.((pre) => ({ ...pre, currentRoom: roomtype }))
 		},
 		[]
 	)
+
+	const connectToChatRoom = useCallback(async () => {
+		if (currentRoom != RoomType.WAITING) return
+		setLoadingRoom(true)
+		const token = ParticipantApi.getMeetingApiToken({
+			roomId: meetingId,
+			roomType: RoomType.WAITING,
+		})
+		if (!token || token.length === 0) return navigate('/')
+
+		const room = new Room({
+			adaptiveStream: true,
+			dynacast: true,
+			videoCaptureDefaults: {
+				resolution: VideoPresets.h540.resolution,
+			},
+		})
+
+		await room.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
+		if (registerRoom) registerRoom(room, RoomType.WAITING)
+		setLoadingRoom(false)
+	}, [currentRoom])
+
+	useLayoutEffect(() => {
+		connectToChatRoom()
+		return () => {}
+	}, [currentRoom])
 
 	return (
 		<Stack width={1} height={1} justifyContent="center" alignItems="center">
@@ -69,23 +84,12 @@ export default function PreJoinRoom({ onSubmit }: PreJoinRoomProps) {
 				borderRadius="lg"
 				justifyContent="center"
 				alignItems="stretch"
-				direction={{
-					xs: 'column',
-					md: 'row',
-				}}
-				height={{
-					xs: 'auto',
-					md: 450,
-				}}
+				direction={{ xs: 'column', md: 'row' }}
+				height={{ xs: 'auto', md: 450 }}
 			>
-				<Sheet
-					variant="soft"
-					sx={{
-						width: { xs: 'auto', md: 500 },
-					}}
-				>
+				<Sheet variant="soft" sx={{ width: { xs: 'auto', md: 500 } }}>
 					<PreJoin
-						onSubmit={hanldeSubmitJoin}
+						onSubmit={submitJoinRoom}
 						data-lk-theme="default"
 						style={{
 							color: 'white',
@@ -100,15 +104,12 @@ export default function PreJoinRoom({ onSubmit }: PreJoinRoomProps) {
 						}}
 					/>
 				</Sheet>
-				{roomType === RoomType.WAITING && (
+				{currentRoom == RoomType.WAITING && (
 					<Sheet
 						variant="soft"
-						sx={{
-							p: 2,
-							height: { xs: 300, md: 'auto' },
-						}}
+						sx={{ p: 2, minWidth: 275, height: { xs: 300, md: 'auto' } }}
 					>
-						<WaitingChatBox />
+						{loadingRoom ? <Loading /> : <WaitingChatBox />}
 					</Sheet>
 				)}
 			</Stack>

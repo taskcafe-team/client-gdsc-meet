@@ -32,10 +32,10 @@ export interface MeetingAddInstants {
 }
 
 /*----------- Action -----------*/
-export const meetingFetching = createAction(MEETING_FETCHING)
-export const meetingFetchSuccess = createAction(MEETING_FETCH_SUCESS)
-export const meetingFetchError =
-	createAction<MeetingFetchError['payload']>(MEETING_FETCH_ERROR)
+// export const meetingFetching = createAction(MEETING_FETCHING)
+// export const meetingFetchSuccess = createAction(MEETING_FETCH_SUCESS)
+// export const meetingFetchError =
+// 	createAction<MeetingFetchError['payload']>(MEETING_FETCH_ERROR)
 export const meetingAddInstant =
 	createAction<MeetingAddInstant['payload']>(MEETING_ADD_INSTANT)
 export const meetingAddInstants =
@@ -45,13 +45,10 @@ export const meetingAddInstants =
 export const meetingFetchMyMeetings = createAsyncThunk(
 	MEETING_FETCH_MY_INSTANTS,
 	async (request = undefined, { dispatch }) => {
-		dispatch(meetingFetching())
 		const res = await MeetingApi.getMyMeetings()
-		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingFetchSuccess())
-			dispatch(meetingAddInstants(res.data))
-		} else dispatch(meetingFetchError({ code: status, message }))
+		const { success } = res
+		if (success) dispatch(meetingAddInstants(res.data))
+		return res
 	}
 )
 
@@ -59,26 +56,19 @@ export const meetingFetchGetInstant = createAsyncThunk(
 	MEETING_FETCH_INSTANT,
 	async (meetingId: string, { dispatch }) => {
 		const res = await MeetingApi.getMeeting(meetingId)
-		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(meetingAddInstant(res.data))
-		}
+		const { success } = res
+		if (success) dispatch(meetingAddInstant(res.data))
 		return res
 	}
 )
 
 export const meetingFetchCreateInstant = createAsyncThunk(
 	MEETING_FETCH_CREATE_INSTANT,
-	async (
-		request: RequestCreateMeetingBody,
-		{ dispatch, fulfillWithValue, rejectWithValue }
-	) => {
+	async (request: RequestCreateMeetingBody, { dispatch }) => {
 		const res = await MeetingApi.createMeeting(request)
-		const { status, message } = res.metadata
-		if (status.toString().match(/(2|3)../))
-			dispatch(meetingAddInstant(res.data as MeetingInfo))
-		else return rejectWithValue(res)
-		return fulfillWithValue(res)
+		const { success } = res
+		if (success) dispatch(meetingAddInstant(res.data as MeetingInfo))
+		return res
 	}
 )
 
@@ -88,15 +78,9 @@ export const meetingFetchDeleteInstants = createAsyncThunk(
 		request: string[],
 		{ dispatch, fulfillWithValue, rejectWithValue }
 	) => {
-		dispatch(meetingFetching())
-		const res = await MeetingApi.deleteMeetings({ ids: request }).catch(
-			() => null
-		)
-		return fulfillWithValue(res)
-		// const { status, message } = res.metadata
-		// if (status.toString().match(/(2|3)../)) {
-		// 	dispatch(meetingFetchSuccess())
-		// 	dispatch(meetingFetchMyMeetings())
-		// } else dispatch(meetingFetchError({ code: status, message }))
+		const res = await MeetingApi.deleteMeetings({ ids: request })
+		const { success, metadata } = res
+		if (success) dispatch(meetingFetchMyMeetings())
+		return res
 	}
 )

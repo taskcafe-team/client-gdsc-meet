@@ -88,14 +88,9 @@ export default function SignupPage() {
 					await AuthApi.registerWithEmail<ResponseDataRegisterSuccess>(body)
 				setLoading(false)
 
-				if (res.metadata.status === 200) {
-					Toastily({ content: 'Register Success' })
-					navigate(RouterPath.LOGIN_URL)
-				} else {
-					setErr(res.metadata.message)
-				}
-			} catch (error) {
-				// -- empty
+				const { success, metadata } = res
+				if (success) navigate(RouterPath.LOGIN_URL)
+				else setErr(metadata.error?.message ?? '')
 			} finally {
 				setLoading(false)
 			}

@@ -47,7 +47,7 @@ export default function ChatBox({ title, messages, onSend }: ChatBoxProps) {
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault()
-					if (sending) return
+					if (sending || newMess.trim().length == 0) return
 					setSending(true)
 					const content = newMess
 					setNewMess('')

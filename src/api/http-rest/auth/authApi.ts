@@ -26,17 +26,17 @@ export class AuthApi extends Api {
 	private static registerUrl = `${this.authUrl}/email/register`
 	private static googleAuthVeryfyUrl = `auth/google/verify`
 
-	static async loginWithEmail(request: LoginUserRequest) {
+	static loginWithEmail(request: LoginUserRequest) {
 		return this.post<ResponseLoginSuccess>(this.emailLoginlUrl, request)
 	}
 
-	static async registerWithEmail<T>(
+	static registerWithEmail<T>(
 		request: CreateUserRequest
 	): Promise<ApiResponse<T>> {
 		return Api.post<T>(this.registerUrl, request)
 	}
 
-	static async googleAuthVerify(search: string) {
+	static googleAuthVerify(search: string) {
 		return Api.get<ResponseLoginSuccess>(this.googleAuthVeryfyUrl + search)
 	}
 }

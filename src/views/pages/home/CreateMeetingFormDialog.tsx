@@ -21,7 +21,10 @@ import {
 } from '@mui/material'
 import RouterPath from 'views/routes/routesContants'
 import useToastily from 'hooks/useToastily'
-import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import {
+	ApiResponse,
+	ApiResponseError,
+} from 'api/http-rest/common/apiResponses'
 import {
 	MeetingType,
 	ResponseMeetingDto,
@@ -54,12 +57,12 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 			})
 		)
 			.then((result) => {
-				const response = result.payload as ApiResponse<ResponseMeetingDto>
-				if (response.success)
-					navigate(RouterPath.getPreMeetingPath(response.data.id))
-				else throw new Error(response.metadata.message)
+				const data = result.payload as ResponseMeetingDto
+				navigate(RouterPath.getPreMeetingPath(data.id))
 			})
-			.catch((err) => toast({ content: err.message, type: 'error' }))
+			.catch((err: ApiResponseError) =>
+				toast({ content: err.message, type: 'error' })
+			)
 			.finally(() => setFetching(false))
 	}, [meetingTitle, meetingDescription, isLook])
 

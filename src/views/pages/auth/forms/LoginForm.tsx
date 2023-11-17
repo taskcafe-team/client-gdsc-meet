@@ -26,6 +26,11 @@ import AnimateButton from '../../../components/AnimateButton'
 import { LoginFormValueInit } from '../type'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authFetchEmailLogin } from 'contexts/auth'
+import {
+	ApiResponse,
+	ResponseMetadata,
+} from 'api/http-rest/common/apiResponses'
+import { ResponseLoginSuccess } from 'api/http-rest'
 
 const loginFormValueInit: LoginFormValueInit = {
 	email: '',
@@ -60,18 +65,10 @@ function ShowPasswordIcon({
 export default function LoginForm() {
 	const dispatch = useAppDispatch()
 
-	const error = useAppSelector((s) => s.auth.error)
 	const [err, setErr] = useState<string>('')
 
 	const [checked, setChecked] = React.useState(false)
 	const [showPassword, setShowPassword] = React.useState(false)
-
-	useLayoutEffect(() => {
-		if (error) {
-			setErr(error.message)
-			setTimeout(() => setErr(''), 2000)
-		}
-	}, [error])
 
 	return (
 		<Formik
@@ -85,7 +82,13 @@ export default function LoginForm() {
 			})}
 			onSubmit={async (values) => {
 				const { email, password } = values
-				dispatch(authFetchEmailLogin({ email, password }))
+				dispatch(authFetchEmailLogin({ email, password })).then((payload) => {
+					const res = payload.payload as ApiResponse<ResponseLoginSuccess>
+					if (res.metadata.error) {
+						setErr(res.metadata.error.message)
+						setTimeout(() => setErr(''), 2000)
+					}
+				})
 			}}
 		>
 			{(p: FormikProps<LoginFormValueInit>) => (

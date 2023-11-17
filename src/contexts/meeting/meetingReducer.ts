@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {
+	// meetingFetchError,
+	// meetingFetchSuccess,
+	// meetingFetching,
 	meetingAddInstant,
 	meetingAddInstants,
 	meetingFetchCreateInstant,
-	meetingFetchError,
-	meetingFetchSuccess,
-	meetingFetching,
 } from './meetingActions'
 import { MeetingsState } from './meetingTypes'
 
@@ -21,17 +21,17 @@ const meetingSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-			.addCase(meetingFetching, (state) => {
-				state.loading = true
-			})
-			.addCase(meetingFetchSuccess, (state) => {
-				state.loading = false
-				state.error = undefined
-			})
-			.addCase(meetingFetchError, (state, action) => {
-				state.loading = false
-				state.error = action.payload
-			})
+			// .addCase(meetingFetching, (state) => {
+			// 	state.loading = true
+			// })
+			// .addCase(meetingFetchSuccess, (state) => {
+			// 	state.loading = false
+			// 	state.error = undefined
+			// })
+			// .addCase(meetingFetchError, (state, action) => {
+			// 	state.loading = false
+			// 	state.error = action.payload
+			// })
 			.addCase(meetingAddInstant, (state, action) => {
 				state.meetings.push(action.payload)
 			})

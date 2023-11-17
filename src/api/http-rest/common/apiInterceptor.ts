@@ -1,7 +1,7 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getLocalStorageItem } from '../../../utils/localStorageUtils'
 import useToastily from 'hooks/useToastily'
-import { ApiResponse } from './apiResponses'
+import { ApiResponse, ApiResponseError } from './apiResponses'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 	config.headers = config.headers ?? {}
@@ -20,25 +20,33 @@ export const apiSuccessResponseInterceptor = (
 	response: AxiosResponse
 ): AxiosResponse['data'] => {
 	// ----[ Format the response from the server ]---- //
-	const { message, success, error, timestamp } = response.data
+	const { success, error, timestamp, data } = response.data
 	const status = response.status
-	const isFormat = success ?? message ?? error ?? timestamp ?? status ?? false
+
 	const _response: ApiResponse = {
-		metadata: {
-			status: isFormat ? status : 500,
-			message: isFormat ? message : 'Something went wrong',
-			code: isFormat ? error?.code : undefined,
-		},
-		success: isFormat ? success : false,
-		data: isFormat ? response.data : undefined,
-		timestamp: isFormat ? timestamp : undefined,
+		metadata: { status: status, error },
+		success: success ?? false,
+		data: data ?? undefined,
+		timestamp: timestamp ?? new Date().getTime(),
 	}
 	// ----------------------------------------------- //
 
 	return _response
 }
 
-export const apiFailureResponseInterceptor = async (error: any) => {
-	console.log('--- Axios Error ---')
-	return
+export const apiFailureResponseInterceptor = (error: any) => {
+	const _response: ApiResponse = {
+		metadata: {
+			status: 500,
+			error: { code: 500, message: 'Internal Server Error' },
+		},
+		data: undefined,
+		success: false,
+		timestamp: new Date().getTime(),
+	}
+
+	return Promise.reject({
+		...error,
+		..._response.metadata.error,
+	})
 }

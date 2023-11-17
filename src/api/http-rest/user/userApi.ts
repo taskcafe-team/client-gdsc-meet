@@ -93,11 +93,11 @@ export interface ResponseUserData {
 }
 
 export default class UserApi extends Api {
-	static async getMe() {
+	static getMe() {
 		return Api.get<ResponseUserData>(`users/me`)
 	}
 
-	static async updateMe(request: RequestUpdateMe) {
+	static updateMe(request: RequestUpdateMe) {
 		const formData = new FormData()
 		for (var key in request)
 			if (request[key]) formData.append(key, request[key])

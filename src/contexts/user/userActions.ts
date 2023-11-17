@@ -1,30 +1,28 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { UserInfo } from './userTypes'
 import UserApi, { RequestUpdateMe } from 'api/http-rest/user/userApi'
-import { authFetchSucess } from 'contexts/auth'
+import { authLogged } from 'contexts/auth'
 import { USER_FETCH_ME, USER_FETCH_UPDATE_ME } from './userConstants'
+import { ApiResponseError } from 'api/http-rest/common/apiResponses'
 
-// interface of action
-export interface UserFetchMe {
+export type userSetMe = {
 	type: string
 	payload: UserInfo
 }
 
-export interface FetchUpdateCurrentUser {
-	type: string
-}
+export const userSetMe = createAction<userSetMe['payload']>(USER_FETCH_ME)
 
-// thunk action
-
-export const userFetchMe = createAsyncThunk<UserFetchMe['payload']>(
+/*----------- Thunk Action -----------*/
+export const userFetchMe = createAsyncThunk(
 	USER_FETCH_ME,
-	async (arg, { dispatch }) => {
+	async (_, { dispatch }) => {
 		const res = await UserApi.getMe()
-		const { status } = res.metadata
-		if (status.toString().match(/(2|3)../)) {
-			dispatch(authFetchSucess())
-			return res.data as UserInfo
-		} else throw new Error('Error')
+		const { success } = res
+		if (success) {
+			dispatch(authLogged)
+			dispatch(userSetMe(res.data))
+		}
+		return res
 	}
 )
 
@@ -32,6 +30,10 @@ export const userFetchUpdateMe = createAsyncThunk(
 	USER_FETCH_UPDATE_ME,
 	async (request: RequestUpdateMe, { dispatch }) => {
 		const res = await UserApi.updateMe(request)
-		dispatch(userFetchMe())
+		const { success } = res
+		if (success) dispatch(userFetchMe())
+		return res
 	}
 )
+
+//TODO: SOAP can tim hieu

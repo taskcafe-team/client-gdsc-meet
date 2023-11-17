@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress } from '@mui/joy'
 
 import { userFetchMe } from 'contexts/user'
 
@@ -87,20 +87,18 @@ export const getRoutes = (isLogin: boolean) => {
 export default function Router() {
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
-	const fetchLoading = useAppSelector((s) => s.user.loading)
 
 	const [loading, setLoading] = useState(true)
 
 	const login = useCallback(async () => {
-		dispatch(userFetchMe())
-		setLoading(false)
+		dispatch(userFetchMe()).then(() => setLoading(false))
 	}, [])
 
 	useEffect(() => {
 		login()
 	}, [isLogin])
 
-	if (loading || fetchLoading) return <Loading />
+	if (loading) return <Loading />
 	return (
 		<Routes>
 			{getRoutes(isLogin)}

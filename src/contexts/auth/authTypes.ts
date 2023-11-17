@@ -4,9 +4,7 @@ export interface IAuth {
 	isLogin: boolean
 }
 
-export interface AuthDetailState extends IAuth, CommonState {
-	loading: boolean
-}
+export interface AuthDetailState extends IAuth, CommonState {}
 
 // Action Type
 export interface AuthFetchSucess {

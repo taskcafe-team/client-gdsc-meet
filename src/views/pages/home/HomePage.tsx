@@ -37,7 +37,7 @@ export default function HomePage() {
 	const hanldeSubmitJoinMeeting = useCallback(
 		(event: React.FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
-			if (validationLogin() && meetingId)
+			if (validationLogin() && meetingId.length > 0)
 				navigate(RouterPath.getPreMeetingPath(meetingId))
 		},
 		[meetingId]
@@ -65,7 +65,6 @@ export default function HomePage() {
 					</Typography>
 				</Box>
 				<Box maxWidth="sm">
-					<MeetingChat />
 					<Box sx={{ textAlign: 'center', mt: 3 }}>
 						<form onSubmit={hanldeSubmitJoinMeeting}>
 							<Stack
@@ -74,8 +73,8 @@ export default function HomePage() {
 								spacing={1}
 							>
 								<Input
-									value={meetingId.trim()}
-									onChange={(e) => setMeetingId(e.target.value)}
+									value={meetingId}
+									onChange={(e) => setMeetingId(e.target.value.trim())}
 									required
 									fullWidth
 									placeholder="Input meeting code!"

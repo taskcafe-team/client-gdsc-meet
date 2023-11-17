@@ -6,8 +6,10 @@ import LoginForm from './forms/LoginForm'
 import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
 import { authFetchGoogleLoginVerify } from 'contexts/auth'
-import { ResponseLoginSuccess } from 'api/http-rest'
-import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import {
+	ApiResponse,
+	ApiResponseError,
+} from 'api/http-rest/common/apiResponses'
 import useToastily from 'hooks/useToastily'
 
 export default function LoginPage() {
@@ -19,12 +21,11 @@ export default function LoginPage() {
 	useLayoutEffect(() => {
 		const { search } = query
 		if (search.match('google'))
-			dispatch(authFetchGoogleLoginVerify(search))
-				.then((res) => {
-					const payload = res.payload as ApiResponse<ResponseLoginSuccess>
-					if (!payload.success) throw new Error(payload.metadata.message)
-				})
-				.catch((err) => toast({ content: err.message, type: 'error' }))
+			dispatch(authFetchGoogleLoginVerify(search)).then((res) => {
+				const payload = res.payload as ApiResponse
+				if (payload.metadata.error)
+					toast({ content: payload.metadata.error.message, type: 'error' })
+			})
 	}, [])
 
 	if (isLogin) return <Navigate to="/" />

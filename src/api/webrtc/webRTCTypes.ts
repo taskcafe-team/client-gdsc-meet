@@ -1,4 +1,8 @@
 import {
+	CreateTokenDTO,
+	RespondJoinStatus,
+} from 'api/http-rest/participant/participantApi'
+import {
 	ParticipantRole,
 	ParticipantUsecaseDTO,
 } from '../../api/http-rest/participant/participantDTOs'
@@ -28,7 +32,8 @@ export type ParticipantMetadata = {
 
 // ----- DTOs ----- //
 export type ParticipantRequestJoinDTO = {
-	participantId: string
+	status: RespondJoinStatus
+	token?: CreateTokenDTO
 }
 
 export type ParticipantSendMessageDTO = {

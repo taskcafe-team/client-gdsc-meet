@@ -11,9 +11,9 @@ import {
 export default class MeetingApi extends Api {
 	static readonly meetingURL = 'meetings'
 
-	static async getMyMeetings() {
+	static getMyMeetings() {
 		const path = `${this.meetingURL}`
-		return await Api.get<ResponseMeetingDto[]>(path)
+		return Api.get<ResponseMeetingDto[]>(path)
 	}
 
 	static async getMeeting(meetingId: string) {

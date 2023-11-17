@@ -1,53 +1,38 @@
-import {
-	Box,
-	CircularProgress,
-	IconButton,
-	Input,
-	Sheet,
-	Stack,
-} from '@mui/joy'
-import SendRoundedIcon from '@mui/icons-material/SendRounded'
-import { Typography } from '@mui/material'
-import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect'
-import {
-	RegisterActionsType,
-	SendMessageActionEnum,
-} from 'api/webrtc/webRTCActions'
+import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
-import { LocalParticipant, RemoteParticipant, Room } from 'livekit-client'
-import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
+import { ChatMessageCardProps } from './ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
+import ChatBox from './ChatBox'
+import { MeetingContext } from './MeetingContext'
 
-type WaitingChatBoxProps = {
-	webrtcListener: WebRTCListenerFactory<RegisterActionsType>
-	room: Room
-	onMessageChange?: (messages: ChatMessageCardProps[]) => void
-}
+export default function MeetingChatBox() {
+	const { meetingId, roomConnections } = useContext(MeetingContext)
+	const chatRoom = useMemo(() => {
+		const room = roomConnections.get(RoomType.MEETING)
+		const localParticipantId = room?.localParticipantId ?? ''
+		const participants = room?.participants
+		const localParticipant = participants?.get(localParticipantId)
+		if (!room || !participants || !localParticipant) return null
+		return {
+			roomType: RoomType.MEETING,
+			room: room.room,
+			localParticipantId,
+			localParticipant,
+			participants,
+		}
+	}, [roomConnections.get(RoomType.MEETING)])
+	if (!chatRoom) return <Navigate to="/" />
 
-export default function MeetingChatBox({
-	webrtcListener,
-	room,
-	onMessageChange,
-}: WaitingChatBoxProps) {
-	const { meetingId } = useParams()
-	if (!meetingId) return <Navigate to="/" />
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
-	const [newMess, setNewMess] = useState('')
-	const [sending, setSending] = useState(false)
 
-	const sendMessage = useCallback(async () => {
-		if (newMess.length === 0) return
-		setSending(true)
+	const sendMessage = useCallback(async (content) => {
 		await ParticipantApi.sendMessage({
 			roomId: meetingId,
-			roomType: RoomType.MEETING,
-			content: newMess,
-		}).finally(() => {
-			setNewMess('')
-			setSending(false)
+			roomType: chatRoom.roomType,
+			content,
 		})
-	}, [newMess])
+	}, [])
 
 	const pushMessage = useCallback(
 		(newMess: ChatMessageCardProps) => {
@@ -72,79 +57,37 @@ export default function MeetingChatBox({
 	const listenSendMessage = useCallback(
 		(payload: ParticipantSendMessageDTO) => {
 			if (payload.roomType !== RoomType.MEETING) return
-			const localId = room.localParticipant.identity
-			let sender = room.getParticipantByIdentity(payload.senderId)
+			const sender = chatRoom.participants.get(payload.senderId)
 			if (!sender) return
 
 			const newMessage: ChatMessageCardProps = {
-				position: localId === sender.identity ? 'right' : 'left',
+				position: chatRoom.localParticipantId === sender.id ? 'right' : 'left',
 				messageContent: {
-					senderId: sender.identity,
+					senderId: sender.id,
 					name: sender.name || 'No name',
 					avatar: '',
 					contents: [payload.content],
 				},
 			}
-
 			pushMessage(newMessage)
 		},
-		[pushMessage, room]
+		[pushMessage]
 	)
 
 	useLayoutEffect(() => {
-		if (onMessageChange) onMessageChange(messages)
-	}, [messages])
+		const listener = new WebRTCListenerFactory(chatRoom.room)
+		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
 
-	useEnhancedEffect(() => {
-		webrtcListener.on(
-			SendMessageActionEnum.ParticipantSendMessage,
-			listenSendMessage
-		)
-	}, [webrtcListener])
+		return () => {
+			listener.removeAllListeners()
+		}
+	}, [])
 
 	return (
-		<Stack height={1} overflow="hidden">
-			<Sheet variant="outlined" sx={{ mb: 1, borderRadius: 10 }}>
-				<Typography
-					textAlign="center"
-					variant="h6"
-					fontWeight="bold"
-					color="Highlight"
-				>
-					Meeting Chat
-				</Typography>
-			</Sheet>
-			<Stack flex={1} overflow="hidden">
-				<Box
-					height={1}
-					sx={{
-						overflowY: 'auto',
-						'&::-webkit-scrollbar': { display: 'none' },
-					}}
-				>
-					{messages.map((m, i) => (
-						<ChatMessageCard key={i} {...m} />
-					))}
-				</Box>
-			</Stack>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
-					sendMessage()
-				}}
-			>
-				<Stack direction="row">
-					<Input
-						value={newMess}
-						onChange={(e) => setNewMess(e.target.value)}
-						placeholder="Input message here"
-						sx={{ borderRadius: 10, mr: 0.5 }}
-					/>
-					<IconButton disabled={sending} size="sm" type="submit" variant="soft">
-						{(sending && <CircularProgress />) || <SendRoundedIcon />}
-					</IconButton>
-				</Stack>
-			</form>
-		</Stack>
+		<ChatBox
+			title={'Meeting Chat'}
+			messages={messages}
+			onSend={(c) => sendMessage(c)}
+		/>
 	)
 }
