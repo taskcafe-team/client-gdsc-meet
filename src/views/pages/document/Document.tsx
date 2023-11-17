@@ -22,12 +22,14 @@ const Document = () => {
     fetchFileData();
   }, []);
 
+  // return(<DocX
+  //   src={"https://docs.google.com/document/d/1KPrl5PNwi2Y7_USRRzcPaTwIj6kx6fJya6cJQ_Djl5Y"}
+  // />);
   return (
     <div>
       {fileData && (
-        <div>
-          <h3>File Preview:</h3>
-          <FileViewer fileType="docx" filePath={fileData} />
+        <div className=' mt-[10px]80vh overflow-auto'>
+          <FileViewer  fileType="docx" filePath={fileData} />
         </div>
       )}
     </div>
@@ -38,12 +40,13 @@ export default Document;
 
 
 const DocX = ({src})=>{
-  https://docs.google.com/document/d/1KPrl5PNwi2Y7_USRRzcPaTwIj6kx6fJya6cJQ_Djl5Y
+ 
   return (
     <iframe
     className='w-full mt-[12vh]'
      // Use 'h-full' instead of 'h-100vh'
     src={src} 
+
     style={{ minHeight: '87vh', width: '100%', border: 0 }} // Optional: Remove iframe border
   />
   );

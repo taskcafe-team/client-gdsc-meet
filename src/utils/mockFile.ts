@@ -32,7 +32,7 @@ const folders: IFolder[] = [
 		id: 'b0bd01b0-e47c-41e8-804e-8fd995e2e03c',
 		name: 'CMU123',
 		parent_folder_id: null,
-		userId: '4866eb56-e069-49c2-9ec3-9d9113f59e78',
+		userId: '1c9b004f-4adc-4d6f-b704-73ba049739c6',
 		subjectId: '84b7ae26-3c7f-4be7-b8e7-676219636e7b',
 		createdAt: new Date('2023-11-14T08:09:19.269Z'),
 		updatedAt: new Date('2023-11-14T08:09:19.269Z'),
@@ -43,7 +43,7 @@ const folders: IFolder[] = [
 const files: IFile[] = [
 	{
 		id: '540afee3-86b9-4ed2-aa54-8cad6b20bd61',
-		name: 'aaaa',
+		name: 'CMU CS 155',
 		folder_id: 'a6737c75-7962-4de7-bf74-dc7dc8bc77d7',
 		content:
 			'C:\\Users\\BOSS\\OneDrive\\Desktop\\Team cap-nckh\\2.Code\\gdscmeet\\server-gdsc-meet\\server\\src\\data\\f75b8281-ac6b-4107-9f74-1b756df2ea43-1700052990471-1) Perl là gì .txt',
@@ -66,7 +66,7 @@ const files: IFile[] = [
 	{
 		id: '540afee3-86b9-4ed2-aa54-8cad6b20bd61',
 		name: 'bbbbbb',
-		folder_id: 'a6737c75-7962-4de7-bf74-dc7dc8bc77d8',
+		folder_id: 'a6737c75-7962-4de7-bf74-dc7dc8bc77d7',
 		content:
 			'C:\\Users\\BOSS\\OneDrive\\Desktop\\Team cap-nckh\\2.Code\\gdscmeet\\server-gdsc-meet\\server\\src\\data\\f75b8281-ac6b-4107-9f74-1b756df2ea43-1700052990471-1) Perl là gì .txt',
 		type: '.txt',
@@ -77,7 +77,7 @@ const files: IFile[] = [
 	{
 		id: '540afee3-86b9-4ed2-aa54-8cad6b20bd61',
 		name: 'CMU SE 301',
-		folder_id: 'a6737c75-7962-4de7-bf74-dc7dc8bc77d8',
+		folder_id: 'a6737c75-7962-4de7-bf74-dc7dc8bc77d7',
 		content:
 			'C:\\Users\\BOSS\\OneDrive\\Desktop\\Team cap-nckh\\2.Code\\gdscmeet\\server-gdsc-meet\\server\\src\\data\\f75b8281-ac6b-4107-9f74-1b756df2ea43-1700052990471-1) Perl là gì .txt',
 		type: '.txt',
@@ -98,8 +98,10 @@ export const getFilesByUserId = (userId: string): IFile[] => {
 	return files.filter((file) => file.userId === userId)
 }
 
+// Hàm lấy danh sách tệp theo userId
+export const getFilesByFouderID = (fouderId: string): IFile[] => {
+	return files.filter((file) => file.folder_id == fouderId)
+}
+
 // Sử dụng ví dụ:
 const userIdToRetrieve = '1c9b004f-4adc-4d6f-b704-73ba049739c6'
-
-const userFolders = getFoldersByUserId(userIdToRetrieve)
-const userFiles = getFilesByUserId(userIdToRetrieve)

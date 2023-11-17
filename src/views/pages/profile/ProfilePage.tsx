@@ -24,7 +24,7 @@ export interface IFeature {
 }
 const features: IFeature[] = [
 	{
-		label: 'Meeting',
+		label: 'History',
 		description: 'The room is open you can click on the tag to join.',
 		component: <HistoryMeet historys={meetingRecords} />,
 	},
@@ -37,6 +37,11 @@ const features: IFeature[] = [
 		label: 'Information',
 		description: 'Effortlessly organize and manage information with a form.',
 		component: <FormInfomation  lable='Save' />,
+	},
+	{
+		label: 'Meeting',
+		description: 'The room is open you can click on the tag to join.',
+		component: <HistoryMeet historys={meetingRecords} />,
 	},
 ]
 

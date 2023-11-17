@@ -51,7 +51,6 @@ const HistoryMeet: React.FC<IHistoryMeet> = ({ historys, ...rest }) => {
 						const hoursDifference = differenceInHours(endTime, startTime)
 						const shouldRenderOpenChip =
 							parseISO(history.endTime as string) > currentDate
-						console.log(index)
 						return (
 							<motion.div
 								{...rest}

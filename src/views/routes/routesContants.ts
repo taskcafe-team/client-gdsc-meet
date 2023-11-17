@@ -15,10 +15,16 @@ export default class RouterPath {
 	static readonly MEETING = `meeting`
 	static readonly MEETING_URL = `${this.MEETING}/:meetingId`
 
-	static readonly DOCUMENT_URL = `${this.USER}/document`
+	static readonly DOCUMENT_URL = `${this.USER}/document/:document`
 
 	static readonly FORGOTPASSWORD_URL = `forgotpassword`
 
-	static readonly getPreMeetingPath = (meetingId: string) =>
-		`meeting/${meetingId}`
+	static readonly getPreMeetingPath = (meetingId: string) => {
+		return `meeting/${meetingId}`
+	}
+		
+	static readonly getDocumentPath = (documentId: string) => {
+		return `${this.USER}/document/${documentId}`
+	} 
+	
 }
