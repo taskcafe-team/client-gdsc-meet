@@ -36,17 +36,15 @@ export const apiSuccessResponseInterceptor = (
 
 export const apiFailureResponseInterceptor = (error: any) => {
 	const _response: ApiResponse = {
-		metadata: {
-			status: 500,
-			error: { code: 500, message: 'Internal Server Error' },
-		},
+		metadata: { status: 500, error: { code: 500, message: 'Fetch Error!' } },
 		data: undefined,
 		success: false,
 		timestamp: new Date().getTime(),
 	}
 
-	return Promise.reject({
-		...error,
-		..._response.metadata.error,
-	})
+	return _response
+	// return Promise.reject({
+	// 	...error,
+	// 	..._response.metadata.error,
+	// })
 }

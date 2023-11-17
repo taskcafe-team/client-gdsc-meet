@@ -114,16 +114,8 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 
 	useLayoutEffect(() => {
 		return () => {
-			setInitState((prevState) => {
-				prevState.roomConnections.forEach((roomInfo) =>
-					roomInfo.room.disconnect()
-				)
-				prevState.roomConnections.clear()
-				return {
-					meetingId,
-					currentRoom: RoomType.DEFAULT,
-					roomConnections: new Map(),
-				}
+			initState.roomConnections.forEach((roomConnection) => {
+				roomConnection.room.disconnect()
 			})
 		}
 	}, [])

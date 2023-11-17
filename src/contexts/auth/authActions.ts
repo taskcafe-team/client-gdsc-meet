@@ -32,7 +32,6 @@ export const authFetchEmailLogin = createAsyncThunk(
 			const { accessToken } = res.data
 			setLocalStorageItem({ key: `access_token`, value: accessToken })
 			dispatch(authLogged())
-			dispatch(userFetchMe())
 		}
 		return res
 	}

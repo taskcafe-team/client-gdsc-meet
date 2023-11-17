@@ -57,12 +57,12 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 			})
 		)
 			.then((result) => {
-				const data = result.payload as ResponseMeetingDto
-				navigate(RouterPath.getPreMeetingPath(data.id))
+				const data = result.payload as ApiResponse<ResponseMeetingDto>
+				if (data.success) navigate(RouterPath.getPreMeetingPath(data.data.id))
+				else if (data.metadata.error)
+					toast({ content: data.metadata.error.message, type: 'error' })
 			})
-			.catch((err: ApiResponseError) =>
-				toast({ content: err.message, type: 'error' })
-			)
+
 			.finally(() => setFetching(false))
 	}, [meetingTitle, meetingDescription, isLook])
 

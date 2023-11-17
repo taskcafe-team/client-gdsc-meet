@@ -19,8 +19,8 @@ export const userFetchMe = createAsyncThunk(
 		const res = await UserApi.getMe()
 		const { success } = res
 		if (success) {
-			dispatch(authLogged)
-			dispatch(userSetMe(res.data))
+			dispatch(authLogged())
+			dispatch(userSetMe(res.data as UserInfo))
 		}
 		return res
 	}

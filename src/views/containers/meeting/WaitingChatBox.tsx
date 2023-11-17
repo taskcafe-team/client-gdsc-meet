@@ -107,12 +107,6 @@ export default function WaitingChatBox() {
 		return () => {
 			listener.removeAllListeners()
 			chatRoom.room.disconnect()
-			if (setState)
-				setState((prev) => {
-					const updatedState = { ...prev }
-					updatedState.roomConnections.delete(RoomType.WAITING)
-					return updatedState
-				})
 		}
 	}, [chatRoom])
 

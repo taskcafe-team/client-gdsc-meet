@@ -90,12 +90,14 @@ export default function Router() {
 
 	const [loading, setLoading] = useState(true)
 
-	const login = useCallback(async () => {
-		dispatch(userFetchMe()).then(() => setLoading(false))
+	const getMe = useCallback(async () => {
+		const token = localStorage.getItem('access_token')
+		if (!token) return setLoading(false)
+		dispatch(userFetchMe()).finally(() => setLoading(false))
 	}, [])
 
 	useEffect(() => {
-		login()
+		getMe()
 	}, [isLogin])
 
 	if (loading) return <Loading />

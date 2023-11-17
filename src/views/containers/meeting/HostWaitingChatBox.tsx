@@ -120,11 +120,13 @@ export default function HostWaitingChatBox() {
 					avatar: '',
 					contents: [payload.content],
 				},
-				action: {
+			}
+
+			if (sender.role === ParticipantRole.HOST)
+				newMessage.action = {
 					accept: () => acceptParticipant(sender.id),
 					reject: () => rejectParticipant(sender.id),
-				},
-			}
+				}
 
 			pushMessage(newMessage)
 		},

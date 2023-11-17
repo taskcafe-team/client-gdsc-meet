@@ -31,7 +31,6 @@ function MeetingPage() {
 				const r = Boolean(res.payload?.['success'] ?? false)
 				if (!r) return navigate('/')
 			})
-			.catch(() => navigate('/'))
 			.finally(() => setFetching(false))
 	}, [])
 

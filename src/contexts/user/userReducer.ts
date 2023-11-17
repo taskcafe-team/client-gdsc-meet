@@ -17,18 +17,14 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder
-			.addCase(userFetchMe.pending, (state) => {
-				state.loading = true
-			})
-			.addCase(userSetMe, (state, action) => {
-				state.id = action.payload.id
-				state.avatar = action.payload.avatar
-				state.email = action.payload.email
-				state.firstName = action.payload.firstName
-				state.lastName = action.payload.lastName
-				state.role = action.payload.role as UserRole
-			})
+		builder.addCase(userSetMe, (state, action) => {
+			state.id = action.payload.id
+			state.avatar = action.payload.avatar
+			state.email = action.payload.email
+			state.firstName = action.payload.firstName
+			state.lastName = action.payload.lastName
+			state.role = action.payload.role as UserRole
+		})
 	},
 })
 
