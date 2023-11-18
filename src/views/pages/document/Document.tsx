@@ -25,9 +25,10 @@ const Document = () => {
 	//   fetchFileData();
 	// }, []);
 
-	const handleFileChange = (e) => {
+	const handleFileChange = async (e) => {
+		 await setFileData(null)
 		const file = e.target.files[0]
-		setFileData(file)
+		await  setFileData(file)
 	}
 	const fetchFileData = async (file) => {
 		try {
