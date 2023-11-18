@@ -8,7 +8,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 
-RUN yarn install
+RUN yarn install --network-timeout 3000000
 
 COPY . ./
 

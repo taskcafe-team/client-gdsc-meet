@@ -6,7 +6,7 @@ import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { Room, VideoPresets } from 'livekit-client'
 import ChatBox from '../components/ChatBox'
-import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { MeetingContext } from '../MeetingContext'
 import { Loading } from 'views/routes/routes'
 

@@ -18,7 +18,7 @@ import React from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import { MoreVert } from '@mui/icons-material'
 import { MeetingContext } from '../MeetingContext'
-import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 
 type ParticipantControlTab = {

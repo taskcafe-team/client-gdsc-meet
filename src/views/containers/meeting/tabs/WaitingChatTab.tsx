@@ -10,7 +10,7 @@ import ParticipantApi, {
 	RespondJoinStatus,
 } from 'api/http-rest/participant/participantApi'
 import ChatBox from '../components/ChatBox'
-import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { MeetingContext } from '../MeetingContext'
 import { Stack } from '@mui/material'
 import {
