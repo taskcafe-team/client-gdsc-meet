@@ -9,11 +9,7 @@ import { Loading } from 'views/routes/routes'
 import { Stack } from '@mui/joy'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { RoomType } from 'api/webrtc/webRTCTypes'
-import MeetingSideBar from './MeetingSideBar'
-import {
-	ParticipantRole,
-	ParticipantUsecaseDTO,
-} from 'api/http-rest/participant/participantDTOs'
+import MeetingControlBar from './MeetingControlBar'
 import { MeetingContext } from 'views/containers/meeting/MeetingContext'
 
 export default function MeetingRoom() {
@@ -70,7 +66,7 @@ export default function MeetingRoom() {
 
 	if (!meetingRoom) return <Loading />
 	return (
-		<Stack width={1} height={1} direction="row">
+		<Stack width={1} height={1} direction="row" p={1} bgcolor="black">
 			<Stack width={1} height={1}>
 				<Stack borderRadius={10} width={1} height={1} overflow="hidden">
 					<LiveKitRoom
@@ -88,8 +84,8 @@ export default function MeetingRoom() {
 					</LiveKitRoom>
 				</Stack>
 			</Stack>
-			<Stack height={1}>
-				<MeetingSideBar />
+			<Stack height={1} p={1}>
+				<MeetingControlBar />
 			</Stack>
 		</Stack>
 	)

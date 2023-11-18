@@ -1,14 +1,8 @@
-import {
-	Box,
-	CircularProgress,
-	IconButton,
-	Input,
-	Sheet,
-	Stack,
-} from '@mui/joy'
+import { Box, IconButton, Input, Sheet, Stack } from '@mui/joy'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
 import { Typography } from '@mui/material'
 import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
+import { Loading } from 'views/routes/routes'
 
 type ChatBoxProps = {
 	title: string
@@ -64,7 +58,7 @@ export default function ChatBox({ title, messages, onSend }: ChatBoxProps) {
 						sx={{ borderRadius: 10, mr: 0.5 }}
 					/>
 					<IconButton disabled={sending} size="sm" type="submit" variant="soft">
-						{(sending && <CircularProgress />) || <SendRoundedIcon />}
+						{(sending && <Loading />) || <SendRoundedIcon />}
 					</IconButton>
 				</Stack>
 			</form>

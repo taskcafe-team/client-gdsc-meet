@@ -34,9 +34,10 @@ type ResponseGetAccessToken = {
 export default class ParticipantApi extends Api {
 	static readonly participantURL = 'meetings/:meetingId/participants'
 
-	static getAccessToken(meetingId: string) {
+	static getAccessToken(meetingId: string, customName: string) {
 		const path = `meetings/${meetingId}/participants/access-token`
-		return Api.get<ResponseGetAccessToken>(path)
+		const query = { customName }
+		return Api.get<ResponseGetAccessToken>(path, query)
 	}
 
 	static sendMessage(request: RequestSendMessage) {

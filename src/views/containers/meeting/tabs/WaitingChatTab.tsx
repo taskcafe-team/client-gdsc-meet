@@ -5,16 +5,26 @@ import {
 	ParticipantSendMessageDTO,
 	RoomType,
 } from 'api/webrtc/webRTCTypes'
-import { ChatMessageCardProps } from './ChatMessageCard'
+import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi, {
 	RespondJoinStatus,
 } from 'api/http-rest/participant/participantApi'
-import ChatBox from './ChatBox'
+import ChatBox from '../components/ChatBox'
 import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
-import { MeetingContext } from './MeetingContext'
+import { MeetingContext } from '../MeetingContext'
+import { Stack } from '@mui/material'
+import {
+	AspectRatio,
+	Button,
+	Card,
+	CardContent,
+	IconButton,
+	Typography,
+} from '@mui/joy'
 
-export default function WaitingChatBox() {
-	const { meetingId, roomConnections, setState } = useContext(MeetingContext)
+export default function WaitingChatTab() {
+	const { meetingId, roomConnections, setMeetingState } =
+		useContext(MeetingContext)
 	const chatRoom = useMemo(() => {
 		const room = roomConnections.get(RoomType.WAITING)
 		const localParticipantId = room?.localParticipantId ?? ''
@@ -34,6 +44,7 @@ export default function WaitingChatBox() {
 
 	const navigate = useNavigate()
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
+	const [isRejected, setIsRejected] = useState(false)
 
 	const sendMessage = useCallback(async (content) => {
 		await ParticipantApi.sendMessage({
@@ -85,12 +96,13 @@ export default function WaitingChatBox() {
 
 	const listenResposedJoinRequest = useCallback(
 		(payload: ParticipantRequestJoinDTO) => {
-			if (payload.status === RespondJoinStatus.REJECTED) return navigate('/')
-			else if (payload.status === RespondJoinStatus.ACCEPTED) {
+			if (payload.status === RespondJoinStatus.REJECTED) {
+				setIsRejected(true)
+			} else if (payload.status === RespondJoinStatus.ACCEPTED) {
 				const token = payload.token
 				if (!token) return navigate('/')
 				ParticipantApi.setMeetingApiToken(token)
-				setState?.((pre) => ({ ...pre, currentRoom: RoomType.MEETING }))
+				setMeetingState?.((pre) => ({ ...pre, currentRoom: RoomType.MEETING }))
 			}
 		},
 		[]
@@ -110,6 +122,7 @@ export default function WaitingChatBox() {
 		}
 	}, [chatRoom])
 
+	if (isRejected) return <RejectedMessage />
 	return (
 		<ChatBox
 			title={'Waiting Chat'}
@@ -118,3 +131,63 @@ export default function WaitingChatBox() {
 		/>
 	)
 }
+
+const RejectedMessage = () => {
+	const [countdown, setCountdown] = useState(10)
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCountdown((prevCountdown) => prevCountdown - 1)
+		}, 1000)
+
+		if (countdown === 0) {
+			clearInterval(timer)
+			navigate('/')
+		}
+
+		return () => {
+			clearInterval(timer)
+		}
+	}, [countdown])
+
+	return (
+		<Card>
+			<div>
+				<Typography level="title-lg">Rejected</Typography>
+				<Typography level="body-sm">
+					Your request to join this meeting has been rejected
+				</Typography>
+			</div>
+			<CardContent orientation="horizontal">
+				<div>
+					<Typography level="body-xs">Return to home page after</Typography>
+					<Typography fontSize="lg" fontWeight="lg">
+						{countdown}s
+					</Typography>
+				</div>
+				<Button
+					variant="solid"
+					size="md"
+					color="primary"
+					onClick={() => navigate('/')}
+					sx={{ ml: 'auto', alignSelf: 'center', fontWeight: 600 }}
+				>
+					Go Home
+				</Button>
+			</CardContent>
+		</Card>
+	)
+}
+
+//   return (
+// 		<Stack>
+// 			<Typography level="title-md" fontWeight="bold">
+// 				Rejected
+// 			</Typography>
+// 			<Typography level="body-md">
+// 				Your request to join this meeting has been rejected
+// 			</Typography>
+// 		</Stack>
+// 	)
+// }

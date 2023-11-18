@@ -3,41 +3,50 @@ import { ReactNode } from 'react'
 import { Routes, Route, type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { CircularProgress } from '@mui/joy'
+import { CircularProgress, Stack } from '@mui/joy'
 
 import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
-import PublicLayout from 'views/layouts/PublicLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
+import NewLogin from 'pages/auth/LoginPage_v2'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
-const LoginPage = lazy(() => import('views/pages/auth/LoginPage'))
+const LoginPage = lazy(() => import('views/pages/auth/LoginPage_v2'))
 const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
 const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
 
-export const Loading = () => {
-	return (
-		<div
-			style={{
-				width: '100vw',
-				height: '100vh',
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
-		>
-			<CircularProgress />
-		</div>
-	)
-}
+export const Loading = () => (
+	<div
+		style={{
+			width: '100%',
+			height: '100%',
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+		}}
+	>
+		<CircularProgress />
+	</div>
+)
+
+export const LayoutLoading = () => (
+	<div
+		style={{
+			width: '100vw',
+			height: '100vh',
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+		}}
+	>
+		<CircularProgress />
+	</div>
+)
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
-const getPublicLayout = (e: ReactNode, type: 'full' | 'wrapper' = 'full') => (
-	<PublicLayout type={type}>{e}</PublicLayout>
-)
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
 
 type CustomRouteProps = RouteProps
@@ -49,7 +58,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: getDefaultLayout(<LoginPage />),
+		element: <LoginPage />,
 		loader: undefined,
 	},
 	{
@@ -100,7 +109,7 @@ export default function Router() {
 		getMe()
 	}, [isLogin])
 
-	if (loading) return <Loading />
+	if (loading) return <LayoutLoading />
 	return (
 		<Routes>
 			{getRoutes(isLogin)}

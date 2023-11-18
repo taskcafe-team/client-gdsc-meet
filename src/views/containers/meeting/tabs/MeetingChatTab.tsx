@@ -1,12 +1,21 @@
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
-import { ChatMessageCardProps } from './ChatMessageCard'
+import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
-import ChatBox from './ChatBox'
-import { MeetingContext } from './MeetingContext'
+import ChatBox from '../components/ChatBox'
+import { MeetingContext } from '../MeetingContext'
+import { Box } from '@mui/joy'
 
-export default function MeetingChatBox() {
+type MeetingChatTabProps = {
+	hidden?: boolean
+	onUnreadMessagesChange?: (unreadMessages: number) => void
+}
+
+export default function MeetingChatTab({
+	hidden,
+	onUnreadMessagesChange,
+}: MeetingChatTabProps) {
 	const { meetingId, roomConnections } = useContext(MeetingContext)
 	const chatRoom = useMemo(() => {
 		const room = roomConnections.get(RoomType.MEETING)
@@ -25,6 +34,7 @@ export default function MeetingChatBox() {
 	if (!chatRoom) return <Navigate to="/" />
 
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
+	const [unreadMessages, setUnreadMessages] = useState(0)
 
 	const sendMessage = useCallback(async (content) => {
 		await ParticipantApi.sendMessage({
@@ -50,8 +60,10 @@ export default function MeetingChatBox() {
 					return [...prev.slice(0, length - 1), lastmess]
 				} else return [...prev, newMess]
 			})
+			if (hidden) setUnreadMessages((p) => p + 1)
+			else setUnreadMessages(0)
 		},
-		[messages]
+		[hidden]
 	)
 
 	const listenSendMessage = useCallback(
@@ -75,19 +87,29 @@ export default function MeetingChatBox() {
 	)
 
 	useLayoutEffect(() => {
+		onUnreadMessagesChange?.(unreadMessages)
+	}, [unreadMessages])
+
+	useLayoutEffect(() => {
+		if (!hidden) setUnreadMessages(0)
+	}, [hidden])
+
+	useLayoutEffect(() => {
 		const listener = new WebRTCListenerFactory(chatRoom.room)
 		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
 
 		return () => {
 			listener.removeAllListeners()
 		}
-	}, [])
+	}, [listenSendMessage])
 
 	return (
-		<ChatBox
-			title={'Meeting Chat'}
-			messages={messages}
-			onSend={(c) => sendMessage(c)}
-		/>
+		<Box height={1} overflow="hidden" display={hidden ? 'none' : undefined}>
+			<ChatBox
+				title={'Meeting Chat'}
+				messages={messages}
+				onSend={(c) => sendMessage(c)}
+			/>
+		</Box>
 	)
 }

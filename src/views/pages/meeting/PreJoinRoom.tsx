@@ -1,19 +1,15 @@
 import { LocalUserChoices, PreJoin } from '@livekit/components-react'
-import { Sheet, Stack, Container, CircularProgress } from '@mui/joy'
+import { Sheet, Stack } from '@mui/joy'
 import { useAppSelector } from 'contexts/hooks'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
 import useToastily from 'hooks/useToastily'
-import WaitingChatBox from 'views/containers/meeting/WaitingChatBox'
+import WaitingChatTab from 'views/containers/meeting/tabs/WaitingChatTab'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { MeetingContext } from 'views/containers/meeting/MeetingContext'
 import { Room, VideoPresets } from 'livekit-client'
-
-const Loading = () => (
-	<Stack justifyContent="center" alignItems="center" width={1} height={1}>
-		<CircularProgress />
-	</Stack>
-)
+import { generateName } from 'utils/personalNameUtils'
+import { Loading } from 'views/routes/routes'
 
 export default function PreJoinRoom() {
 	const toast = useToastily()
@@ -22,30 +18,39 @@ export default function PreJoinRoom() {
 	const [loading, setLoading] = useState(false)
 	const [loadingRoom, setLoadingRoom] = useState(true)
 
-	const { currentRoom, meetingId, setState, registerRoom } =
+	const { currentRoom, meetingId, setMeetingState, registerRoom } =
 		useContext(MeetingContext)
 	const user = useAppSelector((s) => s.user)
-	const fullname = `${user.firstName + ' ' + user.lastName}`.trim()
+	const fullname = useMemo(() => {
+		const name = (user.firstName ?? '') + ' ' + (user.lastName ?? '')
+		return name.trim().length > 0 ? name.trim() : generateName()
+	}, [user.firstName, user.lastName])
 
-	const fetchGetTokenAndSaveSessionStore = useCallback(async () => {
-		const res = await ParticipantApi.getAccessToken(meetingId)
-		if (!res.success) return null
-		const { tokens, participant } = res.data
-		tokens.forEach((t) => ParticipantApi.setMeetingApiToken(t))
-		let roomtype = RoomType.WAITING
-		if (participant.role === ParticipantRole.HOST) roomtype = RoomType.MEETING
-		else roomtype = tokens[0].roomType ?? RoomType.WAITING
-		return roomtype
-	}, [])
+	const fetchGetTokenAndSaveSessionStore = useCallback(
+		async (customName: string) => {
+			const res = await ParticipantApi.getAccessToken(
+				meetingId,
+				customName.trim()
+			)
+			if (!res.success) return null
+			const { tokens, participant } = res.data
+			tokens.forEach((t) => ParticipantApi.setMeetingApiToken(t))
+			let roomtype = RoomType.WAITING
+			if (participant.role === ParticipantRole.HOST) roomtype = RoomType.MEETING
+			else roomtype = tokens[0].roomType ?? RoomType.WAITING
+			return roomtype
+		},
+		[]
+	)
 
 	const submitJoinRoom = useCallback(
 		async (values: Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>) => {
 			if (loading) return
 			setLoading(true)
-			const roomtype = await fetchGetTokenAndSaveSessionStore()
+			const roomtype = await fetchGetTokenAndSaveSessionStore(values.username)
 			if (!roomtype)
 				return toast({ content: 'Join Meeting Error', type: 'error' })
-			setState?.((pre) => ({ ...pre, currentRoom: roomtype }))
+			setMeetingState?.((pre) => ({ ...pre, currentRoom: roomtype }))
 		},
 		[]
 	)
@@ -78,7 +83,21 @@ export default function PreJoinRoom() {
 	}, [currentRoom])
 
 	return (
-		<Stack width={1} height={1} justifyContent="center" alignItems="center">
+		<Stack
+			width={1}
+			height={1}
+			p={1}
+			justifyContent="center"
+			alignItems="center"
+			sx={{
+				'& .lk-prejoin input.lk-form-control': {
+					'pointer-events': loading ? 'none' : 'auto',
+				},
+				'& .lk-prejoin button': {
+					'pointer-events': loading ? 'none' : 'auto',
+				},
+			}}
+		>
 			<Stack
 				overflow="hidden"
 				borderRadius="lg"
@@ -107,9 +126,9 @@ export default function PreJoinRoom() {
 				{currentRoom == RoomType.WAITING && (
 					<Sheet
 						variant="soft"
-						sx={{ p: 2, minWidth: 275, height: { xs: 300, md: 'auto' } }}
+						sx={{ p: 2, minWidth: 350, height: { xs: 300, md: 'auto' } }}
 					>
-						{loadingRoom ? <Loading /> : <WaitingChatBox />}
+						{loadingRoom ? <Loading /> : <WaitingChatTab />}
 					</Sheet>
 				)}
 			</Stack>

@@ -1,44 +1,24 @@
-import {
-	Box,
-	CircularProgress,
-	IconButton,
-	Input,
-	Sheet,
-	Stack,
-} from '@mui/joy'
-import SendRoundedIcon from '@mui/icons-material/SendRounded'
-import { Typography } from '@mui/material'
-import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect'
-import {
-	RegisterActionsType,
-	SendMessageActionEnum,
-} from 'api/webrtc/webRTCActions'
+import { Box } from '@mui/joy'
+import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
-import {
-	ParticipantRequestJoinDTO,
-	ParticipantSendMessageDTO,
-	RoomType,
-} from 'api/webrtc/webRTCTypes'
-import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
-import ParticipantApi, {
-	RespondJoinStatus,
-} from 'api/http-rest/participant/participantApi'
+import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
+import { ChatMessageCardProps } from '../components/ChatMessageCard'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { Room, VideoPresets } from 'livekit-client'
-import useToastily from 'hooks/useToastily'
-import ChatBox from './ChatBox'
-import {
-	ParticipantRole,
-	ParticipantUsecaseDTO,
-} from 'api/http-rest/participant/participantDTOs'
-import { MeetingContext } from './MeetingContext'
+import ChatBox from '../components/ChatBox'
+import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { MeetingContext } from '../MeetingContext'
+import { Loading } from 'views/routes/routes'
 
-const Loading = () => (
-	<Stack justifyContent="center" alignItems="center" width={1} height={1}>
-		<CircularProgress />
-	</Stack>
-)
+type HostWaitingChatTabProps = {
+	hidden?: boolean
+	onUnreadMessagesChange?: (unreadMessages: number) => void
+}
 
-export default function HostWaitingChatBox() {
+export default function HostWaitingChatTab({
+	hidden = false,
+	onUnreadMessagesChange,
+}: HostWaitingChatTabProps) {
 	const { meetingId, roomConnections, registerRoom } =
 		useContext(MeetingContext)
 	const chatRoom = useMemo(() => {
@@ -62,6 +42,9 @@ export default function HostWaitingChatBox() {
 
 	const [loadingChatRoom, setLoadingChatRoom] = useState(true)
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
+	const [unreadMessages, setUnreadMessages] = useState(0)
+
+	const [fetching, setFetching] = useState(false)
 
 	const sendMessage = useCallback(async (content) => {
 		await ParticipantApi.sendMessage({
@@ -87,23 +70,51 @@ export default function HostWaitingChatBox() {
 					return [...prev.slice(0, length - 1), lastmess]
 				} else return [...prev, newMess]
 			})
+			if (hidden) setUnreadMessages((p) => p + 1)
+			else setUnreadMessages(0)
 		},
-		[messages]
+		[hidden]
 	)
 
-	const rejectParticipant = useCallback(async (participantId) => {
-		await ParticipantApi.rejectParticipantJoinMeeting({
-			meetingId,
-			participantIds: [participantId],
-		})
-	}, [])
+	const rejectParticipant = useCallback(
+		async (participantId) => {
+			if (fetching) return
+			setFetching(true)
+			await ParticipantApi.rejectParticipantJoinMeeting({
+				meetingId,
+				participantIds: [participantId],
+			}).finally(() => setFetching(false))
 
-	const acceptParticipant = useCallback(async (participantId) => {
-		await ParticipantApi.accpectParticipantJoinMeeting({
-			meetingId,
-			participantIds: [participantId],
-		})
-	}, [])
+			setMessages((prev) => {
+				const s = prev.map((m) => {
+					if (m.messageContent.senderId == participantId) m.action = undefined
+					return m
+				})
+				return s
+			})
+		},
+		[fetching]
+	)
+
+	const acceptParticipant = useCallback(
+		async (participantId) => {
+			if (fetching) return
+			setFetching(true)
+			const res = await ParticipantApi.accpectParticipantJoinMeeting({
+				meetingId,
+				participantIds: [participantId],
+			}).finally(() => setFetching(false))
+
+			setMessages((prev) => {
+				const s = prev.map((m) => {
+					if (m.messageContent.senderId == participantId) m.action = undefined
+					return m
+				})
+				return s
+			})
+		},
+		[fetching]
+	)
 
 	const listenSendMessage = useCallback(
 		(payload: ParticipantSendMessageDTO) => {
@@ -122,7 +133,7 @@ export default function HostWaitingChatBox() {
 				},
 			}
 
-			if (sender.role === ParticipantRole.HOST)
+			if (sender.id !== chatRoom.localParticipantId)
 				newMessage.action = {
 					accept: () => acceptParticipant(sender.id),
 					reject: () => rejectParticipant(sender.id),
@@ -130,7 +141,7 @@ export default function HostWaitingChatBox() {
 
 			pushMessage(newMessage)
 		},
-		[pushMessage, chatRoom]
+		[pushMessage, chatRoom, acceptParticipant, rejectParticipant]
 	)
 
 	const connectToChatRoom = useCallback(async () => {
@@ -158,6 +169,14 @@ export default function HostWaitingChatBox() {
 	}, [])
 
 	useLayoutEffect(() => {
+		onUnreadMessagesChange?.(unreadMessages)
+	}, [unreadMessages])
+
+	useLayoutEffect(() => {
+		if (!hidden) setUnreadMessages(0)
+	}, [hidden])
+
+	useLayoutEffect(() => {
 		if (!chatRoom) {
 			connectToChatRoom()
 			return
@@ -167,15 +186,17 @@ export default function HostWaitingChatBox() {
 		return () => {
 			listener.removeAllListeners()
 		}
-	}, [chatRoom])
+	}, [chatRoom, listenSendMessage])
 
 	if (loadingChatRoom) return <Loading />
 	if (!loadingChatRoom && !chatRoom) return <Navigate to="/" />
 	return (
-		<ChatBox
-			title={'Waiting Chat'}
-			messages={messages}
-			onSend={(c) => sendMessage(c)}
-		/>
+		<Box height={1} overflow="hidden" display={hidden ? 'none' : undefined}>
+			<ChatBox
+				title={'Waiting Chat'}
+				messages={messages}
+				onSend={(c) => sendMessage(c)}
+			/>
+		</Box>
 	)
 }

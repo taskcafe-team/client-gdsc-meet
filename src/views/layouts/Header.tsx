@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import React, { useCallback } from 'react'
+import React from 'react'
 import {
 	AppBar,
 	Box,
@@ -9,7 +9,6 @@ import {
 	Menu,
 	Container,
 	Avatar,
-	Button,
 	Tooltip,
 	MenuItem,
 } from '@mui/material'
@@ -20,8 +19,9 @@ import GroupsIcon from '@mui/icons-material/Groups'
 import { useAppDispatch, useAppSelector } from '../../contexts/hooks'
 import RouterPath from '../routes/routesContants'
 import { authLogout } from 'contexts/auth'
+import { Button } from '@mui/joy'
 
-const pages: string[] = ['Profile', 'Logout']
+const pages: string[] = []
 const settings = ['Profile', 'Logout']
 
 export const Logo = () => (
@@ -140,9 +140,9 @@ function Header() {
 								</IconButton>
 							</Tooltip>
 						) : (
-							<LoadingButton variant="outlined" onClick={handleLoginClick}>
+							<Button variant="outlined" onClick={handleLoginClick}>
 								Login
-							</LoadingButton>
+							</Button>
 						)}
 
 						<Menu

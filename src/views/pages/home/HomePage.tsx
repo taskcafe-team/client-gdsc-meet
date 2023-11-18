@@ -20,7 +20,6 @@ import {
 } from 'contexts/meeting'
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
-import MeetingChat from 'views/containers/meeting/MeetingChat'
 
 export default function HomePage() {
 	const [openCreateMeetingForm, setOpenCreateMeetingForm] = useState(false)
@@ -148,7 +147,7 @@ export function ListMeeting() {
 		setSelectedIds(_seletedIds)
 	}
 
-	if (!isLogin) return null
+	if (!isLogin) return <></>
 	return (
 		<Box sx={{ mb: 4 }}>
 			<Divider sx={{ my: 2 }}>

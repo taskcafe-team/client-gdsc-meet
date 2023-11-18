@@ -1,4 +1,3 @@
-import 'assets/styles/meetingpage.css'
 import { Loading } from 'views/routes/routes'
 import { Room, VideoPresets } from 'livekit-client'
 import { Stack } from '@mui/joy'
@@ -12,7 +11,6 @@ import MeetingProvider, {
 	MeetingContext,
 } from 'views/containers/meeting/MeetingContext'
 
-const MeetingSideBar = lazy(() => import('./MeetingSideBar'))
 const PreJoinRoom = lazy(() => import('./PreJoinRoom'))
 const MeetingRoom = lazy(() => import('./MeetingRoom'))
 
@@ -36,7 +34,7 @@ function MeetingPage() {
 
 	if (fetching) return <Loading />
 	return (
-		<Stack direction="row" width={1} height={1} p={1}>
+		<Stack direction="row" width={1} height={1}>
 			{(currentRoom == RoomType.DEFAULT || currentRoom == RoomType.WAITING) && (
 				<PreJoinRoom />
 			)}

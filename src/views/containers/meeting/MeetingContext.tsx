@@ -12,14 +12,14 @@ type RoomInfo = {
 }
 type MeetingState = {
 	registerRoom?: (room: Room, roomType: RoomType) => void
-	setState?: React.Dispatch<
-		React.SetStateAction<Omit<MeetingState, 'setState' | 'registerRoom'>>
+	setMeetingState?: React.Dispatch<
+		React.SetStateAction<Omit<MeetingState, 'setMeetingState' | 'registerRoom'>>
 	>
 	meetingId: string
 	currentRoom: RoomType
 	roomConnections: Map<RoomType, RoomInfo>
 }
-const initialState: Omit<MeetingState, 'setState'> = {
+const initialState: Omit<MeetingState, 'setMeetingState'> = {
 	meetingId: '',
 	currentRoom: RoomType.DEFAULT,
 	roomConnections: new Map(),
@@ -29,7 +29,9 @@ export const MeetingContext = createContext<MeetingState>(initialState)
 export default function MeetingProvider({ children }: React.PropsWithChildren) {
 	const { meetingId } = useParams()
 	if (!meetingId) return <Navigate to="/" />
-	const [initState, setInitState] = useState<Omit<MeetingState, 'setState'>>({
+	const [initState, setInitState] = useState<
+		Omit<MeetingState, 'setMeetingState'>
+	>({
 		meetingId,
 		currentRoom: RoomType.DEFAULT,
 		roomConnections: new Map(),
@@ -122,7 +124,7 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 
 	return (
 		<MeetingContext.Provider
-			value={{ ...initState, setState: setInitState, registerRoom }}
+			value={{ ...initState, setMeetingState: setInitState, registerRoom }}
 		>
 			{children}
 		</MeetingContext.Provider>
