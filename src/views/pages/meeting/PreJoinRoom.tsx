@@ -2,7 +2,6 @@ import { LocalUserChoices, PreJoin } from '@livekit/components-react'
 import { Sheet, Stack } from '@mui/joy'
 import { useAppSelector } from 'contexts/hooks'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
-import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import useToastily from 'hooks/useToastily'
 import WaitingChatTab from 'views/containers/meeting/tabs/WaitingChatTab'
 import { RoomType } from 'api/webrtc/webRTCTypes'
@@ -10,6 +9,7 @@ import { MeetingContext } from 'views/containers/meeting/MeetingContext'
 import { Room, VideoPresets } from 'livekit-client'
 import { generateName } from 'utils/personalNameUtils'
 import { Loading } from 'views/routes/routes'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 
 export default function PreJoinRoom() {
 	const toast = useToastily()
@@ -40,7 +40,7 @@ export default function PreJoinRoom() {
 			else roomtype = tokens[0].roomType ?? RoomType.WAITING
 			return roomtype
 		},
-		[]
+		[meetingId]
 	)
 
 	const submitJoinRoom = useCallback(
@@ -52,7 +52,7 @@ export default function PreJoinRoom() {
 				return toast({ content: 'Join Meeting Error', type: 'error' })
 			setMeetingState?.((pre) => ({ ...pre, currentRoom: roomtype }))
 		},
-		[]
+		[fetchGetTokenAndSaveSessionStore, loading, setMeetingState, toast]
 	)
 
 	const connectToChatRoom = useCallback(async () => {
@@ -75,12 +75,12 @@ export default function PreJoinRoom() {
 		await room.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
 		if (registerRoom) registerRoom(room, RoomType.WAITING)
 		setLoadingRoom(false)
-	}, [currentRoom])
+	}, [currentRoom, meetingId, navigate, registerRoom])
 
 	useLayoutEffect(() => {
 		connectToChatRoom()
 		return () => {}
-	}, [currentRoom])
+	}, [connectToChatRoom, currentRoom])
 
 	return (
 		<Stack

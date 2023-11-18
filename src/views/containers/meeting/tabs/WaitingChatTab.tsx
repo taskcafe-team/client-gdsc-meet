@@ -12,15 +12,7 @@ import ParticipantApi, {
 import ChatBox from '../components/ChatBox'
 import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { MeetingContext } from '../MeetingContext'
-import { Stack } from '@mui/material'
-import {
-	AspectRatio,
-	Button,
-	Card,
-	CardContent,
-	IconButton,
-	Typography,
-} from '@mui/joy'
+import { Button, Card, CardContent, Typography } from '@mui/joy'
 
 export default function WaitingChatTab() {
 	const { meetingId, roomConnections, setMeetingState } =

@@ -10,7 +10,7 @@ import HostWaitingChatTab from 'views/containers/meeting/tabs/HostWaitingChatTab
 import { MeetingContext } from 'views/containers/meeting/MeetingContext'
 import ParticipantControlTab from 'views/containers/meeting/tabs/ParticipantControlTab'
 
-enum ControlTabs {
+export enum ControlTabs {
 	MEETING_CHAT = 'meeting chat',
 	WAITING_CHAT = 'waiting chat',
 	PARTICIPANT_CONTROL = 'participant control',
