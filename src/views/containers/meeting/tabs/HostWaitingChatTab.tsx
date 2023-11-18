@@ -1,12 +1,12 @@
 import { Box } from '@mui/joy'
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
-import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
+import { ParticipantSendMessageDto, RoomType } from 'api/webrtc/webRTCTypes'
 import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { Room, VideoPresets } from 'livekit-client'
 import ChatBox from '../components/ChatBox'
-import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { MeetingContext } from '../MeetingContext'
 import { Loading } from 'views/routes/routes'
 
@@ -117,7 +117,7 @@ export default function HostWaitingChatTab({
 	)
 
 	const listenSendMessage = useCallback(
-		(payload: ParticipantSendMessageDTO) => {
+		(payload: ParticipantSendMessageDto) => {
 			if (!chatRoom) return
 			if (payload.roomType !== RoomType.WAITING) return
 			const sender = chatRoom.participants.get(payload.senderId)

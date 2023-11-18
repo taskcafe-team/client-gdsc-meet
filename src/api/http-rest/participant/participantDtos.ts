@@ -5,7 +5,7 @@ export enum ParticipantRole {
 	ANONYMOUSE = 'ANONYMOUSE', // chưa thêm permission
 }
 
-export type ParticipantUsecaseDTO = {
+export type ParticipantUsecaseDto = {
 	id: string
 	name: string
 	userId: string

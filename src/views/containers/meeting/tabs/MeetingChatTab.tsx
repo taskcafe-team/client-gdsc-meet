@@ -1,6 +1,6 @@
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
-import { ParticipantSendMessageDTO, RoomType } from 'api/webrtc/webRTCTypes'
+import { ParticipantSendMessageDto, RoomType } from 'api/webrtc/webRTCTypes'
 import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import ChatBox from '../components/ChatBox'
@@ -67,7 +67,7 @@ export default function MeetingChatTab({
 	)
 
 	const listenSendMessage = useCallback(
-		(payload: ParticipantSendMessageDTO) => {
+		(payload: ParticipantSendMessageDto) => {
 			if (payload.roomType !== RoomType.MEETING) return
 			const sender = chatRoom.participants.get(payload.senderId)
 			if (!sender) return

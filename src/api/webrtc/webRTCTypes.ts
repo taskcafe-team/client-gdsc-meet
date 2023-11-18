@@ -1,11 +1,11 @@
 import {
-	CreateTokenDTO,
+	CreateTokenDto,
 	RespondJoinStatus,
 } from 'api/http-rest/participant/participantApi'
 import {
 	ParticipantRole,
-	ParticipantUsecaseDTO,
-} from '../http-rest/participant/participantDTOs'
+	ParticipantUsecaseDto,
+} from '../http-rest/participant/participantDtos'
 
 export enum RoomType {
 	DEFAULT = 'default',
@@ -13,13 +13,13 @@ export enum RoomType {
 	WAITING = 'waiting',
 }
 
-export type RoomDTO = {
+export type RoomDto = {
 	id: string
 	type: RoomType
 }
 
-export type AccessTokenMetadata = ParticipantUsecaseDTO & {
-	room: RoomDTO
+export type AccessTokenMetadata = ParticipantUsecaseDto & {
+	room: RoomDto
 }
 
 export type ParticipantMetadata = {
@@ -30,13 +30,13 @@ export type ParticipantMetadata = {
 	role: ParticipantRole
 }
 
-// ----- DTOs ----- //
-export type ParticipantRequestJoinDTO = {
+// ----- Dtos ----- //
+export type ParticipantRequestJoinDto = {
 	status: RespondJoinStatus
-	token?: CreateTokenDTO
+	token?: CreateTokenDto
 }
 
-export type ParticipantSendMessageDTO = {
+export type ParticipantSendMessageDto = {
 	roomId: string
 	roomType: RoomType
 	senderId: string

@@ -1,7 +1,7 @@
 import Api from 'api/http-rest/common/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { AxiosRequestConfig } from 'axios'
-import { ParticipantUsecaseDTO } from './participantDTOs'
+import { ParticipantUsecaseDto } from './participantDtos'
 
 export enum RespondJoinStatus {
 	ACCEPTED = 'accepted',
@@ -20,15 +20,15 @@ type RequestParticipantJoinMeeting = {
 	meetingId: string
 }
 
-export type CreateTokenDTO = {
+export type CreateTokenDto = {
 	roomId: string
 	roomType: RoomType
 	roomToken: string
 }
 
 type ResponseGetAccessToken = {
-	participant: ParticipantUsecaseDTO
-	tokens: CreateTokenDTO[]
+	participant: ParticipantUsecaseDto
+	tokens: CreateTokenDto[]
 }
 
 export default class ParticipantApi extends Api {
@@ -90,14 +90,14 @@ export default class ParticipantApi extends Api {
 		)
 	}
 
-	static setMeetingApiToken(token: CreateTokenDTO) {
+	static setMeetingApiToken(token: CreateTokenDto) {
 		sessionStorage.setItem(
 			`meeting-api-token:${token.roomType}:${token.roomId}`,
 			token.roomToken
 		)
 	}
 
-	static getMeetingApiToken(token: Omit<CreateTokenDTO, 'roomToken'>) {
+	static getMeetingApiToken(token: Omit<CreateTokenDto, 'roomToken'>) {
 		return sessionStorage.getItem(
 			`meeting-api-token:${token.roomType}:${token.roomId}`
 		)

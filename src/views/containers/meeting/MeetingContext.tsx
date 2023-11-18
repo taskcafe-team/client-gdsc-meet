@@ -1,4 +1,4 @@
-import { ParticipantUsecaseDTO } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantUsecaseDto } from 'api/http-rest/participant/participantDtos'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { Room, RoomEvent } from 'livekit-client'
 import { createContext } from 'react'
@@ -8,7 +8,7 @@ type RoomInfo = {
 	roomId: string
 	roomType: RoomType
 	localParticipantId: string
-	participants: Map<string, ParticipantUsecaseDTO>
+	participants: Map<string, ParticipantUsecaseDto>
 }
 type MeetingState = {
 	registerRoom?: (room: Room, roomType: RoomType) => void
@@ -40,7 +40,7 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 	const registerRoom = useCallback((room: Room, roomType: RoomType) => {
 		const localParticipantId = room.localParticipant.identity
 		const localParticipant = JSON.parse(room.localParticipant.metadata ?? '')
-		const participants = new Map<string, ParticipantUsecaseDTO>()
+		const participants = new Map<string, ParticipantUsecaseDto>()
 		participants.set(localParticipantId, localParticipant)
 		room.participants.forEach((p) => {
 			participants.set(p.identity, JSON.parse(p.metadata ?? ''))

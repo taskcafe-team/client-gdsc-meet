@@ -1,7 +1,7 @@
 import { CommonState } from '../types'
-import { ResponseMeetingDTO } from 'api/http-rest/meeting/meetingApiType'
+import { ResponseMeetingDto } from 'api/http-rest/meeting/meetingApiType'
 
-export type MeetingInfo = ResponseMeetingDTO
+export type MeetingInfo = ResponseMeetingDto
 export interface MeetingsState extends CommonState {
 	meetings: MeetingInfo[]
 }

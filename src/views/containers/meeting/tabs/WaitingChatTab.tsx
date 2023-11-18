@@ -1,8 +1,8 @@
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import {
-	ParticipantRequestJoinDTO,
-	ParticipantSendMessageDTO,
+	ParticipantRequestJoinDto,
+	ParticipantSendMessageDto,
 	RoomType,
 } from 'api/webrtc/webRTCTypes'
 import { ChatMessageCardProps } from '../components/ChatMessageCard'
@@ -10,7 +10,7 @@ import ParticipantApi, {
 	RespondJoinStatus,
 } from 'api/http-rest/participant/participantApi'
 import ChatBox from '../components/ChatBox'
-import { ParticipantRole } from 'api/http-rest/participant/participantDTOs'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
 import { MeetingContext } from '../MeetingContext'
 import { Stack } from '@mui/material'
 import {
@@ -75,7 +75,7 @@ export default function WaitingChatTab() {
 	)
 
 	const listenSendMessage = useCallback(
-		(payload: ParticipantSendMessageDTO) => {
+		(payload: ParticipantSendMessageDto) => {
 			if (payload.roomType !== RoomType.WAITING) return
 			const sender = chatRoom.participants.get(payload.senderId)
 			if (!sender) return
@@ -95,7 +95,7 @@ export default function WaitingChatTab() {
 	)
 
 	const listenResposedJoinRequest = useCallback(
-		(payload: ParticipantRequestJoinDTO) => {
+		(payload: ParticipantRequestJoinDto) => {
 			if (payload.status === RespondJoinStatus.REJECTED) {
 				setIsRejected(true)
 			} else if (payload.status === RespondJoinStatus.ACCEPTED) {

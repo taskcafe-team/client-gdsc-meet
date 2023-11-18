@@ -4,7 +4,7 @@ import { generateName } from 'utils/personalNameUtils'
 import {
 	MeetingType,
 	RequestCreateMeetingBody,
-	ResponseMeetingDTO,
+	ResponseMeetingDto,
 	ResponseAccessToken,
 } from './meetingApiType'
 
@@ -13,17 +13,17 @@ export default class MeetingApi extends Api {
 
 	static getMyMeetings() {
 		const path = `${this.meetingURL}`
-		return Api.get<ResponseMeetingDTO[]>(path)
+		return Api.get<ResponseMeetingDto[]>(path)
 	}
 
 	static async getMeeting(meetingId: string) {
 		const path = `${this.meetingURL}/${meetingId}`
-		return Api.get<ResponseMeetingDTO>(path)
+		return Api.get<ResponseMeetingDto>(path)
 	}
 
 	static async createMeeting(
 		request: RequestCreateMeetingBody
-	): Promise<ApiResponse<ResponseMeetingDTO>> {
+	): Promise<ApiResponse<ResponseMeetingDto>> {
 		const body: RequestCreateMeetingBody = {
 			title: request.title || generateName(),
 			description: request.description || null,
@@ -31,7 +31,7 @@ export default class MeetingApi extends Api {
 			endDate: request.endDate || null,
 			type: request.type || MeetingType.PUBLIC,
 		}
-		return Api.post<ResponseMeetingDTO>(`${this.meetingURL}`, body)
+		return Api.post<ResponseMeetingDto>(`${this.meetingURL}`, body)
 	}
 
 	static async deleteMeetings(request: { ids: string[] }) {
