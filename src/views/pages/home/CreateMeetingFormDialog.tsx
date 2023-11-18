@@ -27,7 +27,7 @@ import {
 } from 'api/http-rest/common/apiResponses'
 import {
 	MeetingType,
-	ResponseMeetingDto,
+	ResponseMeetingDTO,
 } from 'api/http-rest/meeting/meetingApiType'
 
 type CreateMeetingFormProps = {
@@ -57,7 +57,7 @@ export default function CreateMeetingFormDialog(props: CreateMeetingFormProps) {
 			})
 		)
 			.then((result) => {
-				const data = result.payload as ApiResponse<ResponseMeetingDto>
+				const data = result.payload as ApiResponse<ResponseMeetingDTO>
 				if (data.success) navigate(RouterPath.getPreMeetingPath(data.data.id))
 				else if (data.metadata.error)
 					toast({ content: data.metadata.error.message, type: 'error' })

@@ -1,7 +1,7 @@
 import Api from 'api/http-rest/common/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { AxiosRequestConfig } from 'axios'
-import { ParticipantUsecaseDTO } from './participantDtos'
+import { ParticipantUsecaseDTO } from './participantDTOs'
 
 export enum RespondJoinStatus {
 	ACCEPTED = 'accepted',

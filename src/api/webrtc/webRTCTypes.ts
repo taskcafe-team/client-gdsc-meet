@@ -5,7 +5,7 @@ import {
 import {
 	ParticipantRole,
 	ParticipantUsecaseDTO,
-} from '../http-rest/participant/participantDtos'
+} from '../http-rest/participant/participantDTOs'
 
 export enum RoomType {
 	DEFAULT = 'default',

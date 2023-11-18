@@ -1,4 +1,4 @@
-import { ParticipantUsecaseDTO } from 'api/http-rest/participant/participantDtos'
+import { ParticipantUsecaseDTO } from 'api/http-rest/participant/participantDTOs'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { Room, RoomEvent } from 'livekit-client'
 import { createContext } from 'react'

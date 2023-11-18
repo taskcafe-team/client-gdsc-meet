@@ -5,7 +5,7 @@ export enum MeetingType {
 	PRIVATE = 'PRIVATE',
 }
 
-export type ResponseMeetingDto = {
+export type ResponseMeetingDTO = {
 	id: string
 	title: string | null
 	startTime: string

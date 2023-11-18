@@ -4,7 +4,7 @@ import { Sheet, Stack, Badge, IconButton, Tooltip } from '@mui/joy'
 import MeetingChatBox from 'views/containers/meeting/tabs/MeetingChatTab'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import PeopleIcon from '@mui/icons-material/People'
-import { ParticipantRole } from '../../../api/http-rest/participant/participantDtos'
+import { ParticipantRole } from '../../../api/http-rest/participant/participantDTOs'
 
 import HostWaitingChatTab from 'views/containers/meeting/tabs/HostWaitingChatTab'
 import { MeetingContext } from 'views/containers/meeting/MeetingContext'

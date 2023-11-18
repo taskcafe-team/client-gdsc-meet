@@ -4,7 +4,7 @@ export enum UserRole {
 	USER = 'USER',
 }
 
-export interface UserUsecaseDto {
+export interface UserUsecaseDTO {
 	id: string
 	firstName: string
 	lastName: string
