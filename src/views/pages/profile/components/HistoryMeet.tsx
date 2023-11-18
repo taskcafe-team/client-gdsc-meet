@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import ImageErr from 'assets/static/images/backgrouds/Error TV 1.svg'
 import {
 	AccessTime,
@@ -35,7 +35,6 @@ const HistoryMeet: React.FC<IHistoryMeet> = ({ historys, ...rest }) => {
 	}, [])
 
 	const handleJoinMeeting = useCallback(() => {}, [])
-	
 
 	return (
 		<div className="HistoryMeet">

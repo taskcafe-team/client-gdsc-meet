@@ -82,7 +82,7 @@ const routes: CustomRouteProps[] = [
 	},
 	{
 		path: RouterPath.DOCUMENT_URL,
-		element: getPublicLayout(<Document />,'full'),
+		element: <Document/>,
 		loader: undefined,
 	},
 ]
