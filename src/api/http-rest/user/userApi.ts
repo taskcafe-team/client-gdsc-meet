@@ -1,6 +1,5 @@
-import type { AxiosPromise } from 'axios'
-import Api from '../common/api'
-import type { ApiResponse } from '../common/apiResponses'
+import Api from '../api'
+import type { ApiResponse } from '../apiResponses'
 
 export interface LoginUserRequest {
 	email: string
@@ -92,7 +91,7 @@ export interface ResponseUserData {
 	role: UserRole
 }
 
-export default class UserApi extends Api {
+class UserApi extends Api {
 	static getMe() {
 		return Api.get<ResponseUserData>(`users/me`)
 	}
@@ -107,3 +106,5 @@ export default class UserApi extends Api {
 		})
 	}
 }
+
+export default UserApi

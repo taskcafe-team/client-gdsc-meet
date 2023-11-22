@@ -1,6 +1,7 @@
 export default {
 	prefix: 'api',
 	data: {
+		access_token_header: 'x-api-token',
 		key_store_access_token: 'access_token',
 
 		base_url: 'http://localhost:5000',

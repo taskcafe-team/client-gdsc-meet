@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import axios, {
 	type AxiosInstance,
 	type AxiosRequestConfig,
@@ -99,5 +98,4 @@ class Api {
 }
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-
 export default Api

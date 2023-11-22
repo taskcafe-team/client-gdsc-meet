@@ -9,7 +9,7 @@ import { RoomType } from 'api/webrtc/webRTCTypes'
 import MeetingProvider, {
 	useMeetingState,
 } from 'views/containers/meeting/MeetingContext'
-import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import { ApiResponse } from 'api/http-rest/apiResponses'
 
 const PreJoinRoom = lazy(() => import('./PreJoinRoom'))
 const MeetingRoom = lazy(() => import('./MeetingRoom'))

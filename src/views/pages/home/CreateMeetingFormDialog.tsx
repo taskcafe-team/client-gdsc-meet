@@ -21,10 +21,7 @@ import {
 } from '@mui/material'
 import RouterPath from 'views/routes/routesContants'
 import useToastily from 'hooks/useToastily'
-import {
-	ApiResponse,
-	ApiResponseError,
-} from 'api/http-rest/common/apiResponses'
+import { ApiResponse, ApiResponseError } from 'api/http-rest/apiResponses'
 import {
 	MeetingType,
 	ResponseMeetingDto,

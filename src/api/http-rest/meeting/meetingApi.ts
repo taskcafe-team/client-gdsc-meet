@@ -1,5 +1,5 @@
-import Api from 'api/http-rest/common/api'
-import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import Api from 'api/http-rest/api'
+import { ApiResponse } from 'api/http-rest/apiResponses'
 import { generateName } from 'utils/personalNameUtils'
 import {
 	MeetingType,
@@ -7,7 +7,7 @@ import {
 	ResponseMeetingDto,
 } from './meetingApiType'
 
-export default class MeetingApi extends Api {
+export class MeetingApi extends Api {
 	static readonly meetingURL = 'meetings'
 
 	static getMyMeetings() {
@@ -38,3 +38,4 @@ export default class MeetingApi extends Api {
 		return Api.delete(path, request)
 	}
 }
+export default MeetingApi

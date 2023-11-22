@@ -6,10 +6,7 @@ import LoginForm from './forms/LoginForm'
 import { useAppDispatch, useAppSelector } from 'contexts'
 import RouterPath from 'views/routes/routesContants'
 import { authFetchGoogleLoginVerify } from 'contexts/auth'
-import {
-	ApiResponse,
-	ApiResponseError,
-} from 'api/http-rest/common/apiResponses'
+import { ApiResponse, ApiResponseError } from 'api/http-rest/apiResponses'
 import useToastily from 'hooks/useToastily'
 
 export default function LoginPage() {

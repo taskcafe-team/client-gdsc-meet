@@ -26,10 +26,7 @@ import AnimateButton from '../../../components/AnimateButton'
 import { LoginFormValueInit } from '../type'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authFetchEmailLogin } from 'contexts/auth'
-import {
-	ApiResponse,
-	ResponseMetadata,
-} from 'api/http-rest/common/apiResponses'
+import { ApiResponse, ResponseMetadata } from 'api/http-rest/apiResponses'
 import { ResponseLoginSuccess } from 'api/http-rest'
 
 const loginFormValueInit: LoginFormValueInit = {

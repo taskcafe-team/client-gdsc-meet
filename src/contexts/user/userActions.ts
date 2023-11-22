@@ -3,7 +3,6 @@ import { UserInfo } from './userTypes'
 import UserApi, { RequestUpdateMe } from 'api/http-rest/user/userApi'
 import { authLogged } from 'contexts/auth'
 import { USER_FETCH_ME, USER_FETCH_UPDATE_ME } from './userConstants'
-import { ApiResponseError } from 'api/http-rest/common/apiResponses'
 
 export type userSetMe = {
 	type: string

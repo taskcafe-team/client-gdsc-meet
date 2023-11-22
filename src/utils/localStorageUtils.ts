@@ -9,8 +9,8 @@ export const setLocalStorageItem = (key: string, value: unknown): void => {
 
 export const getLocalStorageItem = (key: string): unknown | null => {
 	try {
-		const serializedValue = localStorage.getItem(key)
-		if (serializedValue === null) return null
+		const serializedValue = localStorage.getItem(key) ?? null
+		if (!serializedValue) return null
 		return JSON.parse(serializedValue)
 	} catch (error) {
 		console.error('Error getting item from Local Storage:', error)

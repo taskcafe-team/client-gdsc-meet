@@ -1,4 +1,4 @@
-import Api from 'api/http-rest/common/api'
+import Api from 'api/http-rest/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { type AxiosRequestConfig } from 'axios'
 import { ParticipantUsecaseDto } from './participantDtos'

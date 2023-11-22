@@ -15,6 +15,7 @@ interface Env {
     STYLE_COLOR_YELLOW:         string;
     STYLE_COLOR_BLUE:           string;
     STYLE_COLOR_WHITE:          string;
+    API_ACCESS_TOKEN_HEADER:    string;
     API_KEY_STORE_ACCESS_TOKEN: string;
     API_BASE_URL:               string;
     API_LOGIN_GOOGLE_URL:       string;

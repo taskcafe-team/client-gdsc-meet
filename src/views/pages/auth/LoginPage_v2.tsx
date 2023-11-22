@@ -19,7 +19,7 @@ import { Group } from '@mui/icons-material'
 import useToastily from 'hooks/useToastily'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
-import { ApiResponse } from 'api/http-rest/common/apiResponses'
+import { ApiResponse } from 'api/http-rest/apiResponses'
 import { ResponseLoginSuccess } from 'api/http-rest'
 import RouterPath from 'views/routes/routesContants'
 
@@ -219,14 +219,9 @@ export default function LoginPage() {
 									const { email, password } = data
 									dispatch(authFetchEmailLogin({ email, password })).then(
 										(payload) => {
-											const res =
-												payload.payload as ApiResponse<ResponseLoginSuccess>
-											const { success } = res.metadata
-											if (!success && res.metadata.error)
-												toast({
-													content: res.metadata.error.message,
-													type: 'error',
-												})
+											if (payload.meta.requestStatus === 'fulfilled')
+												navigate('/')
+											else toast({ content: 'Login failed', type: 'error' })
 										}
 									)
 								}}

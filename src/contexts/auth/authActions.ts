@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import {
 	AUTH_FETCH_EMAIL_LOGIN,
@@ -5,19 +6,20 @@ import {
 	AUTH_LOGGED,
 	AUTH_LOGOUT,
 } from './authConstants'
-import { AuthApi } from 'api/http-rest'
 import { userFetchMe } from 'contexts/user'
 import {
 	removeLocalStorageItem,
 	setLocalStorageItem,
 } from 'utils/localStorageUtils'
+import AuthApi from 'api/http-rest/auth/authApi'
 
 /*----------- Action -----------*/
 export const authLogged = createAction(AUTH_LOGGED)
 
 /*----------- Thunk Action -----------*/
 export const authLogout = createAsyncThunk(AUTH_LOGOUT, async () => {
-	removeLocalStorageItem('access_token')
+	const keyStore = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+	removeLocalStorageItem(keyStore)
 })
 
 export const authFetchEmailLogin = createAsyncThunk(
@@ -25,13 +27,12 @@ export const authFetchEmailLogin = createAsyncThunk(
 	async (request: { email: string; password: string }, { dispatch }) => {
 		const res = await AuthApi.loginWithEmail(request)
 		const { success } = res.metadata
+		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
 		if (success) {
 			const { accessToken } = res.data
-			const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
 			setLocalStorageItem(key, accessToken)
 			dispatch(authLogged())
-			console.log(key)
-		}
+		} else removeLocalStorageItem(key)
 		return res
 	}
 )
@@ -46,7 +47,7 @@ export const authFetchGoogleLoginVerify = createAsyncThunk(
 			const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
 			setLocalStorageItem(key, accessToken)
 			dispatch(authLogged())
-			dispatch(userFetchMe())
+			dispatch(userFetchMe()) //TODO: remove to homepage
 		}
 		return res
 	}
