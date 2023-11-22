@@ -1,50 +1,49 @@
-import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type {
+	AxiosError,
+	AxiosResponse,
+	InternalAxiosRequestConfig,
+} from 'axios'
 import { getLocalStorageItem } from '../../../utils/localStorageUtils'
-import useToastily from 'hooks/useToastily'
-import { ApiResponse, ApiResponseError } from './apiResponses'
+import { ResponseMetadata } from './apiResponses'
 
 export const apiRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 	config.headers = config.headers ?? {}
 	// const methodUpper = config.method?.toUpperCase()
 	// if (methodUpper && methodUpper !== 'GET' && methodUpper !== 'HEAD')
-	config.headers['x-api-token'] = `${getLocalStorageItem('access_token')}`
+	const keyStoreAccessToken = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+	config.headers['x-api-token'] = `${getLocalStorageItem(keyStoreAccessToken)}`
 
 	return config
 }
 
-export const apiFailureRequestInterceptor = async (error: any) => {
+export const apiFailureRequestInterceptor = async (error: unknown) => {
 	return Promise.resolve(error)
 }
 
-export const apiSuccessResponseInterceptor = (
+export const apiSuccessResponseInterceptor = async (
 	response: AxiosResponse
-): AxiosResponse['data'] => {
-	// ----[ Format the response from the server ]---- //
-	const { success, error, timestamp, data } = response.data
-	const status = response.status
-
-	const _response: ApiResponse = {
-		metadata: { status: status, error },
-		success: success ?? false,
-		data: data ?? undefined,
-		timestamp: timestamp ?? new Date().getTime(),
-	}
-	// ----------------------------------------------- //
-
-	return _response
+): Promise<AxiosResponse['data']> => {
+	return response.data
 }
 
-export const apiFailureResponseInterceptor = (error: any) => {
-	const _response: ApiResponse = {
-		metadata: { status: 500, error: { code: 500, message: 'Fetch Error!' } },
-		data: undefined,
-		success: false,
-		timestamp: new Date().getTime(),
+export const apiFailureResponseInterceptor = (error: AxiosError) => {
+	if (error.response) {
+		const meta = error.response.data as ResponseMetadata | null
+		const _error = meta?.error
+
+		const responseError = {
+			message: _error?.message ?? 'Internal Server Response Format Error',
+			code: _error?.code ?? 'AE-APP-5000',
+			action: _error?.action ?? 'DEFAULT',
+			title: _error?.title ?? ' "Internal server error",',
+			errorType: _error?.errorType ?? 'INTERNAL_ERROR',
+		}
+		return Promise.reject({ ...error, ...responseError })
+	} else if (error.request) {
+		//
+	} else {
+		//
 	}
 
-	return _response
-	// return Promise.reject({
-	// 	...error,
-	// 	..._response.metadata.error,
-	// })
+	return Promise.reject(error)
 }

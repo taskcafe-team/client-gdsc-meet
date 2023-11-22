@@ -17,9 +17,9 @@ export class WebRTCListenerFactory<T extends RegisterActionsType> {
 				const strData = decoder.decode(payload)
 				const action = JSON.parse(strData)
 				if ('type' in action && 'payload' in action) {
-					const type = action['type']
-					const payload = action['payload']
-					this.event.emit(type, payload)
+					const type = action.type
+					const _payload = action.payload
+					this.event.emit(type, _payload)
 				} else
 					console.warn(
 						WebRTCListenerFactory.name,

@@ -4,8 +4,9 @@ import { ParticipantSendMessageDto, RoomType } from 'api/webrtc/webRTCTypes'
 import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import ChatBox from '../components/ChatBox'
-import { MeetingContext } from '../MeetingContext'
 import { Box } from '@mui/joy'
+import { useMeetingState } from '../MeetingContext'
+import { Loading } from 'views/routes/routes'
 
 type MeetingChatTabProps = {
 	hidden?: boolean
@@ -16,33 +17,20 @@ export default function MeetingChatTab({
 	hidden,
 	onUnreadMessagesChange,
 }: MeetingChatTabProps) {
-	const { meetingId, roomConnections } = useContext(MeetingContext)
-	const chatRoom = useMemo(() => {
-		const room = roomConnections.get(RoomType.MEETING)
-		const localParticipantId = room?.localParticipantId ?? ''
-		const participants = room?.participants
-		const localParticipant = participants?.get(localParticipantId)
-		if (!room || !participants || !localParticipant) return null
-		return {
-			roomType: RoomType.MEETING,
-			room: room.room,
-			localParticipantId,
-			localParticipant,
-			participants,
-		}
-	}, [roomConnections.get(RoomType.MEETING)])
-	if (!chatRoom) return <Navigate to="/" />
+	const { roomConnecteds } = useMeetingState()
+	const chatRoom = roomConnecteds.get(RoomType.MEETING)
 
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
 	const [unreadMessages, setUnreadMessages] = useState(0)
 
-	const sendMessage = useCallback(async (content) => {
-		await ParticipantApi.sendMessage({
-			roomId: meetingId,
-			roomType: chatRoom.roomType,
-			content,
-		})
-	}, [])
+	const sendMessage = useCallback(
+		async (content) => {
+			if (!chatRoom) return
+			const { roomId, roomType } = chatRoom
+			await ParticipantApi.sendMessage({ roomId, roomType, content })
+		},
+		[chatRoom]
+	)
 
 	const pushMessage = useCallback(
 		(newMess: ChatMessageCardProps) => {
@@ -66,28 +54,42 @@ export default function MeetingChatTab({
 		[hidden]
 	)
 
+	const getSender = useCallback(
+		(id: string) => {
+			if (!chatRoom) return null
+			if (id === chatRoom.localParticipant.id)
+				return { ...chatRoom.localParticipant, isLocal: true }
+			else {
+				const remoteParticipant = chatRoom.remoteParticipants.get(id)
+				if (!remoteParticipant) return null
+				else return { ...remoteParticipant, isLocal: false }
+			}
+		},
+		[chatRoom]
+	)
+
 	const listenSendMessage = useCallback(
 		(payload: ParticipantSendMessageDto) => {
-			if (payload.roomType !== RoomType.MEETING) return
-			const sender = chatRoom.participants.get(payload.senderId)
+			if (!chatRoom) return
+			const sender = getSender(payload.senderId)
 			if (!sender) return
 
 			const newMessage: ChatMessageCardProps = {
-				position: chatRoom.localParticipantId === sender.id ? 'right' : 'left',
+				position: sender.isLocal ? 'right' : 'left',
 				messageContent: {
 					senderId: sender.id,
-					name: sender.name || 'No name',
+					name: sender.name || 'NO NAME',
 					avatar: '',
 					contents: [payload.content],
 				},
 			}
 			pushMessage(newMessage)
 		},
-		[pushMessage]
+		[chatRoom, getSender, pushMessage]
 	)
 
 	useLayoutEffect(() => {
-		onUnreadMessagesChange?.(unreadMessages)
+		if (onUnreadMessagesChange) onUnreadMessagesChange(unreadMessages) //TODO: Chua on
 	}, [unreadMessages])
 
 	useLayoutEffect(() => {
@@ -95,21 +97,26 @@ export default function MeetingChatTab({
 	}, [hidden])
 
 	useLayoutEffect(() => {
+		if (!chatRoom) return // TODO: Khoon phai o day
 		const listener = new WebRTCListenerFactory(chatRoom.room)
 		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
 
 		return () => {
 			listener.removeAllListeners()
 		}
-	}, [listenSendMessage])
+	}, [chatRoom])
 
 	return (
 		<Box height={1} overflow="hidden" display={hidden ? 'none' : undefined}>
-			<ChatBox
-				title={'Meeting Chat'}
-				messages={messages}
-				onSend={(c) => sendMessage(c)}
-			/>
+			{!chatRoom ? (
+				<Loading />
+			) : (
+				<ChatBox
+					title={'Meeting Chat'}
+					messages={messages}
+					onSend={(c) => sendMessage(c)}
+				/>
+			)}
 		</Box>
 	)
 }

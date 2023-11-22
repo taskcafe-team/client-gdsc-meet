@@ -1,9 +1,4 @@
-type LocalStorageData = {
-	key: string
-	value: unknown
-}
-
-export const setLocalStorageItem = ({ key, value }: LocalStorageData): void => {
+export const setLocalStorageItem = (key: string, value: unknown): void => {
 	try {
 		const serializedValue = JSON.stringify(value)
 		localStorage.setItem(key, serializedValue)
@@ -12,12 +7,10 @@ export const setLocalStorageItem = ({ key, value }: LocalStorageData): void => {
 	}
 }
 
-export const getLocalStorageItem = (key: string): any | null => {
+export const getLocalStorageItem = (key: string): unknown | null => {
 	try {
 		const serializedValue = localStorage.getItem(key)
-		if (serializedValue === null) {
-			return null
-		}
+		if (serializedValue === null) return null
 		return JSON.parse(serializedValue)
 	} catch (error) {
 		console.error('Error getting item from Local Storage:', error)

@@ -17,7 +17,7 @@ export const userFetchMe = createAsyncThunk(
 	USER_FETCH_ME,
 	async (_, { dispatch }) => {
 		const res = await UserApi.getMe()
-		const { success } = res
+		const { success } = res.metadata
 		if (success) {
 			dispatch(authLogged())
 			dispatch(userSetMe(res.data as UserInfo))
@@ -30,7 +30,7 @@ export const userFetchUpdateMe = createAsyncThunk(
 	USER_FETCH_UPDATE_ME,
 	async (request: RequestUpdateMe, { dispatch }) => {
 		const res = await UserApi.updateMe(request)
-		const { success } = res
+		const { success } = res.metadata
 		if (success) dispatch(userFetchMe())
 		return res
 	}

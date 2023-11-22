@@ -3,7 +3,7 @@
  * @param key - The key to set the value under
  * @param value - The value to set
  */
-export const setSessionStorage = (key: string, value: any) => {
+export const setSessionStorage = (key: string, value: unknown) => {
 	sessionStorage.setItem(key, JSON.stringify(value))
 }
 
@@ -12,7 +12,7 @@ export const setSessionStorage = (key: string, value: any) => {
  * @param key - The key to get the value for
  * @returns The value stored under the key, or null if not found
  */
-export const getSessionStorage = (key: string): any => {
+export const getSessionStorage = (key: string): unknown => {
 	const value = sessionStorage.getItem(key)
 	return value ? JSON.parse(value) : null
 }

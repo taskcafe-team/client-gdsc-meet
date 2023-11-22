@@ -21,90 +21,6 @@ import {
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
 
-export default function HomePage() {
-	const [openCreateMeetingForm, setOpenCreateMeetingForm] = useState(false)
-	const toast = useToastily()
-	const navigate = useNavigate()
-	const isLogin = useAppSelector((s) => s.auth.isLogin)
-	const [meetingId, setMeetingId] = useState('')
-
-	const validationLogin = useCallback(() => {
-		if (!isLogin) toast({ content: 'Please login!', type: 'warning' })
-		return isLogin
-	}, [isLogin])
-
-	const hanldeSubmitJoinMeeting = useCallback(
-		(event: React.FormEvent<HTMLFormElement>) => {
-			event.preventDefault()
-			if (validationLogin() && meetingId.length > 0)
-				navigate(RouterPath.getPreMeetingPath(meetingId))
-		},
-		[meetingId]
-	)
-
-	return (
-		<Box sx={{ my: 2, mx: 2 }}>
-			<CreateMeetingFormDialog
-				open={openCreateMeetingForm}
-				setOpen={setOpenCreateMeetingForm}
-			/>
-			<Box maxWidth="sm" margin="auto">
-				<Box textAlign="center">
-					<img
-						style={{ display: 'inline-block' }}
-						alt="Oline Meeting Images"
-						width="300px"
-						src={online_meeting_illustration}
-					/>
-					<Typography level="h2" sx={{ my: 2 }}>
-						Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
-					</Typography>
-					<Typography sx={{ mb: 4 }}>
-						GDSC Meet - dịch vụ tổ chức cuộc họp kinh doanh với độ bảo mật cao.
-					</Typography>
-				</Box>
-				<Box maxWidth="sm">
-					<Box sx={{ textAlign: 'center', mt: 3 }}>
-						<form onSubmit={hanldeSubmitJoinMeeting}>
-							<Stack
-								direction={{ xs: 'column', md: 'row' }}
-								justifyContent="space-between"
-								spacing={1}
-							>
-								<Input
-									value={meetingId}
-									onChange={(e) => setMeetingId(e.target.value.trim())}
-									required
-									fullWidth
-									placeholder="Input meeting code!"
-									startDecorator={<CallIcon />}
-									endDecorator={<Button type="submit">Join</Button>}
-								/>
-								<Box display="flex" alignItems="center">
-									<Button
-										fullWidth
-										size="sm"
-										type="button"
-										variant="outlined"
-										onClick={() =>
-											validationLogin() && setOpenCreateMeetingForm(true)
-										}
-									>
-										Create
-									</Button>
-								</Box>
-							</Stack>
-						</form>
-					</Box>
-				</Box>
-				<Box maxWidth="sm">
-					<ListMeeting />
-				</Box>
-			</Box>
-		</Box>
-	)
-}
-
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const meetings = useAppSelector((s) => s.meeting.meetings)
@@ -213,6 +129,90 @@ export function ListMeeting() {
 						</Button>
 					)
 				})}
+			</Box>
+		</Box>
+	)
+}
+
+export default function HomePage() {
+	const [openCreateMeetingForm, setOpenCreateMeetingForm] = useState(false)
+	const toast = useToastily()
+	const navigate = useNavigate()
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const [meetingId, setMeetingId] = useState('')
+
+	const validationLogin = useCallback(() => {
+		if (!isLogin) toast({ content: 'Please login!', type: 'warning' })
+		return isLogin
+	}, [isLogin])
+
+	const hanldeSubmitJoinMeeting = useCallback(
+		(event: React.FormEvent<HTMLFormElement>) => {
+			event.preventDefault()
+			if (validationLogin() && meetingId.length > 0)
+				navigate(RouterPath.getPreMeetingPath(meetingId))
+		},
+		[meetingId]
+	)
+
+	return (
+		<Box sx={{ my: 2, mx: 2 }}>
+			<CreateMeetingFormDialog
+				open={openCreateMeetingForm}
+				setOpen={setOpenCreateMeetingForm}
+			/>
+			<Box maxWidth="sm" margin="auto">
+				<Box textAlign="center">
+					<img
+						style={{ display: 'inline-block' }}
+						alt="Oline Meeting Images"
+						width="300px"
+						src={online_meeting_illustration}
+					/>
+					<Typography level="h2" sx={{ my: 2 }}>
+						Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
+					</Typography>
+					<Typography sx={{ mb: 4 }}>
+						GDSC Meet - dịch vụ tổ chức cuộc họp kinh doanh với độ bảo mật cao.
+					</Typography>
+				</Box>
+				<Box maxWidth="sm">
+					<Box sx={{ textAlign: 'center', mt: 3 }}>
+						<form onSubmit={hanldeSubmitJoinMeeting}>
+							<Stack
+								direction={{ xs: 'column', md: 'row' }}
+								justifyContent="space-between"
+								spacing={1}
+							>
+								<Input
+									value={meetingId}
+									onChange={(e) => setMeetingId(e.target.value.trim())}
+									required
+									fullWidth
+									placeholder="Input meeting code!"
+									startDecorator={<CallIcon />}
+									endDecorator={<Button type="submit">Join</Button>}
+								/>
+								<Box display="flex" alignItems="center">
+									<Button
+										fullWidth
+										size="sm"
+										type="button"
+										variant="outlined"
+										onClick={() =>
+											validationLogin() && setOpenCreateMeetingForm(true)
+										}
+									>
+										Create
+									</Button>
+								</Box>
+							</Stack>
+						</form>
+					</Box>
+				</Box>
+				<Box maxWidth="sm">
+					<ListMeeting />
+				</Box>
 			</Box>
 		</Box>
 	)

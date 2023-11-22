@@ -3,7 +3,7 @@ import {
 	ParticipantSendMessageDto,
 } from './webRTCTypes'
 export type ActionMap = {
-	[key in keyof SendMessageActionEnum]: any
+	[key in keyof SendMessageActionEnum]: unknown
 }
 
 export enum SendMessageActionEnum {

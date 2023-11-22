@@ -1,48 +1,50 @@
 import {
 	Avatar,
 	Box,
+	Button,
 	Dropdown,
 	IconButton,
 	Input,
 	List,
 	ListItem,
+	ListItemButton,
 	ListItemContent,
 	ListItemDecorator,
+	ListSubheader,
 	Menu,
 	MenuButton,
 	MenuItem,
+	Sheet,
 	Stack,
 	Typography,
 } from '@mui/joy'
-import React from 'react'
 import SearchIcon from '@mui/icons-material/Search'
-import { MoreVert } from '@mui/icons-material'
-import { MeetingContext } from '../MeetingContext'
-import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
-import { RoomType } from 'api/webrtc/webRTCTypes'
+import {
+	ExpandLess,
+	ExpandMore,
+	KeyboardArrowRight,
+	MoreVert,
+} from '@mui/icons-material'
 
-type ParticipantControlTab = {
+import { RoomType } from 'api/webrtc/webRTCTypes'
+import { useMeetingState } from '../MeetingContext'
+import { Collapse } from '@mui/material'
+import { Loading } from 'views/routes/routes'
+import ListWaitingParticipants from '../participant_control/ListWaitingParticipants'
+
+export type ParticipantControlTabProps = {
 	hidden?: boolean
 }
+
 export default function ParticipantControlTab({
-	hidden = false,
-}: ParticipantControlTab) {
-	const { roomConnections } = useContext(MeetingContext)
-	const meetingRoom = useMemo(() => {
-		const room = roomConnections.get(RoomType.MEETING)
-		const localParticipantId = room?.localParticipantId ?? ''
-		const participants = room?.participants
-		const localParticipant = participants?.get(localParticipantId)
-		if (!room || !participants || !localParticipant) return null
-		return {
-			roomType: RoomType.MEETING,
-			room: room.room,
-			localParticipantId,
-			localParticipant,
-			participants,
-		}
-	}, [roomConnections.get(RoomType.MEETING)])
-	if (!meetingRoom) return <Navigate to="/" />
+	hidden,
+}: ParticipantControlTabProps) {
+	const { roomConnecteds } = useMeetingState()
+	const meetingRoom = roomConnecteds.get(RoomType.MEETING)
+	const waitingRoom = roomConnecteds.get(RoomType.WAITING)
+
+	const [onlineParticipantOpen, setOnlineParticipantOpen] = useState(false)
+	const [waitingParticipantOpen, setWaitingParticipantOpen] = useState(false)
 
 	return (
 		<Box height={1} overflow="hidden" display={hidden ? 'none' : undefined}>
@@ -58,6 +60,7 @@ export default function ParticipantControlTab({
 						All Participant
 					</Typography>
 				</Stack>
+
 				<Stack>
 					<Input
 						sx={{ borderRadius: 10 }}
@@ -67,46 +70,7 @@ export default function ParticipantControlTab({
 					/>
 				</Stack>
 				<Stack>
-					<Typography level="body-sm">Online Participant</Typography>
-					<List sx={{ '--ListItemDecorator-size': '56px' }}>
-						<ListItem sx={{ p: 0, my: 0.5 }}>
-							<ListItemDecorator>
-								<Avatar variant="solid" src="/static/images/avatar/1.jpg" />
-							</ListItemDecorator>
-							<ListItemContent>
-								<Typography level="title-md" noWrap>
-									<span>(You) </span>
-									{meetingRoom.localParticipant.name}
-								</Typography>
-							</ListItemContent>
-							<ListItemDecorator sx={{ m: 0, justifyContent: 'end' }}>
-								{/* <DropDown /> */}
-							</ListItemDecorator>
-						</ListItem>
-						{Array.from(meetingRoom.participants.entries()).map(
-							([participantId, participant], i) => {
-								if (participantId == meetingRoom.localParticipantId) return
-								return (
-									<ListItem key={i} sx={{ p: 0, my: 0.5 }}>
-										<ListItemDecorator>
-											<Avatar
-												variant="solid"
-												src="/static/images/avatar/1.jpg"
-											/>
-										</ListItemDecorator>
-										<ListItemContent>
-											<Typography level="title-md" noWrap>
-												{participant.name}
-											</Typography>
-										</ListItemContent>
-										<ListItemDecorator sx={{ m: 0, justifyContent: 'end' }}>
-											{/* <DropDown /> */}
-										</ListItemDecorator>
-									</ListItem>
-								)
-							}
-						)}
-					</List>
+					<ListWaitingParticipants />
 				</Stack>
 			</Stack>
 		</Box>

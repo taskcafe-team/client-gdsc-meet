@@ -1,16 +1,19 @@
 export type ApiResponseError = {
-	code: number | string
 	message: string
+	code: string
+	action: string
+	title: string
+	errorType: string
 }
 
 export type ResponseMetadata = {
 	status: number
+	success: boolean
+	message?: string
 	error?: ApiResponseError
 }
 
 export type ApiResponse<T = undefined> = {
 	metadata: ResponseMetadata
-	success: boolean
 	data: T
-	timestamp: number
 }

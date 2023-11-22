@@ -16,7 +16,6 @@ export default function PreJoinRoom() {
 	const navigate = useNavigate()
 
 	const [loading, setLoading] = useState(false)
-	const [loadingRoom, setLoadingRoom] = useState(true)
 
 	const { currentRoom, meetingId, setMeetingState, registerRoom } =
 		useContext(MeetingContext)
@@ -32,7 +31,8 @@ export default function PreJoinRoom() {
 				meetingId,
 				customName.trim()
 			)
-			if (!res.success) return null
+			const { success } = res.metadata
+			if (!success) return null
 			const { tokens, participant } = res.data
 			tokens.forEach((t) => ParticipantApi.setMeetingApiToken(t))
 			let roomtype = RoomType.WAITING
@@ -57,7 +57,6 @@ export default function PreJoinRoom() {
 
 	const connectToChatRoom = useCallback(async () => {
 		if (currentRoom != RoomType.WAITING) return
-		setLoadingRoom(true)
 		const token = ParticipantApi.getMeetingApiToken({
 			roomId: meetingId,
 			roomType: RoomType.WAITING,
@@ -72,9 +71,13 @@ export default function PreJoinRoom() {
 			},
 		})
 
-		await room.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
+		await room
+			.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
+			.catch(() => {
+				toast({ content: 'Join Meeting Error', type: 'error' })
+				navigate('/')
+			})
 		if (registerRoom) registerRoom(room, RoomType.WAITING)
-		setLoadingRoom(false)
 	}, [currentRoom, meetingId, navigate, registerRoom])
 
 	useLayoutEffect(() => {
@@ -89,48 +92,56 @@ export default function PreJoinRoom() {
 			p={1}
 			justifyContent="center"
 			alignItems="center"
-			sx={{
-				'& .lk-prejoin input.lk-form-control': {
-					'pointer-events': loading ? 'none' : 'auto',
-				},
-				'& .lk-prejoin button': {
-					'pointer-events': loading ? 'none' : 'auto',
-				},
-			}}
 		>
-			<Stack
-				overflow="hidden"
-				borderRadius="lg"
-				justifyContent="center"
-				alignItems="stretch"
-				direction={{ xs: 'column', md: 'row' }}
-				height={{ xs: 'auto', md: 450 }}
-			>
-				<Sheet variant="soft" sx={{ width: { xs: 'auto', md: 500 } }}>
-					<PreJoin
-						onSubmit={submitJoinRoom}
-						data-lk-theme="default"
-						style={{
-							color: 'white',
-							objectFit: 'cover',
-							width: '100%',
-							height: '100%',
-						}}
-						defaults={{
-							username: fullname,
-							videoEnabled: true,
-							audioEnabled: true,
-						}}
-					/>
-				</Sheet>
-				{currentRoom == RoomType.WAITING && (
+			<Stack borderRadius="lg" overflow="hidden">
+				<Stack
+					justifyContent="center"
+					alignItems="stretch"
+					direction={{ xs: 'column', md: 'row' }}
+					height={{ xs: 'auto' }}
+				>
 					<Sheet
 						variant="soft"
-						sx={{ p: 2, minWidth: 350, height: { xs: 300, md: 'auto' } }}
+						sx={{
+							width: { xs: 'auto', sm: 500 },
+							'& .lk-prejoin input.lk-form-control': {
+								'pointer-events': loading ? 'none' : 'auto',
+							},
+							'& .lk-prejoin button': {
+								'pointer-events': loading ? 'none' : 'auto',
+							},
+						}}
 					>
-						{loadingRoom ? <Loading /> : <WaitingChatTab />}
+						<PreJoin
+							onSubmit={submitJoinRoom}
+							data-lk-theme="default"
+							style={{
+								color: 'white',
+								objectFit: 'cover',
+								width: '100%',
+								height: '100%',
+							}}
+							defaults={{
+								username: fullname,
+								videoEnabled: true,
+								audioEnabled: true,
+							}}
+						/>
 					</Sheet>
-				)}
+					{currentRoom == RoomType.WAITING && (
+						<Sheet
+							variant="soft"
+							sx={{
+								p: 2,
+								minWidth: 300,
+								minHeight: 300,
+								height: { xs: 300, md: 'auto' },
+							}}
+						>
+							<WaitingChatTab />
+						</Sheet>
+					)}
+				</Stack>
 			</Stack>
 		</Stack>
 	)

@@ -1,10 +1,7 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import {
-	AUTH_FETCHING,
 	AUTH_FETCH_EMAIL_LOGIN,
-	AUTH_FETCH_ERROR,
 	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
-	AUTH_FETCH_SUCESS,
 	AUTH_LOGGED,
 	AUTH_LOGOUT,
 } from './authConstants'
@@ -27,11 +24,13 @@ export const authFetchEmailLogin = createAsyncThunk(
 	AUTH_FETCH_EMAIL_LOGIN,
 	async (request: { email: string; password: string }, { dispatch }) => {
 		const res = await AuthApi.loginWithEmail(request)
-		const { success } = res
+		const { success } = res.metadata
 		if (success) {
 			const { accessToken } = res.data
-			setLocalStorageItem({ key: `access_token`, value: accessToken })
+			const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+			setLocalStorageItem(key, accessToken)
 			dispatch(authLogged())
+			console.log(key)
 		}
 		return res
 	}
@@ -41,12 +40,11 @@ export const authFetchGoogleLoginVerify = createAsyncThunk(
 	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
 	async (search: string, { dispatch }) => {
 		const res = await AuthApi.googleAuthVerify(search)
-		const { success, metadata } = res
+		const { success } = res.metadata
 		if (success) {
-			setLocalStorageItem({
-				key: `access_token`,
-				value: res.data.accessToken,
-			})
+			const { accessToken } = res.data
+			const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+			setLocalStorageItem(key, accessToken)
 			dispatch(authLogged())
 			dispatch(userFetchMe())
 		}

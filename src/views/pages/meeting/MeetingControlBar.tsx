@@ -9,6 +9,7 @@ import { ParticipantRole } from '../../../api/http-rest/participant/participantD
 import HostWaitingChatTab from 'views/containers/meeting/tabs/HostWaitingChatTab'
 import { MeetingContext } from 'views/containers/meeting/MeetingContext'
 import ParticipantControlTab from 'views/containers/meeting/tabs/ParticipantControlTab'
+import { Loading } from 'views/routes/routes'
 
 export enum ControlTabs {
 	MEETING_CHAT = 'meeting chat',
@@ -17,23 +18,8 @@ export enum ControlTabs {
 }
 
 export default function MeetingControlBar() {
-	const { roomConnections } = useContext(MeetingContext)
-	const meetingRoom = useMemo(() => {
-		const room = roomConnections.get(RoomType.MEETING)
-		const localParticipantId = room?.localParticipantId ?? ''
-		const participants = room?.participants
-		const localParticipant = participants?.get(localParticipantId)
-
-		if (!room || !participants || !localParticipant) return null
-		return {
-			roomType: RoomType.MEETING,
-			room: room.room,
-			localParticipantId,
-			localParticipant,
-			participants,
-		}
-	}, [roomConnections.get(RoomType.MEETING)])
-	if (!meetingRoom) return <Navigate to="/" />
+	const { roomConnecteds } = useContext(MeetingContext)
+	const meetingRoom = roomConnecteds.get(RoomType.MEETING)
 
 	const [showBar, setShowBar] = useState(false)
 	const [currentTab, setCurrentTab] = useState(ControlTabs.MEETING_CHAT)
@@ -148,10 +134,10 @@ export default function MeetingControlBar() {
 		},
 		[toggleTab, unreadMessages]
 	)
-	const tabs = useMemo(
-		() => getTabs(meetingRoom.localParticipant.role),
-		[getTabs]
-	)
+	const tabs = useMemo(() => {
+		if (!meetingRoom) return null
+		return getTabs(meetingRoom.localParticipant.role)
+	}, [meetingRoom, getTabs])
 
 	return (
 		<Stack direction="row" height={1}>
@@ -167,38 +153,43 @@ export default function MeetingControlBar() {
 					display: showBar ? undefined : 'none',
 				}}
 			>
-				{tabs.map((tab, i) => {
-					return <React.Fragment key={i}>{tab.component}</React.Fragment>
-				})}
+				{!tabs ? (
+					<Loading />
+				) : (
+					tabs.map((tab, i) => {
+						return <React.Fragment key={i}>{tab.component}</React.Fragment>
+					})
+				)}
 			</Sheet>
 
-			<Sheet
-				variant="plain"
-				sx={{
-					borderRadius: 15,
-					p: 2,
-					display: 'flex',
-					flexDirection: 'column',
-					gap: 2,
-					'& button': { borderRadius: '50%', padding: 0 },
-				}}
-			>
-				<IconButton
-					onClick={() => setShowBar(!showBar)}
-					variant="soft"
-					sx={{ width: '30px', height: '30px' }}
+			{!tabs ? null : (
+				<Sheet
+					variant="plain"
+					sx={{
+						borderRadius: 15,
+						p: 2,
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 2,
+						'& button': { borderRadius: '50%', padding: 0 },
+					}}
 				>
-					<MenuIcon />
-				</IconButton>
-
-				{tabs.map((tab, i) => {
-					return (
-						<Tooltip key={i} title={tab.title} placement="left">
-							{tab.icon}
-						</Tooltip>
-					)
-				})}
-			</Sheet>
+					<IconButton
+						onClick={() => setShowBar(!showBar)}
+						variant="soft"
+						sx={{ width: '30px', height: '30px' }}
+					>
+						<MenuIcon />
+					</IconButton>
+					{tabs.map((tab, i) => {
+						return (
+							<Tooltip key={i} title={tab.title} placement="left">
+								{tab.icon}
+							</Tooltip>
+						)
+					})}
+				</Sheet>
+			)}
 		</Stack>
 	)
 }

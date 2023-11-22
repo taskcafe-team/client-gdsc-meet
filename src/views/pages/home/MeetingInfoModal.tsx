@@ -39,87 +39,78 @@ export default function MeetingInfoModal({
 				aria-labelledby="nested-modal-title"
 				aria-describedby="nested-modal-description"
 			>
-				<Typography id="nested-modal-title" level="h2">
-					<Input
-						sx={{
-							p: 0,
-							fontSize: 'inherit',
-							'--Input-focusedInset': 'none',
-						}}
-						variant="plain"
-						placeholder="No Title"
-						value={meeting.title || ''}
+				<Input
+					sx={{
+						p: 0,
+						fontSize: 'inherit',
+						'--Input-focusedInset': 'none',
+					}}
+					variant="plain"
+					placeholder="No Title"
+					value={meeting.title || ''}
+					onChange={(e) =>
+						canedit && setMeeting({ ...meeting, title: e.target.value })
+					}
+					endDecorator={
+						<IconButton onClick={() => setCanedit(!canedit)}>
+							{canedit ? <EditOffIcon /> : <EditIcon />}
+						</IconButton>
+					}
+				/>
+				<Typography fontSize={10}>Code: {meeting.id}</Typography>
+				<FormControl>
+					<FormLabel sx={{ fontWeight: 'bold' }}>Description</FormLabel>
+					<Textarea
+						disabled={!canedit}
+						minRows={1}
+						maxRows={10}
+						placeholder="No Description"
+						value={meeting.description || ''}
 						onChange={(e) =>
-							canedit && setMeeting({ ...meeting, title: e.target.value })
-						}
-						endDecorator={
-							<IconButton onClick={() => setCanedit(!canedit)}>
-								{canedit ? <EditOffIcon /> : <EditIcon />}
-							</IconButton>
+							setMeeting({ ...meeting, description: e.target.value })
 						}
 					/>
-				</Typography>
-				<Typography fontSize={10}>Code: {meeting.id}</Typography>
-				<Typography id="nested-modal-description" textColor="text.tertiary">
-					<FormControl>
-						<FormLabel sx={{ fontWeight: 'bold' }}>Description</FormLabel>
-						<Textarea
-							disabled={!canedit}
-							minRows={1}
-							maxRows={10}
-							placeholder="No Description"
-							value={meeting.description || ''}
-							onChange={(e) =>
-								setMeeting({ ...meeting, description: e.target.value })
-							}
-						/>
-					</FormControl>
-				</Typography>
+				</FormControl>
 
-				<Typography id="nested-modal-description" textColor="text.tertiary">
-					<FormControl>
-						<FormLabel sx={{ fontWeight: 'bold' }}>Start Time</FormLabel>
-						<Input
-							disabled={!canedit}
-							type="datetime-local"
-							onChange={(e) =>
-								setMeeting({
-									...meeting,
-									startTime: moment(e.target.value).toDate().toISOString(),
-								})
-							}
-							value={formatDatetime(meeting.startTime) || ''}
-							slotProps={{
-								input: {
-									min: formatDatetime(meeting.startTime) || '',
-								},
-							}}
-						/>
-					</FormControl>
-				</Typography>
+				<FormControl>
+					<FormLabel sx={{ fontWeight: 'bold' }}>Start Time</FormLabel>
+					<Input
+						disabled={!canedit}
+						type="datetime-local"
+						onChange={(e) =>
+							setMeeting({
+								...meeting,
+								startTime: moment(e.target.value).toDate().toISOString(),
+							})
+						}
+						value={formatDatetime(meeting.startTime) || ''}
+						slotProps={{
+							input: {
+								min: formatDatetime(meeting.startTime) || '',
+							},
+						}}
+					/>
+				</FormControl>
 
-				<Typography id="nested-modal-description" textColor="text.tertiary">
-					<FormControl>
-						<FormLabel sx={{ fontWeight: 'bold' }}>End Time</FormLabel>
-						<Input
-							disabled={!canedit}
-							type="datetime-local"
-							value={(meeting.endTime && formatDatetime(meeting.endTime)) || ''}
-							onChange={(e) =>
-								setMeeting({
-									...meeting,
-									endTime: moment(e.target.value).toDate().toISOString(),
-								})
-							}
-							slotProps={{
-								input: {
-									min:
-										(meeting.endTime && formatDatetime(meeting.endTime)) || '',
-								},
-							}}
-						/>
-					</FormControl>
-				</Typography>
+				<FormControl>
+					<FormLabel sx={{ fontWeight: 'bold' }}>End Time</FormLabel>
+					<Input
+						disabled={!canedit}
+						type="datetime-local"
+						value={(meeting.endTime && formatDatetime(meeting.endTime)) || ''}
+						onChange={(e) =>
+							setMeeting({
+								...meeting,
+								endTime: moment(e.target.value).toDate().toISOString(),
+							})
+						}
+						slotProps={{
+							input: {
+								min: (meeting.endTime && formatDatetime(meeting.endTime)) || '',
+							},
+						}}
+					/>
+				</FormControl>
 				<Box
 					sx={{
 						mt: 1,

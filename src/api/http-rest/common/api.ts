@@ -16,7 +16,7 @@ import { Agent } from 'https'
 import { ApiResponse } from './apiResponses'
 import { convertObjectToQueryParams } from 'utils/urlUtils'
 
-const apiRequestConfig: CreateAxiosDefaults<any> = {
+const apiRequestConfig: CreateAxiosDefaults<unknown> = {
 	baseURL: `${import.meta.env.API_BASE_URL}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
@@ -24,7 +24,7 @@ const apiRequestConfig: CreateAxiosDefaults<any> = {
 	httpAgent: new Agent({ rejectUnauthorized: false }),
 }
 
-const axiosInstance: AxiosInstance = axios.create(apiRequestConfig)
+export const axiosInstance: AxiosInstance = axios.create(apiRequestConfig)
 
 // -- Request --
 axiosInstance.interceptors.request.use(
@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
 class Api {
 	static get<T>(
 		url: string,
-		queryParams?: any,
+		queryParams?: unknown,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + convertObjectToQueryParams(queryParams)
@@ -52,8 +52,8 @@ class Api {
 
 	static post<T>(
 		url: string,
-		body?: any,
-		queryParams?: any,
+		body?: unknown,
+		queryParams?: unknown,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + convertObjectToQueryParams(queryParams)
@@ -64,8 +64,8 @@ class Api {
 
 	static async put<T>(
 		url: string,
-		body?: any,
-		queryParams?: any,
+		body?: unknown,
+		queryParams?: unknown,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + convertObjectToQueryParams(queryParams)
@@ -76,8 +76,8 @@ class Api {
 
 	static async patch<T>(
 		url: string,
-		body?: any,
-		queryParams?: any,
+		body?: unknown,
+		queryParams?: unknown,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + convertObjectToQueryParams(queryParams)
@@ -88,7 +88,7 @@ class Api {
 
 	static async delete<T>(
 		url: string,
-		queryParams?: any,
+		queryParams?: unknown,
 		config: AxiosRequestConfig = {}
 	) {
 		const _url = url + convertObjectToQueryParams(queryParams)

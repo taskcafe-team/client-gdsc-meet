@@ -6,56 +6,39 @@ import { ChatMessageCardProps } from '../components/ChatMessageCard'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
 import { Room, VideoPresets } from 'livekit-client'
 import ChatBox from '../components/ChatBox'
-import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
-import { MeetingContext } from '../MeetingContext'
+import { useMeetingState } from '../MeetingContext'
 import { Loading } from 'views/routes/routes'
 
 type HostWaitingChatTabProps = {
 	hidden?: boolean
-	onUnreadMessagesChange?: (unreadMessages: number) => void
+	onUnreadMessagesChange: (unreadMessages: number) => void
 }
 
 export default function HostWaitingChatTab({
 	hidden = false,
-	onUnreadMessagesChange,
+	onUnreadMessagesChange = () => {},
 }: HostWaitingChatTabProps) {
-	const { meetingId, roomConnections, registerRoom } =
-		useContext(MeetingContext)
-	const chatRoom = useMemo(() => {
-		const roomType = RoomType.WAITING
-
-		const room = roomConnections.get(roomType)
-		const localParticipantId = room?.localParticipantId ?? ''
-		const participants = room?.participants
-		const localParticipant = participants?.get(localParticipantId)
-		if (localParticipant?.role !== ParticipantRole.HOST) return null
-		if (!room || !participants || !localParticipant) return null
-		return {
-			roomType,
-			room: room.room,
-			localParticipantId,
-			localParticipant,
-			participants,
-		}
-	}, [roomConnections.get(RoomType.WAITING)])
+	const { roomConnecteds, registerRoom, meetingId } = useMeetingState()
 	const navigate = useNavigate()
 
-	const [loadingChatRoom, setLoadingChatRoom] = useState(true)
+	const hostChatRoom = roomConnecteds.get(RoomType.WAITING)
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
 	const [unreadMessages, setUnreadMessages] = useState(0)
 
 	const [fetching, setFetching] = useState(false)
 
-	const sendMessage = useCallback(async (content) => {
-		await ParticipantApi.sendMessage({
-			roomId: meetingId,
-			roomType: RoomType.WAITING,
-			content,
-		})
-	}, [])
+	const sendMessage = useCallback(
+		async (content) => {
+			if (!hostChatRoom) return
+			const { roomId, roomType } = hostChatRoom
+			await ParticipantApi.sendMessage({ roomId, roomType, content })
+		},
+		[hostChatRoom]
+	)
 
 	const pushMessage = useCallback(
 		(newMess: ChatMessageCardProps) => {
+			if (!hostChatRoom) return
 			setMessages((prev) => {
 				const length = prev.length
 				if (length === 0) return [...prev, newMess]
@@ -73,15 +56,17 @@ export default function HostWaitingChatTab({
 			if (hidden) setUnreadMessages((p) => p + 1)
 			else setUnreadMessages(0)
 		},
-		[hidden]
+		[hostChatRoom, hidden]
 	)
 
 	const rejectParticipant = useCallback(
 		async (participantId) => {
+			if (!hostChatRoom) return
 			if (fetching) return
+
 			setFetching(true)
 			await ParticipantApi.rejectParticipantJoinMeeting({
-				meetingId,
+				meetingId: hostChatRoom.roomId,
 				participantIds: [participantId],
 			}).finally(() => setFetching(false))
 
@@ -93,15 +78,17 @@ export default function HostWaitingChatTab({
 				return s
 			})
 		},
-		[fetching]
+		[hostChatRoom, fetching]
 	)
 
 	const acceptParticipant = useCallback(
 		async (participantId) => {
+			if (!hostChatRoom) return
 			if (fetching) return
 			setFetching(true)
+
 			const res = await ParticipantApi.accpectParticipantJoinMeeting({
-				meetingId,
+				meetingId: hostChatRoom.roomId,
 				participantIds: [participantId],
 			}).finally(() => setFetching(false))
 
@@ -113,18 +100,32 @@ export default function HostWaitingChatTab({
 				return s
 			})
 		},
-		[fetching]
+		[hostChatRoom, fetching]
+	)
+
+	const getSender = useCallback(
+		(id: string) => {
+			if (!hostChatRoom) return null
+			if (id === hostChatRoom.localParticipant.id)
+				return { ...hostChatRoom.localParticipant, isLocal: true }
+			else {
+				const remoteParticipant = hostChatRoom.remoteParticipants.get(id)
+				if (!remoteParticipant) return null
+				else return { ...remoteParticipant, isLocal: false }
+			}
+		},
+		[hostChatRoom]
 	)
 
 	const listenSendMessage = useCallback(
 		(payload: ParticipantSendMessageDto) => {
-			if (!chatRoom) return
+			if (!hostChatRoom) return
 			if (payload.roomType !== RoomType.WAITING) return
-			const sender = chatRoom.participants.get(payload.senderId)
+			const sender = getSender(payload.senderId)
 			if (!sender) return
 
 			const newMessage: ChatMessageCardProps = {
-				position: chatRoom.localParticipantId === sender.id ? 'right' : 'left',
+				position: sender.isLocal ? 'right' : 'left',
 				messageContent: {
 					senderId: sender.id,
 					name: sender.name || 'No name',
@@ -133,7 +134,7 @@ export default function HostWaitingChatTab({
 				},
 			}
 
-			if (sender.id !== chatRoom.localParticipantId)
+			if (!sender.isLocal)
 				newMessage.action = {
 					accept: () => acceptParticipant(sender.id),
 					reject: () => rejectParticipant(sender.id),
@@ -141,35 +142,32 @@ export default function HostWaitingChatTab({
 
 			pushMessage(newMessage)
 		},
-		[pushMessage, chatRoom, acceptParticipant, rejectParticipant]
+		[hostChatRoom, pushMessage, getSender, acceptParticipant, rejectParticipant]
 	)
 
 	const connectToChatRoom = useCallback(async () => {
-		setLoadingChatRoom(true)
+		if (hostChatRoom) return
 		const token = ParticipantApi.getMeetingApiToken({
 			roomId: meetingId,
 			roomType: RoomType.WAITING,
 		})
 		if (!token || token.length === 0) return navigate('/')
 
+		const resolution = VideoPresets.h540.resolution
 		const room = new Room({
 			adaptiveStream: true,
 			dynacast: true,
-			videoCaptureDefaults: {
-				resolution: VideoPresets.h540.resolution,
-			},
+			videoCaptureDefaults: { resolution },
 		})
 
 		await room
 			.connect(import.meta.env.API_WEBRTC_SOCKET_URL, token)
 			.catch(() => navigate('/'))
-
 		if (registerRoom) registerRoom(room, RoomType.WAITING)
-		setLoadingChatRoom(false)
-	}, [])
+	}, [hostChatRoom, registerRoom])
 
 	useLayoutEffect(() => {
-		onUnreadMessagesChange?.(unreadMessages)
+		onUnreadMessagesChange(unreadMessages)
 	}, [unreadMessages])
 
 	useLayoutEffect(() => {
@@ -177,19 +175,18 @@ export default function HostWaitingChatTab({
 	}, [hidden])
 
 	useLayoutEffect(() => {
-		if (!chatRoom) {
+		if (!hostChatRoom) {
 			connectToChatRoom()
 			return
 		}
-		const listener = new WebRTCListenerFactory(chatRoom.room)
+		const listener = new WebRTCListenerFactory(hostChatRoom.room)
 		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
 		return () => {
 			listener.removeAllListeners()
 		}
-	}, [chatRoom, listenSendMessage])
+	}, [hostChatRoom, listenSendMessage])
 
-	if (loadingChatRoom) return <Loading />
-	if (!loadingChatRoom && !chatRoom) return <Navigate to="/" />
+	if (!hostChatRoom) return <Loading />
 	return (
 		<Box height={1} overflow="hidden" display={hidden ? 'none' : undefined}>
 			<ChatBox

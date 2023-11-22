@@ -1,6 +1,6 @@
 import Api from 'api/http-rest/common/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
-import { AxiosRequestConfig } from 'axios'
+import { type AxiosRequestConfig } from 'axios'
 import { ParticipantUsecaseDto } from './participantDtos'
 
 export enum RespondJoinStatus {
@@ -51,6 +51,22 @@ export default class ParticipantApi extends Api {
 		}
 		const path = `meetings/${request.roomId}/participants/send-message`
 		return Api.post(path, request, null, config)
+	}
+
+	static respondRequestJoinMeeting(request: {
+		meetingId: string
+		participantIds: string[]
+		status: RespondJoinStatus
+	}) {
+		const roomId = request.meetingId
+		const roomType = RoomType.WAITING
+		const token = ParticipantApi.getMeetingApiToken({ roomId, roomType })
+
+		const config: AxiosRequestConfig = {
+			headers: { 'meeting-api-token': token },
+		}
+		const path = `meetings/${request.meetingId}/participants/respond-join-request`
+		return Api.patch(path, request, null, config)
 	}
 
 	static accpectParticipantJoinMeeting(request: RequestParticipantJoinMeeting) {

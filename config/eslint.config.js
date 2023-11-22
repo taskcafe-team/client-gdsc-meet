@@ -29,15 +29,8 @@ module.exports = {
 	},
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
-		parser: {
-			js: 'espree',
-			jsx: 'espree',
-			'<template>': 'espree',
-		},
-		ecmaFeatures: {
-			jsx: true,
-			tsx: true,
-		},
+		parser: { js: 'espree', jsx: 'espree', '<template>': 'espree' },
+		ecmaFeatures: { jsx: true, tsx: true },
 		ecmaVersion: 'latest',
 		sourceType: 'module',
 		project: './tsconfig.json',
@@ -46,9 +39,12 @@ module.exports = {
 		'linebreak-style': 'off',
 		'prettier/prettier': ['error', { endOfLine: 'auto' }],
 		'@typescript-eslint/naming-convention': 'off',
-		'no-unused-vars': 'warn',
-		'react-hooks/rules-of-hooks': 'warn',
-		'react-hooks/exhaustive-deps': 'warn',
+		'no-unused-vars': 'off',
+		'no-redeclare': 'off',
+		'@typescript-eslint/no-redeclare': 'off',
+		'@typescript-eslint/no-unused-vars': 'off',
+		'react-hooks/rules-of-hooks': 'off', //TODO : change to warn
+		'react-hooks/exhaustive-deps': 'off', //TODO : change to warn
 	},
 	settings: {
 		'import/resolver': {

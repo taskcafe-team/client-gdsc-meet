@@ -99,7 +99,7 @@ export default class UserApi extends Api {
 
 	static updateMe(request: RequestUpdateMe) {
 		const formData = new FormData()
-		for (var key in request)
+		for (const key in request)
 			if (request[key]) formData.append(key, request[key])
 
 		return Api.put<ResponseUserData>(`users/me`, formData, null, {

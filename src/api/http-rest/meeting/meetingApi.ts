@@ -5,7 +5,6 @@ import {
 	MeetingType,
 	RequestCreateMeetingBody,
 	ResponseMeetingDto,
-	ResponseAccessToken,
 } from './meetingApiType'
 
 export default class MeetingApi extends Api {

@@ -7,7 +7,7 @@ import Checkbox from '@mui/joy/Checkbox'
 import Divider from '@mui/joy/Divider'
 import FormControl from '@mui/joy/FormControl'
 import FormLabel, { formLabelClasses } from '@mui/joy/FormLabel'
-import IconButton, { IconButtonProps } from '@mui/joy/IconButton'
+import IconButton, { type IconButtonProps } from '@mui/joy/IconButton'
 import Link from '@mui/joy/Link'
 import Input from '@mui/joy/Input'
 import Typography from '@mui/joy/Typography'
@@ -221,10 +221,10 @@ export default function LoginPage() {
 										(payload) => {
 											const res =
 												payload.payload as ApiResponse<ResponseLoginSuccess>
-											const { success, metadata } = res
-											if (!success && metadata.error)
+											const { success } = res.metadata
+											if (!success && res.metadata.error)
 												toast({
-													content: metadata.error.message,
+													content: res.metadata.error.message,
 													type: 'error',
 												})
 										}

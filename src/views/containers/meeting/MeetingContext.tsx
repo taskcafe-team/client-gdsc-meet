@@ -1,14 +1,14 @@
 import { ParticipantUsecaseDto } from 'api/http-rest/participant/participantDtos'
 import { RoomType } from 'api/webrtc/webRTCTypes'
-import { Room, RoomEvent } from 'livekit-client'
+import { LocalParticipant, Room, RoomEvent } from 'livekit-client'
 import { createContext } from 'react'
 
 type RoomInfo = {
 	room: Room
 	roomId: string
 	roomType: RoomType
-	localParticipantId: string
-	participants: Map<string, ParticipantUsecaseDto>
+	localParticipant: ParticipantUsecaseDto
+	remoteParticipants: Map<string, ParticipantUsecaseDto>
 }
 type MeetingState = {
 	registerRoom?: (room: Room, roomType: RoomType) => void
@@ -17,15 +17,17 @@ type MeetingState = {
 	>
 	meetingId: string
 	currentRoom: RoomType
-	roomConnections: Map<RoomType, RoomInfo>
+	roomConnecteds: Map<RoomType, RoomInfo>
 }
 const initialState: Omit<MeetingState, 'setMeetingState'> = {
 	meetingId: '',
 	currentRoom: RoomType.DEFAULT,
-	roomConnections: new Map(),
+	roomConnecteds: new Map(),
 }
 
 export const MeetingContext = createContext<MeetingState>(initialState)
+export const useMeetingState = () => React.useContext(MeetingContext)
+
 export default function MeetingProvider({ children }: React.PropsWithChildren) {
 	const { meetingId } = useParams()
 	if (!meetingId) return <Navigate to="/" />
@@ -34,25 +36,24 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 	>({
 		meetingId,
 		currentRoom: RoomType.DEFAULT,
-		roomConnections: new Map(),
+		roomConnecteds: new Map(),
 	})
 
 	const registerRoom = useCallback((room: Room, roomType: RoomType) => {
-		const localParticipantId = room.localParticipant.identity
 		const localParticipant = JSON.parse(room.localParticipant.metadata ?? '')
-		const participants = new Map<string, ParticipantUsecaseDto>()
-		participants.set(localParticipantId, localParticipant)
+		const remoteParticipants = new Map<string, ParticipantUsecaseDto>()
+
 		room.participants.forEach((p) => {
-			participants.set(p.identity, JSON.parse(p.metadata ?? ''))
+			remoteParticipants.set(p.identity, JSON.parse(p.metadata ?? ''))
 		})
 
 		// Listen to room events
 		room.on(RoomEvent.ParticipantConnected, (p) => {
 			setInitState((prevState) => {
 				const updatedState = { ...prevState }
-				const roomConnection = updatedState.roomConnections.get(roomType)
-				if (roomConnection) {
-					roomConnection.participants.set(
+				const roomConnected = updatedState.roomConnecteds.get(roomType)
+				if (roomConnected) {
+					roomConnected.remoteParticipants.set(
 						p.identity,
 						JSON.parse(p.metadata ?? '')
 					)
@@ -64,10 +65,8 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 		room.on(RoomEvent.ParticipantDisconnected, (p) => {
 			setInitState((prevState) => {
 				const updatedState = { ...prevState }
-				const roomConnection = updatedState.roomConnections.get(roomType)
-				if (roomConnection) {
-					roomConnection.participants.delete(p.identity)
-				}
+				const roomConnected = updatedState.roomConnecteds.get(roomType)
+				if (roomConnected) roomConnected.remoteParticipants.delete(p.identity)
 				return updatedState
 			})
 		})
@@ -75,11 +74,14 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 		room.on(RoomEvent.ParticipantMetadataChanged, (metadata, p) => {
 			setInitState((prevState) => {
 				const updatedState = { ...prevState }
-				const roomConnection = updatedState.roomConnections.get(roomType)
-				if (roomConnection) {
-					roomConnection.participants.set(
+				const roomConnected = updatedState.roomConnecteds.get(roomType)
+				if (!roomConnected) return updatedState
+				if (p instanceof LocalParticipant)
+					roomConnected.localParticipant = JSON.parse(metadata ?? '')
+				else {
+					roomConnected.remoteParticipants.set(
 						p.identity,
-						JSON.parse(JSON.stringify(p))
+						JSON.parse(p.metadata ?? '')
 					)
 				}
 				return updatedState
@@ -89,11 +91,14 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 		room.on(RoomEvent.ParticipantNameChanged, (name, p) => {
 			setInitState((prevState) => {
 				const updatedState = { ...prevState }
-				const roomConnection = updatedState.roomConnections.get(roomType)
-				if (roomConnection) {
-					roomConnection.participants.set(
+				const roomConnected = updatedState.roomConnecteds.get(roomType)
+				if (!roomConnected) return updatedState
+				if (p instanceof LocalParticipant)
+					roomConnected.localParticipant = JSON.parse(p.metadata ?? '')
+				else {
+					roomConnected.remoteParticipants.set(
 						p.identity,
-						JSON.parse(JSON.stringify(p))
+						JSON.parse(p.metadata ?? '')
 					)
 				}
 				return updatedState
@@ -102,12 +107,12 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 
 		setInitState((prevState) => {
 			const updatedState = { ...prevState }
-			updatedState.roomConnections.set(roomType, {
+			updatedState.roomConnecteds.set(roomType, {
 				room,
 				roomId: meetingId,
 				roomType,
-				localParticipantId,
-				participants,
+				localParticipant,
+				remoteParticipants,
 			})
 
 			return updatedState
@@ -116,8 +121,8 @@ export default function MeetingProvider({ children }: React.PropsWithChildren) {
 
 	useLayoutEffect(() => {
 		return () => {
-			initState.roomConnections.forEach((roomConnection) => {
-				roomConnection.room.disconnect()
+			initState.roomConnecteds.forEach((roomConnected) => {
+				roomConnected.room.disconnect()
 			})
 		}
 	}, [])

@@ -88,9 +88,9 @@ export default function SignupPage() {
 					await AuthApi.registerWithEmail<ResponseDataRegisterSuccess>(body)
 				setLoading(false)
 
-				const { success, metadata } = res
+				const { success } = res.metadata
 				if (success) navigate(RouterPath.LOGIN_URL)
-				else setErr(metadata.error?.message ?? '')
+				else setErr(res.metadata.error?.message ?? '')
 			} finally {
 				setLoading(false)
 			}

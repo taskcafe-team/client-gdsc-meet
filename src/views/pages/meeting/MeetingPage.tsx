@@ -1,5 +1,4 @@
 import { Loading } from 'views/routes/routes'
-import { Room, VideoPresets } from 'livekit-client'
 import { Stack } from '@mui/joy'
 import '@livekit/components-styles'
 
@@ -8,14 +7,15 @@ import { meetingFetchGetInstant } from 'contexts/meeting'
 
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import MeetingProvider, {
-	MeetingContext,
+	useMeetingState,
 } from 'views/containers/meeting/MeetingContext'
+import { ApiResponse } from 'api/http-rest/common/apiResponses'
 
 const PreJoinRoom = lazy(() => import('./PreJoinRoom'))
 const MeetingRoom = lazy(() => import('./MeetingRoom'))
 
 function MeetingPage() {
-	const { meetingId, currentRoom } = useContext(MeetingContext)
+	const { meetingId, currentRoom } = useMeetingState()
 
 	const ditpatch = useAppDispatch()
 	const navigate = useNavigate()
@@ -26,9 +26,10 @@ function MeetingPage() {
 		setFetching(true)
 		ditpatch(meetingFetchGetInstant(meetingId))
 			.then((res) => {
-				const r = Boolean(res.payload?.['success'] ?? false)
-				if (!r) return navigate('/')
+				const p = res.payload as ApiResponse
+				if (!p.metadata.success) return navigate('/')
 			})
+			.catch((err) => console.error(err))
 			.finally(() => setFetching(false))
 	}, [])
 

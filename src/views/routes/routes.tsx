@@ -1,15 +1,13 @@
-/* eslint-disable import/no-unresolved */
 import { ReactNode } from 'react'
-import { Routes, Route, type RouteProps } from 'react-router-dom'
+import { type RouteProps } from 'react-router-dom'
 import RouterPath from './routesContants'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { CircularProgress, Stack } from '@mui/joy'
+import { CircularProgress } from '@mui/joy'
 
 import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
-import NewLogin from 'pages/auth/LoginPage_v2'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -103,11 +101,11 @@ export default function Router() {
 		const token = localStorage.getItem('access_token')
 		if (!token) return setLoading(false)
 		dispatch(userFetchMe()).finally(() => setLoading(false))
-	}, [])
+	}, [dispatch])
 
 	useEffect(() => {
 		getMe()
-	}, [isLogin])
+	}, [getMe])
 
 	if (loading) return <LayoutLoading />
 	return (
