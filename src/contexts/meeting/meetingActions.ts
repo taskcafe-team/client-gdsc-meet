@@ -1,10 +1,7 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import {
-	MEETING_FETCHING,
 	MEETING_FETCH_CREATE_INSTANT,
-	MEETING_FETCH_ERROR,
 	MEETING_FETCH_INSTANT,
-	MEETING_FETCH_SUCESS,
 	MEETING_ADD_INSTANT,
 	MEETING_FETCH_MY_INSTANTS,
 	MEETING_ADD_INSTANTS,
@@ -12,9 +9,12 @@ import {
 } from './meetingConstants'
 import { MeetingInfo } from './meetingTypes'
 
-import MeetingApi from 'api/http-rest/meeting/meetingApi'
+import { MeetingApi } from 'api/http-rest/meeting/meetingApi'
 import { CommonError } from 'contexts/types'
-import { RequestCreateMeetingBody } from 'api/http-rest/meeting/meetingApiType'
+import {
+	RequestCreateMeetingBody,
+	RequestUpdateMeetingBody,
+} from 'api/http-rest/meeting/meetingApiType'
 
 export interface MeetingFetchError {
 	type: string
@@ -68,6 +68,16 @@ export const meetingFetchCreateInstant = createAsyncThunk(
 		const res = await MeetingApi.createMeeting(request)
 		const { success } = res.metadata
 		if (success) dispatch(meetingAddInstant(res.data as MeetingInfo))
+		return res
+	}
+)
+
+export const meetingFetchUpdateInstant = createAsyncThunk(
+	MEETING_FETCH_CREATE_INSTANT,
+	async (request: RequestUpdateMeetingBody, { dispatch }) => {
+		const res = await MeetingApi.updateMeeting(request.meetingId, request)
+		const { success } = res.metadata
+		if (success) dispatch(meetingFetchMyMeetings())
 		return res
 	}
 )

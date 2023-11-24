@@ -4,6 +4,7 @@ import { generateName } from 'utils/personalNameUtils'
 import {
 	MeetingType,
 	RequestCreateMeetingBody,
+	RequestUpdateMeetingBody,
 	ResponseMeetingDto,
 } from './meetingApiType'
 
@@ -31,6 +32,14 @@ export class MeetingApi extends Api {
 			type: request.type || MeetingType.PUBLIC,
 		}
 		return Api.post<ResponseMeetingDto>(`${this.meetingURL}`, body)
+	}
+
+	static async updateMeeting(
+		meetingId: string,
+		request: RequestUpdateMeetingBody
+	) {
+		const path = `${this.meetingURL}/${meetingId}`
+		return Api.put<ResponseMeetingDto>(path, request)
 	}
 
 	static async deleteMeetings(request: { ids: string[] }) {

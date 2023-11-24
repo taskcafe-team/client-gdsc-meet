@@ -3,7 +3,6 @@ import CallIcon from '@mui/icons-material/Call'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import online_meeting_illustration from 'assets/static/images/icons/online_meeting_illustration.svg'
 import useToastily from 'hooks/useToastily'
-import CreateMeetingFormDialog from './CreateMeetingFormDialog'
 import {
 	Divider,
 	Box,
@@ -20,10 +19,12 @@ import {
 } from 'contexts/meeting'
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
+import { CreateMeetingModal } from 'views/containers/home/CreateMeetingModal'
 
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const meetings = useAppSelector((s) => s.meeting.meetings)
+
 	const [showMeeting, setShowMeeting] = useState<MeetingInfo | null>(null)
 
 	const [fetching, setFetching] = useState(false)
@@ -74,7 +75,8 @@ export function ListMeeting() {
 			{showMeeting && (
 				<MeetingInfoModal
 					meetingInfo={showMeeting}
-					setMeetingInfo={setShowMeeting}
+					open={Boolean(showMeeting)}
+					setOpen={() => setShowMeeting(null)}
 				/>
 			)}
 
@@ -157,10 +159,12 @@ export default function HomePage() {
 
 	return (
 		<Box sx={{ my: 2, mx: 2 }}>
-			<CreateMeetingFormDialog
-				open={openCreateMeetingForm}
-				setOpen={setOpenCreateMeetingForm}
-			/>
+			{openCreateMeetingForm && (
+				<CreateMeetingModal
+					open={openCreateMeetingForm}
+					setOpen={setOpenCreateMeetingForm}
+				/>
+			)}
 			<Box maxWidth="sm" margin="auto">
 				<Box textAlign="center">
 					<img
