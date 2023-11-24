@@ -9,7 +9,7 @@ interface ToastProps {
 const useToastily = () => {
 	const { theme } = useTheme()
 	const toastConfig: ToastOptions = {
-		position: 'top-right',
+		position: 'bottom-left',
 		autoClose: 1000,
 		hideProgressBar: false,
 		closeOnClick: true,

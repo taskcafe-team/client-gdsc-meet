@@ -8,6 +8,7 @@ import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
+import PublicLayout from 'views/layouts/PublicLayout'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -15,6 +16,18 @@ const HomePage = lazy(() => import('views/pages/home/HomePage'))
 const LoginPage = lazy(() => import('views/pages/auth/LoginPage_v2'))
 const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
 const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
+const HomePage_v2 = lazy(() => import('views/containers/home_v2/HomePage'))
+const SignUpPage_v2 = lazy(() => import('views/containers/signUp_v2/SignupPage'))
+const ProfilePage_v2 = lazy(
+	() => import('views/containers/profile_v2/ProfilePage')
+)
+const DocumentPage_v2 = lazy(
+	() => import('views/containers/document_v2/Document')
+)
+const ConfirmPage_v2 = lazy(
+	() => import('views/containers/confirm_v2/ConfirmPage')
+)
+const LoginPage_v2 = lazy(() => import('views/containers/Login_V2/LoginPage'))
 
 export const Loading = () => (
 	<div
@@ -46,22 +59,30 @@ export const LayoutLoading = () => (
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
-
+export const getPublicLayout = (
+	children: ReactNode,
+	type: 'full' | 'wrapper' = 'full',
+	hidden: 'hidden' | 'full' = 'hidden'
+) => (
+	<PublicLayout type={type} hidden={hidden}>
+		{children}
+	</PublicLayout>
+)
 type CustomRouteProps = RouteProps
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
-		element: getDefaultLayout(<SignupPage />),
+		element: getPublicLayout(<SignUpPage_v2 />,'wrapper'),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.LOGIN_URL,
-		element: <LoginPage />,
+		element: getPublicLayout(<LoginPage_v2 />, 'full'),
 		loader: undefined,
 	},
 	{
 		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
+		element: getPublicLayout(<HomePage_v2 />, 'wrapper'),
 		loader: undefined,
 	},
 ]
@@ -69,7 +90,7 @@ const routes: CustomRouteProps[] = [
 const privateRoutes: CustomRouteProps[] = [
 	{
 		path: RouterPath.PROFILE_URL,
-		element: getDefaultLayout(<ProfilePage />),
+		element: getPublicLayout(<ProfilePage_v2 />, 'full'),
 		loader: undefined,
 	},
 	{
@@ -78,8 +99,13 @@ const privateRoutes: CustomRouteProps[] = [
 		loader: undefined,
 	},
 	{
+		path: RouterPath.DOCUMENT_URL,
+		element: <DocumentPage_v2 />,
+		loader: undefined,
+	},
+	{
 		path: RouterPath.CONFIRM_URL,
-		element: getDefaultLayout(<ConfirmPage />),
+		element: getPublicLayout(<ConfirmPage_v2 />, 'full'),
 		loader: undefined,
 	},
 ]

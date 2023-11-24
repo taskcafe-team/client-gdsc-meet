@@ -8,6 +8,7 @@ import {
 	BiLogOut,
 	BiCloset,
 } from 'react-icons/bi'
+import { saveAs } from 'file-saver'
 import {
 	IoIosClose,
 	IoMdPerson,
@@ -16,7 +17,7 @@ import {
 } from 'react-icons/io'
 import Logo from 'assets/static/images/icons/meet.svg'
 import CurrentTime from './_components/CurrentTime'
-import ThemeButton from 'components/ThemeButton' // Assuming ThemeButton is a separate component.
+// Assuming ThemeButton is a separate component.
 
 import { useDispatch, useSelector } from 'react-redux' // Import the appropriate Redux hook for your setup.
 // Assuming you have a Redux store configuration.
@@ -28,16 +29,22 @@ import { useTheme } from 'next-themes'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { authLogout } from 'contexts/auth'
 import RouterPath from 'views/routes/routesContants'
-import { BlindsClosedTwoTone, Person } from '@mui/icons-material'
+import { BlindsClosedTwoTone, CloudDownloadOutlined, Person } from '@mui/icons-material'
+import Button from 'components/Button'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 interface HeaderProps {
 	type?: 'full' | 'wrapper'
 	className?: string
+	handleFileChange: any
+	file?:any
 }
 
 const Header: React.FC<HeaderProps> = ({
 	type = 'full',
 	className,
+	handleFileChange,
+	file,
 	...rest
 }) => {
 	const [triggerToggle, setTriggerToggle] = useState(false)
@@ -46,7 +53,12 @@ const Header: React.FC<HeaderProps> = ({
 	// Replace the following Redux selectors with your actual selectors from Redux.
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const UDetail = useAppSelector((s) => s.user)
-
+	const fileInputRef = useRef<HTMLInputElement>(null)
+	const handleButtonClick = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click()
+		}
+	}
 	const withSize = useMemo(() => {
 		return type == 'wrapper' ? 'w-[65%] max-2xl:w-full' : null
 	}, [type])
@@ -54,6 +66,13 @@ const Header: React.FC<HeaderProps> = ({
 	const logout = () => {
 		dispatch(authLogout())
 	}
+
+	const downloadToPDF = () => {
+		if (file) {
+			const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+			saveAs(blob, 'document.docx');
+		}
+	  };
 	return (
 		<header
 			className={`fixed max-2xl:bg-white dark:max-2xl:bg-gray-80 z-50 top-0 left-0 right-0 bg-transparent px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px] ${withSize} `}
@@ -67,54 +86,41 @@ const Header: React.FC<HeaderProps> = ({
 						alt="DTUMeet"
 						className="w-[55px] h-[55px] object-fill  max-lg:w-[45px] max-lg:h-[45px]"
 					/>
-					<h1 className="text-gray-70  opacity-100 text-[45px] max-lg:text-24 font-bold">
+					<h1 className="text-gray-70  opacity-100 text-24  font-bold">
 						GDSC Meet
 					</h1>
 				</div>
 			</Link>
 			<nav className="flex items-center gap-10 max-lg:hidden">
-				<CurrentTime />
-				<div className="text-gray-70 font-roboto text-24  font-normal">
-					<ThemeButton />
-				</div>
-				<div className="text-gray-70 font-roboto text-24 font-normal dark:text-white transition">
-					<Link to="/user/profile?role=Founder">
-						<BiFile />
-					</Link>
-				</div>
-				<div className="relative before:w-[40px] before:h-[40px] before:absolute before:top-[60%] group text-gray-70 font-roboto text-24  font-normal dark:text-white transition">
-					{isLogin ? (
-						<Link to={RouterPath.PROFILE_URL}>
-							<img
-								className="w-30 h-30 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
-								src={UDetail?.avatar ? UDetail?.avatar : Avatar}
-								alt="Bordered avatar"
-							/>
-						</Link>
-					) : (
-						<Link to="/auth/login">
-							<IoMdPerson />
-						</Link>
-					)}
-					{isLogin && (
-						<div className="absolute hidden group-hover:block left-0 top-[100%] translate-x-[-40%] mt-10 p-10 rounded-md  shadow-2420 bg-white dark:bg-gray-80">
-							<Link to={RouterPath.PROFILE_URL}>
-								<div className=" flex items-center gap-4 text-gray-70 font-roboto text-20 font-normal dark:text-white">
-									<Person />
-									Profile
-								</div>
-							</Link>
+				<div className="flex gap-4 flex-row-reverse">
+					<Button
+						className="block border-none  rounded-sm p-2 mr-2 cursor-pointer"
+						onClick={handleButtonClick}
+					>
+						<CloudUploadIcon
+							fontSize="large"
+							className="text-primary text-40"
+						/>
+					</Button>
 
-							<div
-								onClick={logout}
-								className="cursor-pointer flex items-center gap-4 text-gray-70 font-roboto text-20 font-normal dark:text-white"
-							>
-								<BiLogOut />
-								Logout
-							</div>
-						</div>
-					)}
+					<Button
+						className="block border-none  rounded-sm p-2 mr-2 cursor-pointer"
+						onClick={downloadToPDF}
+					>
+						<CloudDownloadOutlined
+							fontSize="large"
+							className="text-primary text-40"
+						/>
+					</Button>
+					<input
+						ref={fileInputRef}
+						className="hidden"
+						type="file"
+						accept=".docx"
+						onChange={handleFileChange}
+					/>
 				</div>
+				<CurrentTime />
 			</nav>
 			{/* Mobile */}
 			<div className=" hidden max-lg:flex gap-4 items-center">
@@ -163,9 +169,6 @@ const Header: React.FC<HeaderProps> = ({
 					<h2 className="text-gray-70 dark:text-while text-28 opacity-100   font-bold">
 						Menu
 					</h2>
-					<div className=" flex gap-6">
-							<ThemeButton />
-						</div>
 				</div>
 				{isLogin ? (
 					<div className="flex flex-col p-4 gap-6">
@@ -196,7 +199,6 @@ const Header: React.FC<HeaderProps> = ({
 								<p className=" text-18 transition font-bold">Logout</p>
 							</div>
 						</div>
-					
 					</div>
 				) : (
 					<div className="flex flex-col p-4 gap-6">
