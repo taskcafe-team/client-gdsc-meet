@@ -2,6 +2,10 @@ import Api from 'api/http-rest/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { type AxiosRequestConfig } from 'axios'
 import { ParticipantUsecaseDto } from './participantDtos'
+import {
+	RequestUpdateMeetingBody,
+	ResponseMeetingDto,
+} from '../meeting/meetingApiType'
 
 export enum RespondJoinStatus {
 	ACCEPTED = 'accepted',
@@ -117,5 +121,13 @@ export default class ParticipantApi extends Api {
 		return sessionStorage.getItem(
 			`meeting-api-token:${token.roomType}:${token.roomId}`
 		)
+	}
+
+	static updateMeetingPermision(
+		meetingId: string,
+		request: RequestUpdateMeetingBody
+	) {
+		const path = `meetings/${meetingId}/participants/meeting-permission`
+		return Api.put<ResponseMeetingDto>(path, request)
 	}
 }

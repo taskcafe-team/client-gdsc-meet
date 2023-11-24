@@ -15,6 +15,7 @@ import {
 	RequestCreateMeetingBody,
 	RequestUpdateMeetingBody,
 } from 'api/http-rest/meeting/meetingApiType'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
 
 export interface MeetingFetchError {
 	type: string
@@ -75,9 +76,11 @@ export const meetingFetchCreateInstant = createAsyncThunk(
 export const meetingFetchUpdateInstant = createAsyncThunk(
 	MEETING_FETCH_CREATE_INSTANT,
 	async (request: RequestUpdateMeetingBody, { dispatch }) => {
-		const res = await MeetingApi.updateMeeting(request.meetingId, request)
-		const { success } = res.metadata
-		if (success) dispatch(meetingFetchMyMeetings())
+		const res = await ParticipantApi.updateMeetingPermision(
+			request.meetingId,
+			request
+		)
+		dispatch(meetingFetchMyMeetings())
 		return res
 	}
 )
