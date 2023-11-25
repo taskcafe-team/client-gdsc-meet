@@ -18,10 +18,16 @@ import googleIcon from 'assets/static/images/icons/google.svg'
 import { Group } from '@mui/icons-material'
 import useToastily from 'hooks/useToastily'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
-import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
+import {
+	authFetchEmailLogin,
+	authFetchGoogleLoginVerify,
+	authLogged,
+} from 'contexts/auth'
 import { ApiResponse } from 'api/http-rest/apiResponses'
 import { ResponseLoginSuccess } from 'api/http-rest'
 import RouterPath from 'views/routes/routesContants'
+import AuthApi from 'api/http-rest/auth/authApi'
+import { setLocalStorageItem } from 'utils/localStorageUtils'
 
 interface FormElements extends HTMLFormControlsCollection {
 	email: HTMLInputElement
@@ -174,7 +180,7 @@ export default function LoginPage() {
 					>
 						<Stack gap={4} sx={{ mb: 2 }}>
 							<Stack gap={1}>
-								<Typography level="h3">Sign in</Typography>
+								<Typography level="h3">Login</Typography>
 								<Typography level="body-sm">
 									Don&apos;t have an account?{' '}
 									<Link href={RouterPath.SINGUP_URL} level="title-sm">
@@ -211,19 +217,19 @@ export default function LoginPage() {
 								onSubmit={(event: React.FormEvent<SignInFormElement>) => {
 									event.preventDefault()
 									const formElements = event.currentTarget.elements
-									const data = {
-										email: formElements.email.value,
-										password: formElements.password.value,
-										persistent: formElements.persistent.checked,
-									}
-									const { email, password } = data
-									dispatch(authFetchEmailLogin({ email, password })).then(
-										(payload) => {
-											if (payload.meta.requestStatus === 'fulfilled')
-												navigate('/')
-											else toast({ content: 'Login failed', type: 'error' })
-										}
-									)
+									const email = formElements.email.value
+									const password = formElements.password.value
+									AuthApi.loginWithEmail({ email, password })
+										.then((res) => {
+											const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+											const { accessToken } = res.data
+											setLocalStorageItem(key, accessToken)
+											dispatch(authLogged())
+										})
+										.catch((err) => {
+											const message = err.message ?? 'Login Failed'
+											toast({ content: message, type: 'error' })
+										})
 								}}
 							>
 								<FormControl required>
@@ -248,7 +254,7 @@ export default function LoginPage() {
 										</Link>
 									</Box>
 									<Button type="submit" fullWidth>
-										Sign in
+										Login
 									</Button>
 								</Stack>
 							</form>

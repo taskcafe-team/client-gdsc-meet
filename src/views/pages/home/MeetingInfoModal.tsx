@@ -70,7 +70,7 @@ export default function MeetingInfoModal({
 				endDateTime.getTime() !== new Date(meetingInfo.endTime).getTime())
 		)
 			request.endDate = endDateTime?.toString()
-		if (type !== meetingInfo.type) setCanSave(true)
+		if (type !== meetingInfo.type) request.type = type
 
 		dispatch(meetingFetchUpdateInstant(request))
 			.then((res) => {

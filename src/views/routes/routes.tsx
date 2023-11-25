@@ -10,11 +10,11 @@ import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
-const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
 const LoginPage = lazy(() => import('views/pages/auth/LoginPage_v2'))
+const SignupPage = lazy(() => import('views/pages/auth/SignupPage_v2'))
 const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
-const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
+const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage_v2'))
 
 export const Loading = () => (
 	<div
@@ -51,7 +51,7 @@ type CustomRouteProps = RouteProps
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
-		element: getDefaultLayout(<SignupPage />),
+		element: <SignupPage />,
 		loader: undefined,
 	},
 	{

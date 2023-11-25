@@ -41,9 +41,9 @@ export default function ListWaitingParticipants() {
 				meetingId: waitingRoom.roomId,
 				participantIds,
 				status,
-			}).finally(() => setFetching(false))
-			if (!res.metadata.success)
-				toast({ content: res.metadata.error?.message ?? '', type: 'error' })
+			})
+				.catch(() => toast({ content: 'Respond Fail', type: 'error' }))
+				.finally(() => setFetching(false))
 		},
 		[waitingRoom, fetching]
 	)

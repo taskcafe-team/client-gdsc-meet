@@ -6,9 +6,10 @@ import type {
 } from 'axios'
 import {
 	getLocalStorageItem,
+	removeLocalStorageItem,
 	setLocalStorageItem,
 } from '../../utils/localStorageUtils'
-import { ResponseMetadata } from './apiResponses'
+import { ApiResponse, ResponseMetadata } from './apiResponses'
 import axios from 'axios'
 
 class AuthUtils {
@@ -43,28 +44,32 @@ export const apiSuccessResponseInterceptor = async (
 	return response.data
 }
 
-export const apiFailureResponseInterceptor = async (error: AxiosError) => {
+export const apiFailureResponseInterceptor = (error: AxiosError) => {
 	if (error.response) {
-		if (error.response.status === 401 || error.response.status === 403) {
-			try {
-				const config = error.response.config
-				const res = await AuthUtils.refreshToken(config)
-				const { accessToken } = res.data
-				const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
-				setLocalStorageItem(key, accessToken)
+		// Handle refresh token
+		// if (error.response.status === 401) {
+		// 	try {
+		// 		const config = error.response.config
+		// 		const res = await AuthUtils.refreshToken(config)
+		// 		const { accessToken } = res.data
+		// 		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+		// 		setLocalStorageItem(key, accessToken)
+		// 		const headerKey = import.meta.env.API_ACCESS_TOKEN_HEADER
+		// 		config.headers[headerKey] = `${accessToken}`
+		// 		return await axios.request(config)
+		// 	} catch (_err) {
+		// 		removeLocalStorageItem(import.meta.env.API_KEY_STORE_ACCESS_TOKEN)
+		// 		Object.assign(error, _err)
+		// 	}
+		// }
 
-				const headerKey = import.meta.env.API_ACCESS_TOKEN_HEADER
-				config.headers[headerKey] = `${accessToken}`
-				return await axios.request(config)
-			} catch (_err) {
-				Object.assign(error, _err)
-			}
-		}
-
-		const meta = error.response.data as ResponseMetadata | null
-		const _error = meta?.error
+		const dataErr = error.response.data as ApiResponse
+		const message = dataErr.metadata.message
+		const _error = dataErr.metadata.error
+		const errMessage =
+			_error?.message ?? message ?? 'Internal Server Response Format Error'
 		const responseError = {
-			message: _error?.message ?? 'Internal Server Response Format Error',
+			message: errMessage,
 			code: _error?.code ?? 'AE-APP-5000',
 			action: _error?.action ?? 'DEFAULT',
 			title: _error?.title ?? ' "Internal server error",',
