@@ -75,6 +75,7 @@ export default function LoginPage() {
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const query = useLocation()
+	const [loging, setLoging] = useState(false)
 
 	const googleHandler = async () => {
 		window.open(import.meta.env.API_LOGIN_GOOGLE_URL, '_self')
@@ -87,6 +88,7 @@ export default function LoginPage() {
 				const payload = res.payload as ApiResponse
 				if (payload.metadata.error)
 					toast({ content: payload.metadata.error.message, type: 'error' })
+				else return res
 			})
 	}, [])
 
@@ -183,13 +185,18 @@ export default function LoginPage() {
 								<Typography level="h3">Login</Typography>
 								<Typography level="body-sm">
 									Don&apos;t have an account?{' '}
-									<Link href={RouterPath.SINGUP_URL} level="title-sm">
+									<Link
+										disabled={loging}
+										href={RouterPath.SINGUP_URL}
+										level="title-sm"
+									>
 										Sign up!
 									</Link>
 								</Typography>
 							</Stack>
 
 							<Button
+								disabled={loging}
 								onClick={googleHandler}
 								variant="soft"
 								color="neutral"
@@ -234,11 +241,11 @@ export default function LoginPage() {
 							>
 								<FormControl required>
 									<FormLabel>Email</FormLabel>
-									<Input type="email" name="email" />
+									<Input disabled={loging} type="email" name="email" />
 								</FormControl>
 								<FormControl required>
 									<FormLabel>Password</FormLabel>
-									<Input type="password" name="password" />
+									<Input disabled={loging} type="password" name="password" />
 								</FormControl>
 								<Stack gap={4} sx={{ mt: 2 }}>
 									<Box
@@ -249,11 +256,15 @@ export default function LoginPage() {
 										}}
 									>
 										<Checkbox size="sm" label="Remember me" name="persistent" />
-										<Link level="title-sm" href="#replace-with-a-link">
+										<Link
+											disabled={loging}
+											level="title-sm"
+											href="#replace-with-a-link"
+										>
 											Forgot your password?
 										</Link>
 									</Box>
-									<Button type="submit" fullWidth>
+									<Button loading={loging} type="submit" fullWidth>
 										Login
 									</Button>
 								</Stack>

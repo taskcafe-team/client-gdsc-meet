@@ -19,6 +19,7 @@ import { ApiResponse } from 'api/http-rest/apiResponses'
 import RouterPath from 'views/routes/routesContants'
 import AuthApi from 'api/http-rest/auth/authApi'
 import { setLocalStorageItem } from 'utils/localStorageUtils'
+import { authLogged } from 'contexts/auth'
 
 interface FormElements extends HTMLFormControlsCollection {
 	email: HTMLInputElement
@@ -34,6 +35,7 @@ export default function SignupPage() {
 	const toast = useToastily()
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const [registering, setRegistering] = useState(false)
 
 	const googleHandler = async () => {
 		window.open(import.meta.env.API_LOGIN_GOOGLE_URL, '_self')
@@ -148,6 +150,7 @@ export default function SignupPage() {
 						<form
 							onSubmit={(event: React.FormEvent<SignInFormElement>) => {
 								event.preventDefault()
+								setRegistering(true)
 								const formElements = event.currentTarget.elements
 								const email = formElements.email.value
 								const password = formElements.password.value
@@ -155,8 +158,8 @@ export default function SignupPage() {
 									.then(async () => {
 										await AuthApi.loginWithEmail({ email, password }).then(
 											async (res) => {
-												const { accessToken } = res.data
-												await AuthApi.saveUserAccessToken(accessToken)
+												AuthApi.saveUserAccessToken(res.data.accessToken)
+												dispatch(authLogged())
 												navigate('/')
 											}
 										)
@@ -165,15 +168,16 @@ export default function SignupPage() {
 										const message = err.message ?? 'Sign Up Failed'
 										toast({ content: message, type: 'error' })
 									})
+									.then(() => setRegistering(false))
 							}}
 						>
 							<FormControl required>
 								<FormLabel>Email</FormLabel>
-								<Input type="email" name="email" />
+								<Input disabled={registering} type="email" name="email" />
 							</FormControl>
 							<FormControl required>
 								<FormLabel>Password</FormLabel>
-								<Input type="password" name="password" />
+								<Input disabled={registering} type="password" name="password" />
 							</FormControl>
 							<Stack gap={4} sx={{ mt: 2 }}>
 								<Box
@@ -183,12 +187,21 @@ export default function SignupPage() {
 										alignItems: 'center',
 									}}
 								>
-									<Checkbox size="sm" label="Remember me" name="persistent" />
-									<Link level="title-sm" href="#replace-with-a-link">
+									<Checkbox
+										disabled={registering}
+										size="sm"
+										label="Remember me"
+										name="persistent"
+									/>
+									<Link
+										disabled={registering}
+										level="title-sm"
+										href="#replace-with-a-link"
+									>
 										Forgot your password?
 									</Link>
 								</Box>
-								<Button type="submit" fullWidth>
+								<Button loading={registering} type="submit" fullWidth>
 									Sign Up
 								</Button>
 							</Stack>

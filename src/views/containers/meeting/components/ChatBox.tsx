@@ -1,8 +1,8 @@
-import { Box, IconButton, Input, Sheet, Stack } from '@mui/joy'
+import { Box, IconButton, Input, Stack, Typography } from '@mui/joy'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
-import { Typography } from '@mui/material'
 import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
 import { Loading } from 'views/routes/routes'
+import { Chat } from '@mui/icons-material'
 
 type ChatBoxProps = {
 	title: string
@@ -15,16 +15,12 @@ export default function ChatBox({ title, messages, onSend }: ChatBoxProps) {
 
 	return (
 		<Stack height={1} overflow="hidden">
-			<Sheet variant="outlined" sx={{ mb: 1, borderRadius: 10 }}>
-				<Typography
-					textAlign="center"
-					variant="h6"
-					fontWeight="bold"
-					color="Highlight"
-				>
-					{title}
-				</Typography>
-			</Sheet>
+			<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+				<IconButton size="sm" variant="outlined">
+					<Chat />
+				</IconButton>
+				<Typography level="title-lg">{title}</Typography>
+			</Box>
 			<Stack flex={1} overflow="hidden">
 				<Box
 					height={1}

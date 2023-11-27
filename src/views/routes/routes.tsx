@@ -8,6 +8,7 @@ import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
+import { getLocalStorageItem } from 'utils/localStorageUtils'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
@@ -48,6 +49,7 @@ const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
 
 type CustomRouteProps = RouteProps
+
 const routes: CustomRouteProps[] = [
 	{
 		path: RouterPath.SINGUP_URL,
@@ -98,14 +100,15 @@ export default function Router() {
 	const [loading, setLoading] = useState(true)
 
 	const getMe = useCallback(async () => {
-		const token = localStorage.getItem('access_token')
+		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+		const token = getLocalStorageItem(key)
 		if (!token) return setLoading(false)
 		dispatch(userFetchMe()).finally(() => setLoading(false))
 	}, [dispatch])
 
 	useEffect(() => {
 		getMe()
-	}, [getMe])
+	}, [getMe, isLogin])
 
 	if (loading) return <LayoutLoading />
 	return (
