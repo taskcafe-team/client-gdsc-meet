@@ -1,21 +1,17 @@
 import Api from 'api/http-rest/api'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { type AxiosRequestConfig } from 'axios'
-import { ParticipantUsecaseDto } from './participantDtos'
+import {
+	AccessPermissionsStatus,
+	ParticipantUsecaseDto,
+} from './participantDtos'
 import {
 	RequestUpdateMeetingBody,
 	ResponseMeetingDto,
 } from '../meeting/meetingApiType'
 
-export enum RespondJoinStatus {
-	ACCEPTED = 'accepted',
-	REJECTED = 'rejected',
-	PENDING = 'pending',
-}
-
 type RequestSendMessage = {
 	roomId: string
-	roomType: RoomType
 	content: string
 }
 
@@ -30,97 +26,49 @@ export type CreateTokenDto = {
 	roomToken: string
 }
 
-type ResponseGetAccessToken = {
+export type ResponseParticipantGetAccessToken = {
+	token: string
+	status: AccessPermissionsStatus
 	participant: ParticipantUsecaseDto
-	tokens: CreateTokenDto[]
 }
 
 export default class ParticipantApi extends Api {
-	static readonly participantURL = 'meetings/:meetingId/participants'
+	// static readonly participantURL = 'meetings/:meetingId/participants'
 
-	static getAccessToken(meetingId: string, customName: string) {
-		const path = `meetings/${meetingId}/participants/access-token`
-		const query = { customName }
-		return Api.get<ResponseGetAccessToken>(path, query)
+	static savePartATToSessionStore(meetingId: string, token: string) {
+		sessionStorage.setItem(`${meetingId}`, token)
 	}
 
-	static sendMessage(request: RequestSendMessage) {
-		const token = ParticipantApi.getMeetingApiToken({
-			roomId: request.roomId,
-			roomType: request.roomType,
-		})
+	static getPartATFromSessionStore(meetingId: string) {
+		return sessionStorage.getItem(`${meetingId}`)
+	}
 
-		const config: AxiosRequestConfig = {
-			headers: { 'meeting-api-token': token },
-		}
-		const path = `meetings/${request.roomId}/participants/send-message`
+	static getParticipantAccessToken(meetingId: string, customName: string) {
+		const path = `meetings/${meetingId}/participants/access-token`
+		const query = { customName }
+		return Api.get<ResponseParticipantGetAccessToken>(path, query)
+	}
+
+	static sendMessage(meetingId: string, request: RequestSendMessage) {
+		const token = ParticipantApi.getPartATFromSessionStore(meetingId)
+		if (!token) throw new Error('Token not found')
+		const key = import.meta.env.API_MEETING_TOKEN_HEADER
+		const config: AxiosRequestConfig = { headers: { [key]: token } }
+		const path = `meetings/${meetingId}/participants/send-message`
 		return Api.post(path, request, null, config)
 	}
 
-	static respondRequestJoinMeeting(request: {
-		meetingId: string
-		participantIds: string[]
-		status: RespondJoinStatus
-	}) {
-		const roomId = request.meetingId
-		const roomType = RoomType.WAITING
-		const token = ParticipantApi.getMeetingApiToken({ roomId, roomType })
+	static respondRequestJoinMeeting(
+		meetingId: string,
+		request: { partIds: string[]; status: AccessPermissionsStatus }
+	) {
+		const token = ParticipantApi.getPartATFromSessionStore(meetingId)
+		if (!token) throw new Error('Token not found')
+		const key = import.meta.env.API_MEETING_TOKEN_HEADER
+		const config: AxiosRequestConfig = { headers: { [key]: token } }
 
-		const config: AxiosRequestConfig = {
-			headers: { 'meeting-api-token': token },
-		}
-		const path = `meetings/${request.meetingId}/participants/respond-join-request`
-		return Api.patch(path, request, null, config)
-	}
-
-	static accpectParticipantJoinMeeting(request: RequestParticipantJoinMeeting) {
-		const token = ParticipantApi.getMeetingApiToken({
-			roomId: request.meetingId,
-			roomType: RoomType.MEETING,
-		})
-
-		const config: AxiosRequestConfig = {
-			headers: { 'meeting-api-token': token },
-		}
-		const path = `meetings/${request.meetingId}/participants/respond-join-request`
-		return Api.patch(
-			path,
-			{ ...request, status: RespondJoinStatus.ACCEPTED },
-			null,
-			config
-		)
-	}
-
-	static rejectParticipantJoinMeeting(request: RequestParticipantJoinMeeting) {
-		const token = ParticipantApi.getMeetingApiToken({
-			roomId: request.meetingId,
-			roomType: RoomType.MEETING,
-		})
-
-		const config: AxiosRequestConfig = {
-			headers: { 'meeting-api-token': token },
-		}
-
-		const path = `meetings/${request.meetingId}/participants/respond-join-request`
-		return Api.patch(
-			path,
-			{ ...request, status: RespondJoinStatus.REJECTED },
-			null,
-			config
-		)
-	}
-
-	static setMeetingApiToken(token: CreateTokenDto) {
-		sessionStorage.setItem(
-			`meeting-api-token:${token.roomType}:${token.roomId}`,
-			token.roomToken
-		)
-	}
-
-	static getMeetingApiToken(token: Omit<CreateTokenDto, 'roomToken'>) {
-		return sessionStorage.getItem(
-			`meeting-api-token:${token.roomType}:${token.roomId}`
-		)
+		const path = `meetings/${meetingId}/participants/respond-join-request`
+		return Api.patch<void>(path, request, null, config)
 	}
 
 	static updateMeetingPermision(

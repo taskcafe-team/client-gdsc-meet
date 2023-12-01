@@ -7,23 +7,18 @@ import ListItemContent from '@mui/joy/ListItemContent'
 import Typography from '@mui/joy/Typography'
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { Badge, Checkbox, ListItemDecorator } from '@mui/joy'
+import { ListItemDecorator } from '@mui/joy'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import Toggler from '../../../../containers/meeting/components/Toggler'
-import {
-	ParticipantRole,
-	ParticipantUsecaseDto,
-} from 'api/http-rest/participant/participantDtos'
 import { useMeeting } from '../../../../containers/meeting/MeetingContext'
 
 export default function ListOnlineParticipants() {
-	const { getRoomConnected } = useMeeting()
+	const { localParticipant, roomList } = useMeeting()
+	const meetingRoom = roomList.get(RoomType.MEETING)
+	if (!meetingRoom || !localParticipant)
+		throw new Error('MeetingChatTab is not available')
+	const participants = meetingRoom.remoteParticipants
 
-	const meetingRoom = getRoomConnected('', RoomType.MEETING)
-	const localParticipant = meetingRoom?.localParticipant
-	const participants = meetingRoom?.remoteParticipants ?? new Map()
-
-	if (!meetingRoom) return <React.Fragment></React.Fragment>
 	return (
 		<Toggler
 			renderToggle={({ open, setOpen }) => (

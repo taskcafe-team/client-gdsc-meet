@@ -4,39 +4,36 @@ import { Sheet, Stack } from '@mui/joy'
 import { useAppSelector } from 'contexts/hooks'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { generateName } from 'utils/personalNameUtils'
-import { removeLocalStorageItem } from 'utils/localStorageUtils'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
 import WaitingRoom from './WaitingRoom'
+import { MeetingApi } from 'api/http-rest'
+import { RoomType } from 'api/webrtc/webRTCTypes'
 
 export default function PreJoinRoom() {
 	const navigate = useNavigate()
 	const user = useAppSelector((s) => s.user)
-	const { connectRoom } = useMeeting()
+	const { meetingId, localParticipant, setLocalParticipant } = useMeeting()
 
-	const [connecting, setConnecting] = useState(false)
-	const [connected, setConnected] = useState(false)
-	const [showWaitingRoom, setShowWaitingRoom] = useState(false)
+	const loaded = useMemo(() => Boolean(localParticipant), [localParticipant])
+	const [partLoading, setPartLoading] = useState(false)
 	const fullname = useMemo(() => {
 		const name = (user.firstName ?? '') + ' ' + (user.lastName ?? '')
 		return name.trim().length > 0 ? name.trim() : generateName()
 	}, [user.firstName, user.lastName])
 
 	const handleSubmitJoin = async (values: LocalUserChoices) => {
-		if (connecting) return
-		setConnecting(true)
-
+		if (partLoading || loaded) return
+		setPartLoading(true)
 		const username = values.username ?? fullname
-		await connectRoom(username)
-			.then(() => setShowWaitingRoom(true))
-			.then(() => setConnected(true))
-			.catch(() => navigate('/'))
-			.finally(() => setConnecting(false))
-	}
 
-	useCallback(() => {
-		return () => {
-			removeLocalStorageItem('lk-user-choices')
-		}
-	}, [])
+		await ParticipantApi.getParticipantAccessToken(meetingId, username)
+			.then(async ({ data }) => {
+				ParticipantApi.savePartATToSessionStore(meetingId, data.token)
+				setLocalParticipant({ ...data.participant, status: data.status })
+			})
+			.catch(() => navigate('/'))
+			.finally(() => setPartLoading(false))
+	}
 
 	return (
 		<Stack
@@ -52,17 +49,16 @@ export default function PreJoinRoom() {
 				justifyContent="center"
 				alignItems="stretch"
 				direction={{ xs: 'column', md: 'row' }}
-				height={{ xs: 'auto' }}
 			>
 				<Sheet
 					variant="soft"
 					sx={{
 						width: { xs: 'auto', sm: 500 },
 						'& .lk-prejoin input.lk-form-control': {
-							'pointer-events': connected || connecting ? 'none' : 'auto',
+							'pointer-events': partLoading ? 'none' : 'auto',
 						},
 						'& .lk-prejoin button': {
-							'pointer-events': connected || connecting ? 'none' : 'auto',
+							'pointer-events': partLoading ? 'none' : 'auto',
 						},
 					}}
 				>
@@ -73,7 +69,7 @@ export default function PreJoinRoom() {
 						defaults={{ username: fullname }}
 					/>
 				</Sheet>
-				{showWaitingRoom && <WaitingRoom />}
+				{localParticipant && <WaitingRoom />}
 			</Stack>
 		</Stack>
 	)

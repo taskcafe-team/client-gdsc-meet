@@ -1,21 +1,28 @@
-import { RoomInfo } from 'views/containers/meeting/MeetingContext'
+import { ParticipantUsecaseDto } from 'api/http-rest/participant/participantDtos'
+import {
+	MeetingInfo,
+	ParticipantInfo,
+} from 'views/containers/meeting/MeetingContext'
 import {
 	ChatMessageCardProps,
 	MessageContent,
 } from 'views/containers/meeting/components/ChatMessageCard'
 
-export const getSenderInRoom = (id: string, room: RoomInfo) => {
-	if (id === room.localParticipant.id)
-		return { ...room.localParticipant, isLocal: true }
+export const getSenderInMeeting = (
+	senderId: string,
+	localPart: ParticipantInfo,
+	remoteParts: Map<string, ParticipantUsecaseDto>
+) => {
+	if (senderId === localPart.id) return { ...localPart, isLocal: true }
 	else {
-		const remoteParticipant = room.remoteParticipants.get(id)
-		if (!remoteParticipant) return null
-		else return { ...remoteParticipant, isLocal: false }
+		const remotePart = remoteParts.get(senderId)
+		if (!remotePart) return null
+		else return { ...remotePart, isLocal: false }
 	}
 }
 
-export const messageCardFromSender = (
-	sender: ReturnType<typeof getSenderInRoom>,
+export const convertMessageCardFromSender = (
+	sender: ReturnType<typeof getSenderInMeeting>,
 	content: string,
 	actions?: {
 		accept: (content: Omit<MessageContent, 'contents'>) => void

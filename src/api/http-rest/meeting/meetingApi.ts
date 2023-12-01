@@ -5,8 +5,11 @@ import {
 	MeetingType,
 	RequestCreateMeetingBody,
 	RequestUpdateMeetingBody,
+	ResponseGetMeetingRoom,
 	ResponseMeetingDto,
 } from './meetingApiType'
+import { type AxiosRequestConfig } from 'axios'
+import ParticipantApi from '../participant/participantApi'
 
 export class MeetingApi extends Api {
 	static readonly meetingURL = 'meetings'
@@ -19,6 +22,14 @@ export class MeetingApi extends Api {
 	static async getMeeting(meetingId: string) {
 		const path = `${this.meetingURL}/${meetingId}`
 		return Api.get<ResponseMeetingDto>(path)
+	}
+
+	static async getMeetingRooms(meetingId: string) {
+		const token = ParticipantApi.getPartATFromSessionStore(meetingId)
+		const key = 'meeting-api-token'
+		const config: AxiosRequestConfig = { headers: { [key]: token } }
+		const path = `${this.meetingURL}/${meetingId}/rooms`
+		return Api.get<ResponseGetMeetingRoom>(path, undefined, config)
 	}
 
 	static async createMeeting(

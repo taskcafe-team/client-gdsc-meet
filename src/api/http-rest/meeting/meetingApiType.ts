@@ -31,3 +31,8 @@ export type ResponseAccessToken = {
 export type RequestUpdateMeetingBody = RequestCreateMeetingBody & {
 	meetingId: string
 }
+
+export type ResponseGetMeetingRoom = {
+	waitingRoom: { id: string; roomType: RoomType }
+	meetingRoom: { id: string; roomType: RoomType }
+}

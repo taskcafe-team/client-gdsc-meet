@@ -7,32 +7,23 @@ const PreJoinRoom = lazy(() => import('./PreJoinRoom'))
 const MeetingRoom = lazy(() => import('./MeetingRoom'))
 
 function MeetingPage() {
-	const navigate = useNavigate()
-	const { meetingId } = useParams()
-	const { meetingStatus, participantAccessStatus, fetchLoadMeeting } =
-		useMeeting()
-	const [fetching, setFetching] = useState(true)
+	const { meetingStatus, localParticipant } = useMeeting()
 
-	useLayoutEffect(() => {
-		if (meetingId)
-			fetchLoadMeeting(meetingId)
-				.finally(() => setFetching(false))
-				.catch(() => navigate('/'))
-	}, [meetingId])
-
-	if (!meetingId) return <Navigate to="/" />
-	if (fetching) return <Loading />
+	if (meetingStatus === 'connected_yet') return <Loading />
 	else if (meetingStatus === 'scheduled') return <Navigate to="/" />
 	else if (meetingStatus === 'completed') return <Navigate to="/" />
 	else if (meetingStatus === 'inProgress') {
-		if (participantAccessStatus === 'accepted') return <MeetingRoom />
+		if (localParticipant && localParticipant.status === 'accept')
+			return <MeetingRoom />
 		else return <PreJoinRoom />
 	} else return <PreJoinRoom />
 }
 
 export default function MeetingPageWapper() {
+	const { meetingId } = useParams()
+	if (!meetingId) throw new Error('Meeting id is not defined')
 	return (
-		<MeetingProvider>
+		<MeetingProvider meetingId={meetingId}>
 			<MeetingPage />
 		</MeetingProvider>
 	)

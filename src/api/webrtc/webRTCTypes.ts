@@ -1,14 +1,10 @@
 import {
-	CreateTokenDto,
-	RespondJoinStatus,
-} from 'api/http-rest/participant/participantApi'
-import {
+	AccessPermissionsStatus,
 	ParticipantRole,
 	ParticipantUsecaseDto,
 } from 'api/http-rest/participant/participantDtos'
 
 export enum RoomType {
-	DEFAULT = 'default',
 	MEETING = 'meeting',
 	WAITING = 'waiting',
 }
@@ -32,8 +28,7 @@ export type ParticipantMetadata = {
 
 // ----- Dtos ----- //
 export type ParticipantRequestJoinDto = {
-	status: RespondJoinStatus
-	token?: CreateTokenDto
+	status: AccessPermissionsStatus
 }
 
 export type ParticipantSendMessageDto = {

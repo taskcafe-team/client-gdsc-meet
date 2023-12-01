@@ -5,10 +5,12 @@ export enum ParticipantRole {
 	ANONYMOUSE = 'ANONYMOUSE', // chưa thêm permission
 }
 
+export type AccessPermissionsStatus = 'wait' | 'accept' | 'reject'
+
 export type ParticipantUsecaseDto = {
 	id: string
-	name: string
-	userId: string
-	role: ParticipantRole
 	meetingId: string
+	name: string
+	role: ParticipantRole
+	userId?: string
 }

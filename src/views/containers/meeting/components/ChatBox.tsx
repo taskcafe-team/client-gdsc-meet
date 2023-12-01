@@ -1,7 +1,5 @@
-import { Box, IconButton, Input, Stack, Typography } from '@mui/joy'
-import SendRoundedIcon from '@mui/icons-material/SendRounded'
+import { IconButton, Input, Stack, Typography } from '@mui/joy'
 import ChatMessageCard, { ChatMessageCardProps } from './ChatMessageCard'
-import { Loading } from 'views/routes/routes'
 import { Chat } from '@mui/icons-material'
 
 type ChatBoxProps = {
@@ -14,50 +12,53 @@ export default function ChatBox({ title, messages, onSend }: ChatBoxProps) {
 	const [sending, setSending] = useState(false)
 
 	return (
-		<Stack height={1} overflow="hidden">
-			<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+		<Stack height={1} width={1} overflow="hidden" spacing={1}>
+			<Stack direction="row" spacing={1} alignItems="center">
 				<IconButton size="sm" variant="outlined">
 					<Chat />
 				</IconButton>
 				<Typography level="title-lg">{title}</Typography>
-			</Box>
-			<Stack flex={1} overflow="hidden">
-				<Box
-					height={1}
-					sx={{
-						overflowY: 'auto',
-						'&::-webkit-scrollbar': { display: 'none' },
+			</Stack>
+			<Stack
+				flex={1}
+				overflow={'auto'}
+				sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
+			>
+				{messages.map((m, i) => (
+					<ChatMessageCard key={i} {...m} />
+				))}
+			</Stack>
+			<Stack sx={{ mt: 'auto' }}>
+				<form
+					style={{ width: '100%' }}
+					onSubmit={async (e) => {
+						e.preventDefault()
+						if (sending || newMess.trim().length == 0) return
+						setSending(true)
+						const content = newMess
+						setNewMess('')
+						if (onSend) await onSend(content)
+						setSending(false)
 					}}
 				>
-					{messages.map((m, i) => (
-						<ChatMessageCard key={i} {...m} />
-					))}
-				</Box>
+					<Stack direction="row" width={1}>
+						<Input
+							fullWidth
+							sx={{ borderRadius: 'sm' }}
+							value={newMess}
+							onChange={(e) => setNewMess(e.target.value)}
+							placeholder="Input message here"
+						/>
+					</Stack>
+				</form>
 			</Stack>
-			<form
-				onSubmit={async (e) => {
-					e.preventDefault()
-					if (sending || newMess.trim().length == 0) return
-					setSending(true)
-					const content = newMess
-					setNewMess('')
-					if (onSend) await onSend(content)
-					setSending(false)
-				}}
-			>
-				<Stack direction="row" width={1}>
-					<Input
-						fullWidth
-						value={newMess}
-						onChange={(e) => setNewMess(e.target.value)}
-						placeholder="Input message here"
-						sx={{ borderRadius: 10, mr: 0.5 }}
-					/>
-					<IconButton disabled={sending} size="sm" type="submit" variant="soft">
-						{(sending && <Loading />) || <SendRoundedIcon />}
-					</IconButton>
-				</Stack>
-			</form>
 		</Stack>
 	)
 }
+
+// <IconButton
+// 	disabled={sending}
+// 	type="submit"
+// 	variant="soft"
+// 	children={(sending && <Loading />) || <SendRoundedIcon />}
+// />

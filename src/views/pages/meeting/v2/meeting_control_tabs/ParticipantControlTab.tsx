@@ -3,84 +3,61 @@ import IconButton from '@mui/joy/IconButton'
 import Input from '@mui/joy/Input'
 import List from '@mui/joy/List'
 import ListItem from '@mui/joy/ListItem'
-import { listItemButtonClasses } from '@mui/joy/ListItemButton'
 import Typography from '@mui/joy/Typography'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import { People } from '@mui/icons-material'
-import { useMeeting } from 'views/containers/meeting/MeetingContext'
-import { RoomType } from 'api/webrtc/webRTCTypes'
 import { Badge, Stack } from '@mui/joy'
-import ListOnlineParticipants from './ListOnlineParticipants'
-import ListWaitingParticipants from './ListWaitingParticipants'
 import { IMeetingControlTab } from '../../types'
+import { useMeetingSideBar } from '../MeetingSideBarProvider'
+import { useMeeting } from 'views/containers/meeting/MeetingContext'
+import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
+
+const ListOnlineParticipants = lazy(() => import('./ListOnlineParticipants'))
+const ListWaitingParticipants = lazy(() => import('./ListWaitingParticipants'))
 
 function ParticipantControlTab() {
+	const { localParticipant } = useMeeting()
+	if (!localParticipant) throw new Error('ParticipantControlTab error')
+	const isHost = localParticipant.role === ParticipantRole.HOST
+
 	return (
 		<Stack gap={1}>
-			<Box
-				className="Sidebar-overlay"
-				sx={{
-					position: 'fixed',
-					top: 0,
-					left: 0,
-					width: '100vw',
-					height: '100vh',
-					opacity: 'var(--SideNavigation-slideIn)',
-					backgroundColor: 'var(--joy-palette-background-backdrop)',
-					transition: 'opacity 0.4s',
-					transform: {
-						xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))',
-						lg: 'translateX(-100%)',
-					},
-				}}
-			/>
-			<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+			<Stack direction="row" alignItems="center" spacing={1}>
 				<IconButton size="sm" variant="outlined">
 					--
 				</IconButton>
 				<Typography level="title-lg">Participant Control</Typography>
-			</Box>
+			</Stack>
 			<Input
 				size="sm"
 				startDecorator={<SearchRoundedIcon />}
 				placeholder="Find Participant"
 			/>
-			<Box
-				sx={{
-					minHeight: 0,
-					overflow: 'hidden auto',
-					flexGrow: 1,
-					display: 'flex',
-					flexDirection: 'column',
-					[`& .${listItemButtonClasses.root}`]: { gap: 1.5 },
-				}}
-			>
+			<Stack>
 				<List
 					size="sm"
 					sx={{
 						gap: 1,
-						'--List-nestedInsetStart': '30px',
 						'--ListItem-radius': (theme) => theme.vars.radius.sm,
 					}}
 				>
 					<ListItem nested>
 						<ListOnlineParticipants />
 					</ListItem>
-					<ListItem nested>
-						<ListWaitingParticipants />
-					</ListItem>
+					{isHost && (
+						<ListItem nested>
+							<ListWaitingParticipants />
+						</ListItem>
+					)}
 				</List>
-			</Box>
+			</Stack>
 		</Stack>
 	)
 }
 
 function ParticipantControlIcon() {
-	const { getRoomConnected } = useMeeting()
-	const meetingRoom = getRoomConnected('', RoomType.MEETING)
-	const countParticipantWaiting = meetingRoom?.remoteParticipants.size ?? 0
 	return (
-		<Badge badgeContent={countParticipantWaiting} color="primary">
+		<Badge badgeContent={0} color="primary">
 			<People />
 		</Badge>
 	)

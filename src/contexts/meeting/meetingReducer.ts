@@ -21,17 +21,6 @@ const meetingSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-			// .addCase(meetingFetching, (state) => {
-			// 	state.loading = true
-			// })
-			// .addCase(meetingFetchSuccess, (state) => {
-			// 	state.loading = false
-			// 	state.error = undefined
-			// })
-			// .addCase(meetingFetchError, (state, action) => {
-			// 	state.loading = false
-			// 	state.error = action.payload
-			// })
 			.addCase(meetingAddInstant, (state, action) => {
 				state.meetings.push(action.payload)
 			})

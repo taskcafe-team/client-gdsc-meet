@@ -1,31 +1,30 @@
-import { Chat } from '@mui/icons-material'
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import { ParticipantSendMessageDto, RoomType } from 'api/webrtc/webRTCTypes'
-import { IMeetingControlTab } from 'views/pages/meeting/types'
-
-import { useMeeting } from 'views/containers/meeting/MeetingContext'
-import ChatBox from 'views/containers/meeting/components/ChatBox'
 import { ChatMessageCardProps } from 'views/containers/meeting/components/ChatMessageCard'
-import {
-	WebRTCService,
-	createSendDataMessageAction,
-} from 'api/webrtc/webRTCService'
+import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import {
 	convertMessageCardFromSender,
 	getSenderInMeeting,
 } from 'views/pages/meeting/utils'
+import { RoomApi } from 'api/http-rest/room/roomApi'
+import { Loading } from 'views/routes/routes'
+import {
+	WebRTCService,
+	createSendDataMessageAction,
+} from 'api/webrtc/webRTCService'
 import { useMeetingSideBar } from '../MeetingSideBarProvider'
+import ChatBox from 'views/containers/meeting/components/ChatBox'
 
-function WaitingChatOfParticipantTab() {
-	const { localParticipant, roomList } = useMeeting()
+export default function HostWaitingChatTab() {
+	const { meetingId, localParticipant, roomList } = useMeeting()
 	const waitingRoom = roomList.get(RoomType.WAITING)
 	if (!waitingRoom || !localParticipant)
-		throw new Error('MeetingChatTab is not available')
+		throw new Error('HostWaitingChatTab is not available')
+	const navigate = useNavigate()
+	const { hidden, currentTab, setUnreadWaitingMessges } = useMeetingSideBar()
 
-	const { hidden, setUnreadMeetingMessges, currentTab } = useMeetingSideBar()
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
-
 	const getSenderWithIsLocal = (senderId: string) => {
 		const localPart = localParticipant
 		const remoteParts = waitingRoom.remoteParticipants
@@ -55,8 +54,8 @@ function WaitingChatOfParticipantTab() {
 		const sender = getSenderWithIsLocal(senderId)
 		const newMessage = convertMessageCardFromSender(sender, content)
 		pushMessage(newMessage)
-		setUnreadMeetingMessges((prev) => {
-			if (!hidden && currentTab === 'meeting_chat') return 0
+		setUnreadWaitingMessges((prev) => {
+			if (!hidden && currentTab === 'waiting_chat') return 0
 			else return prev + 1
 		})
 	}
@@ -82,6 +81,21 @@ function WaitingChatOfParticipantTab() {
 		}
 	}, [])
 
+	const connectRoom = () => {
+		const { roomId } = waitingRoom
+		return RoomApi.getAccessToken(meetingId, roomId)
+			.then((res) => waitingRoom.connect(res.data.token))
+			.catch(() => navigate('/'))
+	}
+
+	useEffect(() => {
+		connectRoom()
+		return () => {
+			waitingRoom.disconnect()
+		}
+	}, [])
+
+	if (waitingRoom.state !== 'connected') return <Loading />
 	return (
 		<ChatBox
 			title={'Waiting Chat'}
@@ -90,9 +104,3 @@ function WaitingChatOfParticipantTab() {
 		/>
 	)
 }
-
-const waitingChatOfParticipantTab: IMeetingControlTab = {
-	Icon: () => <Chat />,
-	Tab: WaitingChatOfParticipantTab,
-}
-export default waitingChatOfParticipantTab

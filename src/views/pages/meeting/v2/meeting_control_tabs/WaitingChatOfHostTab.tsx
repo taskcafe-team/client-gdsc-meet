@@ -5,119 +5,126 @@ import { IMeetingControlTab } from '../../types'
 import { useMeetingSideBar } from '../MeetingSideBarProvider'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { ParticipantSendMessageDto, RoomType } from 'api/webrtc/webRTCTypes'
-import ParticipantApi from 'api/http-rest/participant/participantApi'
-import { Loading } from 'views/routes/routes'
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import { ChatMessageCardProps } from 'views/containers/meeting/components/ChatMessageCard'
-import {
-	getSenderInRoom,
-	messageCardFromSender,
-} from 'views/pages/meeting/utils'
+
 import { Badge } from '@mui/joy'
+import {
+	convertMessageCardFromSender,
+	getSenderInMeeting,
+} from 'views/pages/meeting/utils'
+import {
+	WebRTCService,
+	createSendDataMessageAction,
+} from 'api/webrtc/webRTCService'
+import { AccessPermissionsStatus } from 'api/http-rest/participant/participantDtos'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
+import { RoomApi } from 'api/http-rest/room/roomApi'
 
 function WaitingChatOfHostTab() {
-	const { meetingId, getRoomConnected } = useMeeting()
-	const hostChatRoom = getRoomConnected('', RoomType.WAITING)
+	const { meetingId, localParticipant, roomList } = useMeeting()
+	const waitingRoom = roomList.get(RoomType.WAITING)
+	if (!waitingRoom || !localParticipant)
+		throw new Error('MeetingChatTab is not available')
 
-	const { hidden } = useMeetingSideBar()
+	const navigate = useNavigate()
+	const { hidden, setUnreadWaitingMessges, currentTab } = useMeetingSideBar()
 	const [messages, setMessages] = useState<ChatMessageCardProps[]>([])
-
 	const [fetching, setFetching] = useState(false)
 
-	const handleParticipantResponded = useCallback((receiverId: string) => {
+	useEffect(() => {
+		if (!hidden && currentTab === 'waiting_chat') setUnreadWaitingMessges(0)
+	}, [hidden, currentTab])
+
+	const handleRespondRequest = async (
+		partId: string,
+		status: AccessPermissionsStatus
+	) => {
+		if (fetching) return
+		setFetching(true)
+		const req = { partIds: [partId], status }
+		await ParticipantApi.respondRequestJoinMeeting(meetingId, req)
+			.then(() =>
+				setMessages((p) => p.map((m) => ({ ...m, action: undefined })))
+			)
+			.catch(() => console.log('Respond Fail'))
+			.finally(() => setFetching(false))
+	}
+
+	const getSenderWithIsLocal = (senderId: string) => {
+		const localPart = localParticipant
+		const remoteParts = waitingRoom.remoteParticipants
+		const sender = getSenderInMeeting(senderId, localPart, remoteParts)
+		if (!sender) throw new Error('Sender is null')
+		return sender
+	}
+
+	const pushMessage = (newMess: ChatMessageCardProps) => {
 		setMessages((prev) => {
-			return prev.map((m) => {
-				const senderId = m.messageContent.senderId
-				if (senderId === receiverId) m.action = undefined
-				return m
-			})
+			const length = prev.length
+			if (length === 0) return [...prev, newMess]
+
+			const lastmess = prev[length - 1]
+			const lastSenderId = lastmess.messageContent.senderId
+			const currentSenderId = newMess.messageContent.senderId
+
+			if (lastSenderId === currentSenderId) {
+				const contents = newMess.messageContent.contents
+				lastmess.messageContent.contents.push(...contents)
+				return [...prev.slice(0, length - 1), lastmess]
+			} else return [...prev, newMess]
 		})
+	}
+
+	const createAndPushMessage = (senderId: string, content: string) => {
+		const sender = getSenderWithIsLocal(senderId)
+		const newMessage = convertMessageCardFromSender(sender, content)
+
+		//local is host
+		if (!sender.isLocal)
+			newMessage.action = {
+				accept: () => handleRespondRequest(sender.id, 'accept'),
+				reject: () => handleRespondRequest(sender.id, 'reject'),
+			}
+
+		pushMessage(newMessage)
+		setUnreadWaitingMessges((prev) => {
+			if (!hidden && currentTab === 'waiting_chat') return 0
+			else return prev + 1
+		})
+	}
+
+	const sendMessage = (content) => {
+		const senderId = localParticipant.id
+		WebRTCService.sendDataMessage(waitingRoom.originalRoom, {
+			action: createSendDataMessageAction(
+				SendMessageActionEnum.ParticipantSendMessage,
+				{ senderId, content }
+			),
+		}).then(() => createAndPushMessage(senderId, content))
+	}
+
+	const listenSendMessage = (payload: ParticipantSendMessageDto) =>
+		createAndPushMessage(payload.senderId, payload.content)
+
+	const connectRoom = () => {
+		const { roomId } = waitingRoom
+		return RoomApi.getAccessToken(meetingId, roomId)
+			.then((res) => waitingRoom.connect(res.data.token))
+			.catch(() => navigate('/'))
+	}
+
+	useEffect(() => {
+		connectRoom()
+		const listener = new WebRTCListenerFactory(waitingRoom.originalRoom)
+		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
+		return () => {
+			listener.removeAllListeners()
+			waitingRoom.disconnect()
+		}
 	}, [])
 
-	const fetchReject = useCallback(
-		async (receiverId: string) => {
-			if (fetching) return
-			setFetching(true)
-			ParticipantApi.rejectParticipantJoinMeeting({
-				meetingId,
-				participantIds: [receiverId],
-			})
-				.then(() => handleParticipantResponded(receiverId))
-				.finally(() => setFetching(false))
-		},
-		[meetingId, fetching]
-	)
-
-	const fetchAccept = useCallback(
-		async (receiverId: string) => {
-			if (fetching) return
-			setFetching(true)
-			ParticipantApi.accpectParticipantJoinMeeting({
-				meetingId,
-				participantIds: [receiverId],
-			})
-				.then(() => handleParticipantResponded(receiverId))
-				.finally(() => setFetching(false))
-		},
-		[meetingId, fetching]
-	)
-
-	const sendMessage = useCallback(
-		async (content) => {
-			if (!hostChatRoom) return
-			const { roomId, roomType } = hostChatRoom
-			await ParticipantApi.sendMessage({ roomId, roomType, content })
-		},
-		[hostChatRoom]
-	)
-
-	const pushMessage = useCallback(
-		(newMess: ChatMessageCardProps) => {
-			setMessages((prev) => {
-				const length = prev.length
-				if (length === 0) return [...prev, newMess]
-
-				const lastmess = prev[length - 1]
-				const lastSenderId = lastmess.messageContent.senderId
-				const currentSenderId = newMess.messageContent.senderId
-
-				if (lastSenderId === currentSenderId) {
-					const contents = newMess.messageContent.contents
-					lastmess.messageContent.contents.push(...contents)
-					return [...prev.slice(0, length - 1), lastmess]
-				} else return [...prev, newMess]
-			})
-		},
-		[hidden]
-	)
-
-	const listenSendMessage = useCallback(
-		(payload: ParticipantSendMessageDto) => {
-			if (!hostChatRoom) return
-			const sender = getSenderInRoom(payload.senderId, hostChatRoom)
-			if (!sender) return
-			const newMessage = messageCardFromSender(sender, payload.content, {
-				reject: () => fetchReject(sender.id),
-				accept: () => fetchAccept(sender.id),
-			})
-			pushMessage(newMessage)
-		},
-		[hostChatRoom, pushMessage, fetchReject, fetchAccept]
-	)
-
-	useLayoutEffect(() => {
-		if (!hostChatRoom) return
-		const listener = new WebRTCListenerFactory(hostChatRoom.originalRoom)
-		listener.on(SendMessageActionEnum.ParticipantSendMessage, listenSendMessage)
-
-		return () => {
-			hostChatRoom.disconnect()
-			listener.removeAllListeners()
-		}
-	}, [hostChatRoom])
-
-	if (!hostChatRoom) return <Loading />
 	return (
 		<ChatBox
 			onSend={sendMessage}
@@ -128,8 +135,9 @@ function WaitingChatOfHostTab() {
 }
 
 WaitingChatOfHostTab.Icon = () => {
+	const { unreadWaitingMessges } = useMeetingSideBar()
 	return (
-		<Badge badgeContent={80} color="primary">
+		<Badge badgeContent={unreadWaitingMessges} color="primary">
 			<Chat />
 		</Badge>
 	)

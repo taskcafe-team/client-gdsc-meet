@@ -5,6 +5,7 @@ export default {
 	data: {
 		access_token_header: 'x-api-token',
 		key_store_access_token: 'access_token',
+		meeting_token_header: 'meeting-api-token',
 
 		base_url: isProduction
 			? 'https://www.gdscmeet.live:5000'

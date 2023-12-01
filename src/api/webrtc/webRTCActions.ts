@@ -7,8 +7,8 @@ export type ActionMap = {
 }
 
 export enum SendMessageActionEnum {
-	ParticipantRequestJoin = 'participant_request_join',
 	ParticipantSendMessage = 'participant_send_message',
+	ParticipantRequestJoin = 'participant_request_join',
 }
 
 export interface RegisterActionsType extends ActionMap {

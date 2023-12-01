@@ -10,9 +10,11 @@ export type MeetingSideBarState = {
 	hidden: boolean
 	currentTab: MeetingTabControl
 	unreadMeetingMessges: number
+	unreadWaitingMessges: number
 	setHidden: Dispatch<React.SetStateAction<boolean>>
 	setCurrentTab: Dispatch<React.SetStateAction<MeetingTabControl>>
 	setUnreadMeetingMessges: Dispatch<React.SetStateAction<number>>
+	setUnreadWaitingMessges: Dispatch<React.SetStateAction<number>>
 }
 
 export type IMeetingControlTab = {

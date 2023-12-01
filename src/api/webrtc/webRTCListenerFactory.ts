@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import { Room, RoomEvent } from 'livekit-client'
 import { RegisterActionsType } from './webRTCActions'
+import { createSendDataMessageAction } from './webRTCService'
 
 export class WebRTCListenerFactory<T extends RegisterActionsType> {
 	private readonly event: EventEmitter

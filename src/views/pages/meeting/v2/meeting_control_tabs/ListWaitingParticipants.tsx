@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Avatar from '@mui/joy/Avatar'
 import Button from '@mui/joy/Button'
 import List from '@mui/joy/List'
@@ -12,62 +11,30 @@ import { Badge, Checkbox, ListItemDecorator } from '@mui/joy'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { useMeeting } from '../../../../containers/meeting/MeetingContext'
 import Toggler from '../../../../containers/meeting/components/Toggler'
-import {
-	ParticipantRole,
-	ParticipantUsecaseDto,
-} from 'api/http-rest/participant/participantDtos'
-import ParticipantApi, {
-	RespondJoinStatus,
-} from 'api/http-rest/participant/participantApi'
-import { useMeetingSideBar } from '../MeetingSideBarProvider'
-
-const fake = new Map<string, ParticipantUsecaseDto>([
-	[
-		'1',
-		{
-			id: '1',
-			name: 'minh',
-			userId: 'userId1',
-			role: ParticipantRole.PARTICIPANT,
-			meetingId: 'meetingId1',
-		},
-	],
-	[
-		'2',
-		{
-			id: '2',
-			name: 'minh 2',
-			userId: 'userId2',
-			role: ParticipantRole.PARTICIPANT,
-			meetingId: 'meetingId2',
-		},
-	],
-])
+import { AccessPermissionsStatus } from 'api/http-rest/participant/participantDtos'
+import ParticipantApi from 'api/http-rest/participant/participantApi'
 
 export default function ListWaitingParticipants() {
-	const { getRoomConnected, meetingId } = useMeeting()
-
-	const waitingRoom = getRoomConnected('', RoomType.WAITING)
-	const participants = waitingRoom?.remoteParticipants ?? new Map()
+	const { roomList, meetingId } = useMeeting()
+	const waitingRoom = roomList.get(RoomType.WAITING)
+	if (!waitingRoom) throw new Error('ListOnlineParticipants is not available')
+	const participants = waitingRoom.remoteParticipants
 
 	const waitingParticipantsCount = participants.size
 	const [selected, setSelected] = useState<Map<string, boolean>>(new Map())
 	const [fetching, setFetching] = useState(false)
 
-	const handleRespondRequest = useCallback((status: RespondJoinStatus) => {
+	const handleRespondRequest = (status: AccessPermissionsStatus) => {
 		return async () => {
-			if (fetching) return
+			if (fetching || selected.size === 0) return
 			setFetching(true)
-			const ids = Array.from(selected.keys())
-			await ParticipantApi.respondRequestJoinMeeting({
-				meetingId,
-				participantIds: ids,
-				status,
-			})
+			const partIds = Array.from(selected.keys())
+			const req = { partIds, status }
+			await ParticipantApi.respondRequestJoinMeeting(meetingId, req)
 				.catch(() => console.log('Respond Fail'))
 				.finally(() => setFetching(false))
 		}
-	}, [])
+	}
 
 	const handleCheckBoxAll = (event: React.ChangeEvent<HTMLInputElement>) => {
 		// Toggle checkbox all
@@ -91,7 +58,6 @@ export default function ListWaitingParticipants() {
 			})
 	}
 
-	if (!waitingRoom) return <React.Fragment></React.Fragment>
 	return (
 		<Toggler
 			renderToggle={({ open, setOpen }) => (
@@ -120,7 +86,7 @@ export default function ListWaitingParticipants() {
 						variant="soft"
 					/>
 					<Button
-						onClick={handleRespondRequest(RespondJoinStatus.ACCEPTED)}
+						onClick={handleRespondRequest('accept')}
 						loading={fetching}
 						variant="outlined"
 						size="sm"
@@ -129,7 +95,7 @@ export default function ListWaitingParticipants() {
 						Accepts
 					</Button>
 					<Button
-						onClick={handleRespondRequest(RespondJoinStatus.REJECTED)}
+						onClick={handleRespondRequest('reject')}
 						loading={fetching}
 						variant="outlined"
 						size="sm"

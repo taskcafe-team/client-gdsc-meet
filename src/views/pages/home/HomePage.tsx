@@ -12,14 +12,11 @@ import {
 	Stack,
 	Typography,
 } from '@mui/joy'
-import {
-	MeetingInfo,
-	meetingFetchDeleteInstants,
-	meetingFetchMyMeetings,
-} from 'contexts/meeting'
+import { MeetingInfo, meetingFetchMyMeetings } from 'contexts/meeting'
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
 import { CreateMeetingModal } from 'views/containers/home/CreateMeetingModal'
+import { MeetingApi } from 'api/http-rest'
 
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -46,9 +43,9 @@ export function ListMeeting() {
 	const deleteSelected = () => {
 		setShowMeeting(null)
 		setFetching(true)
-		const seletedArr = Object.keys(selectedIds)
-		if (seletedArr.length > 0)
-			dispatch(meetingFetchDeleteInstants(seletedArr))
+		const ids = Object.keys(selectedIds)
+		if (ids.length > 0)
+			MeetingApi.deleteMeetings({ ids })
 				.then(() => dispatch(meetingFetchMyMeetings()))
 				.finally(() => setFetching(false))
 	}

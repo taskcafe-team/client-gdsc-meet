@@ -3,11 +3,10 @@ import { Button, Card, CardContent, Sheet, Typography } from '@mui/joy'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import WaitingChatOfParticipantTab from './v2/meeting_control_tabs/WaitingChatOfParticipantTab'
 import { ParticipantRequestJoinDto, RoomType } from 'api/webrtc/webRTCTypes'
-import ParticipantApi, {
-	RespondJoinStatus,
-} from 'api/http-rest/participant/participantApi'
 import { WebRTCListenerFactory } from 'api/webrtc/webRTCListenerFactory'
 import { SendMessageActionEnum } from 'api/webrtc/webRTCActions'
+import { Loading } from 'views/routes/routes'
+import { RoomApi } from 'api/http-rest/room/roomApi'
 
 const RejectJoin = () => {
 	const [countdown, setCountdown] = useState(10)
@@ -63,30 +62,32 @@ const WaitingJoin = () => (
 )
 
 export default function WaitingRoom() {
+	const { localParticipant, meetingId, roomList, setLocalParticipant } =
+		useMeeting()
+	const waitingRoom = roomList.get(RoomType.WAITING)
+	if (!localParticipant) throw new Error('Local Participant Is Null')
+	if (!waitingRoom) throw new Error('Waiting Room Is NulL')
+	const roomState = waitingRoom.state
+
 	const navigate = useNavigate()
-	const {
-		getRoomConnected,
-		updateParticipantAccessStatus,
-		participantAccessStatus,
-	} = useMeeting()
-	const waitingRoom = getRoomConnected('', RoomType.WAITING)
 
 	const listenResposedJoinRequest = useCallback(
 		(payload: ParticipantRequestJoinDto) => {
-			if (payload.status === RespondJoinStatus.REJECTED) {
-				updateParticipantAccessStatus('rejected')
-			} else if (payload.status === RespondJoinStatus.ACCEPTED) {
-				const token = payload.token
-				if (!token) return navigate('/')
-				ParticipantApi.setMeetingApiToken(token)
-				updateParticipantAccessStatus('accepted')
-			}
+			waitingRoom.disconnect()
+			setLocalParticipant({ ...localParticipant, status: payload.status })
 		},
 		[]
 	)
 
-	useLayoutEffect(() => {
-		if (!waitingRoom) return
+	const connectRoom = () => {
+		const { roomId } = waitingRoom
+		return RoomApi.getAccessToken(meetingId, roomId)
+			.then((res) => waitingRoom.connect(res.data.token))
+			.catch(() => navigate('/'))
+	}
+
+	useEffect(() => {
+		connectRoom()
 		const listener = new WebRTCListenerFactory(waitingRoom.originalRoom)
 		listener.on(
 			SendMessageActionEnum.ParticipantRequestJoin,
@@ -96,7 +97,7 @@ export default function WaitingRoom() {
 			waitingRoom.disconnect()
 			listener.removeAllListeners()
 		}
-	}, [waitingRoom])
+	}, [])
 
 	return (
 		<Sheet
@@ -104,12 +105,14 @@ export default function WaitingRoom() {
 			sx={{
 				p: 2,
 				minWidth: 300,
-				minHeight: 300,
-				height: { xs: 300, md: 'auto' },
+				minHeight: 150,
+				height: { xs: 1, md: 510 },
+				overflow: 'hidden',
 			}}
 		>
-			{participantAccessStatus === 'rejected' && <RejectJoin />}
-			{participantAccessStatus === 'wait' && <WaitingJoin />}
+			{(roomState === 'disconnected' && <Loading />) ||
+				(localParticipant.status === 'reject' && <RejectJoin />) ||
+				(localParticipant.status === 'wait' && <WaitingJoin />)}
 		</Sheet>
 	)
 }
