@@ -1,5 +1,3 @@
-const isProduction = process.env.NODE_ENV === 'production'
-
 export default {
 	prefix: 'api',
 	data: {
@@ -7,14 +5,11 @@ export default {
 		key_store_access_token: 'access_token',
 		meeting_token_header: 'meeting-api-token',
 
-		base_url: isProduction
-			? 'https://www.gdscmeet.live:5000'
-			: 'http://localhost:5000',
-		login_google_url: isProduction
-			? 'https://www.gdscmeet.live:5000/auth/google/login'
-			: 'http://localhost:5000/auth/google/login',
-		webrtc_socket_url: isProduction
-			? 'https://www.gdscmeet.live:7880'
-			: 'http://localhost:7880',
+		base_url: 'https://www.gdscmeet.live:5000',
+		login_google_url: 'https://www.gdscmeet.live:5000/auth/google/login',
+		webrtc_socket_url: 'https://www.gdscmeet.live:7880',
+		// base_url: 'http://localhost:5000',
+		// login_google_url: 'http://localhost:5000/auth/google/login',
+		// webrtc_socket_url: 'http://localhost:7880',
 	},
 }
