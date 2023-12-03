@@ -66,7 +66,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 
 	return (
 		<div className="FilesMeet">
-			<div className="FilesMeet__header flex items-center gap-8 mb-4 h-30px max-h-[30px]">
+			<div className="FilesMeet__header flex items-center gap-8 my-[20px] h-30px max-h-[30px] overflow-y-visible">
 				{historyFouder == true && (
 					<motion.div
 						onClick={handleReset}
@@ -76,7 +76,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 						<ArrowBackIcon fontSize={'inherit'} />
 					</motion.div>
 				)}
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-4 overflow-y-visible">
 					{Firter &&
 						Firter.map((tag,item) => (
 							<Tag
@@ -88,7 +88,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 						))}
 				</div>
 			</div>
-			<div className="FilesMeet__body p-10 flex gap-6 flex-wrap w-full max-h-[80vh] overflow-y-auto max-sm:max-h-none max-sm:overflow-y-auto">
+			<div className="FilesMeet__body  p-10 flex gap-6 flex-wrap w-full max-h-[80vh] overflow-y-visible max-sm:max-h-none max-sm:overflow-y-auto">
 				{fouder &&
 					historyFouder != true &&
 					fouder.map((fouder: IFolder, index) => (

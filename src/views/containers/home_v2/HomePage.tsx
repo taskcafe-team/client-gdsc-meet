@@ -127,6 +127,7 @@ export default function HomePage() {
 								<Button
 									className="max-md:w-full !p-10 !text-[20px] text-white bg-lprimary"
 									onClick={() =>
+										validationLogin() &&
 										setOpenCreateMeetingForm(!openCreateMeetingForm)
 									}
 								>

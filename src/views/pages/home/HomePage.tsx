@@ -20,6 +20,7 @@ import {
 import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
 import { CreateMeetingModal } from 'views/containers/home/CreateMeetingModal'
+import { startSpeechRecognition } from 'utils/microsoft-cognitiveservices-speech'
 
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -142,7 +143,7 @@ export default function HomePage() {
 	const navigate = useNavigate()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const [meetingId, setMeetingId] = useState('')
-
+	
 	const validationLogin = useCallback(() => {
 		if (!isLogin) toast({ content: 'Please login!', type: 'warning' })
 		return isLogin
@@ -156,7 +157,13 @@ export default function HomePage() {
 		},
 		[meetingId]
 	)
-
+	const handleStart = () => {
+		console.log('222');
+		
+	  startSpeechRecognition((result) => {
+	
+	  });
+	};
 	return (
 		<Box sx={{ my: 2, mx: 2 }}>
 			{openCreateMeetingForm && (
@@ -166,6 +173,7 @@ export default function HomePage() {
 				/>
 			)}
 			<Box maxWidth="sm" margin="auto">
+			{/* <button onClick={handleStart} className='bg-white text-red-50'>Start</button> */}
 				<Box textAlign="center">
 					<img
 						style={{ display: 'inline-block' }}

@@ -9,6 +9,8 @@ import { userFetchMe } from 'contexts/user'
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
 import PublicLayout from 'views/layouts/PublicLayout'
+import { isMobile } from 'utils/mobileDetection'
+import useIsMobile from 'hooks/useIsMobile'
 
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
 const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
@@ -17,7 +19,9 @@ const LoginPage = lazy(() => import('views/pages/auth/LoginPage_v2'))
 const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
 const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
 const HomePage_v2 = lazy(() => import('views/containers/home_v2/HomePage'))
-const SignUpPage_v2 = lazy(() => import('views/containers/signUp_v2/SignupPage'))
+const SignUpPage_v2 = lazy(
+	() => import('views/containers/signUp_v2/SignupPage')
+)
 const ProfilePage_v2 = lazy(
 	() => import('views/containers/profile_v2/ProfilePage')
 )
@@ -59,6 +63,14 @@ export const LayoutLoading = () => (
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
+const getDynamicRouter = (
+	deskTop: ReactNode,
+	mobile: ReactNode,
+	isMobile: boolean
+) => <React.Fragment>{isMobile ? mobile : deskTop}</React.Fragment>
+
+console.log(isMobile())
+
 export const getPublicLayout = (
 	children: ReactNode,
 	type: 'full' | 'wrapper' = 'full',
@@ -69,57 +81,84 @@ export const getPublicLayout = (
 	</PublicLayout>
 )
 type CustomRouteProps = RouteProps
-const routes: CustomRouteProps[] = [
-	{
-		path: RouterPath.SINGUP_URL,
-		element: getPublicLayout(<SignUpPage_v2 />,'wrapper'),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.LOGIN_URL,
-		element: getPublicLayout(<LoginPage_v2 />, 'full'),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.BASE_URL,
-		element: getPublicLayout(<HomePage_v2 />, 'wrapper'),
-		loader: undefined,
-	},
-]
 
-const privateRoutes: CustomRouteProps[] = [
-	{
-		path: RouterPath.PROFILE_URL,
-		element: getPublicLayout(<ProfilePage_v2 />, 'full'),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.MEETING_URL,
-		element: getMeetingLayout(<MeetingPage />),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.DOCUMENT_URL,
-		element: <DocumentPage_v2 />,
-		loader: undefined,
-	},
-	{
-		path: RouterPath.CONFIRM_URL,
-		element: getPublicLayout(<ConfirmPage_v2 />, 'full'),
-		loader: undefined,
-	},
-]
+export const ManageView = () => {
+	const isMobile = useIsMobile()
+	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const routes: CustomRouteProps[] = useMemo(
+		() => [
+			{
+				path: RouterPath.SINGUP_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<SignUpPage_v2 />, 'wrapper'),
+					getDefaultLayout(<SignupPage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.LOGIN_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<LoginPage_v2 />, 'full'),
+					getDefaultLayout(<LoginPage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.BASE_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<HomePage_v2 />, 'wrapper'),
+					getDefaultLayout(<HomePage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+		],
+		[isMobile]
+	)
 
-export const getRoutes = (isLogin: boolean) => {
-	const r = new Array<CustomRouteProps>()
-	r.push(...routes)
-	if (isLogin) r.push(...privateRoutes)
-	return r.map((p, i) => <Route key={i} {...p} />)
+	const privateRoutes: CustomRouteProps[] = useMemo(
+		() => [
+			{
+				path: RouterPath.PROFILE_URL,
+				element: getPublicLayout(<ProfilePage_v2 />, 'full'),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.MEETING_URL,
+				element: getMeetingLayout(<MeetingPage />),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.DOCUMENT_URL,
+				element: <DocumentPage_v2 />,
+				loader: undefined,
+			},
+			{
+				path: RouterPath.CONFIRM_URL,
+				element: getPublicLayout(<ConfirmPage_v2 />, 'full'),
+				loader: undefined,
+			},
+		],
+		[]
+	)
+
+	const getRoutes = (isLogin: boolean) => {
+		const r = new Array<CustomRouteProps>()
+		r.push(...routes)
+		if (isLogin) r.push(...privateRoutes)
+		return r.map((p, i) => <Route key={i} {...p} />)
+	}
+	return (
+		<Routes>
+			{getRoutes(isLogin)}
+			<Route path="*" element={<Navigate to="/" />} />
+		</Routes>
+	)
 }
-
 export default function Router() {
 	const dispatch = useAppDispatch()
-	const isLogin = useAppSelector((s) => s.auth.isLogin)
 
 	const [loading, setLoading] = useState(true)
 
@@ -134,10 +173,5 @@ export default function Router() {
 	}, [getMe])
 
 	if (loading) return <LayoutLoading />
-	return (
-		<Routes>
-			{getRoutes(isLogin)}
-			<Route path="*" element={<Navigate to="/" />} />
-		</Routes>
-	)
+	return <ManageView />
 }

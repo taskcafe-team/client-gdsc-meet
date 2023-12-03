@@ -72,15 +72,12 @@ export default function SignupPage() {
 				const res =
 					await AuthApi.registerWithEmail<ResponseDataRegisterSuccess>(body)
 				setLoading(false)
-				console.log(res)
 
 				if (res.metadata.status === 201) {
 					toast({ content: 'Register Success' })
-					dispatch(authFetchEmailLogin(body))
+					await dispatch(authFetchEmailLogin(body))
 					navigate(`/${RouterPath.CONFIRM_URL}`)
 				} else {
-					console.log(res)
-
 					setErr(res.metadata.message as any)
 				}
 			} catch (error) {

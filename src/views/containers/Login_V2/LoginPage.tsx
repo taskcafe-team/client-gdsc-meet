@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
@@ -16,8 +15,12 @@ import { authFetchEmailLogin, authFetchGoogleLoginVerify } from 'contexts/auth'
 import useToastily from 'hooks/useToastily'
 import { Animate } from 'utils/mockAnimation'
 import { ResponseLoginSuccess } from 'api/http-rest'
-import { ApiResponse } from 'api/http-rest/apiResponses'
-
+import {
+	ApiResponse,
+	ApiResponseError,
+	ResponseMetadata,
+} from 'api/http-rest/apiResponses'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 export default function LoginPage() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -56,9 +59,19 @@ export default function LoginPage() {
 			errMessage: null,
 		},
 		validationSchema: validationSchema,
-		onSubmit(values) {
+		async onSubmit(values) {
 			const { email, password } = values
-			dispatch(authFetchEmailLogin({ email, password }))
+			// const fetchUser = await dispatch(authFetchEmailLogin({ email, password }))
+
+			const fetchUser = await dispatch(authFetchEmailLogin({ email, password }))
+				.then(async (item) => {
+					const data = item.payload as ApiResponse<
+						ApiResponseError | ResponseMetadata
+					>
+					if (!data.metadata.success) {
+						setErr(`${data.metadata.message}`)
+					}
+				})
 		},
 	})
 

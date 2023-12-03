@@ -34,7 +34,11 @@ type CreateMeetingFormProps = {
 	opinion?: string
 }
 
-export default function CreateMeetingFormDialog({open,setOpen,opinion}: CreateMeetingFormProps) {
+export default function CreateMeetingFormDialog({
+	open,
+	setOpen,
+	opinion,
+}: CreateMeetingFormProps) {
 	const dispatch = useAppDispatch()
 	const [fetching, setFetching] = useState(false)
 	const navigate = useNavigate()
@@ -43,13 +47,15 @@ export default function CreateMeetingFormDialog({open,setOpen,opinion}: CreateMe
 	const [meetingDescription, setMeetingDescription] = useState('')
 	const [isLook, setIsLook] = useState(true)
 	const handleTitle = useCallback(async () => {
-		const initTitle = opinion === DEFAUFT ? generateName() : opinion || '';
+		const initTitle = opinion === DEFAUFT ? generateName() : opinion || ''
 		await setMeetingTitle(initTitle)
-		return initTitle;
+		return initTitle
 	}, [opinion])
-	useEffect(()=>{
+	
+	useEffect(() => {
 		handleTitle()
-	},[opinion])
+	}, [opinion])
+
 	const handleSubmitCreateMeeting = useCallback(async () => {
 		setFetching(true)
 		dispatch(
@@ -61,6 +67,8 @@ export default function CreateMeetingFormDialog({open,setOpen,opinion}: CreateMe
 		)
 			.then((result) => {
 				const data = result.payload as ApiResponse<ResponseMeetingDto>
+				console.log(data);
+				
 				if (data.metadata.success)
 					navigate(RouterPath.getPreMeetingPath(data.data.id))
 				else if (data.metadata.error)
@@ -68,18 +76,10 @@ export default function CreateMeetingFormDialog({open,setOpen,opinion}: CreateMe
 			})
 
 			.finally(() => setFetching(false))
-	}, [meetingTitle, meetingDescription, isLook,handleTitle])
+	}, [meetingTitle, meetingDescription, isLook])
 
-	// useLayoutEffect(()=>{
-	// 	handleTitle()
-	// },[props.opinion])
 	return (
-		<Dialog
-			fullWidth
-			maxWidth="xs"
-			open={open}
-			onClose={() => setOpen(false)}
-		>
+		<Dialog fullWidth maxWidth="xs" open={open} onClose={() => setOpen(false)}>
 			<DialogTitle fontWeight="bold">Create Meeting</DialogTitle>
 			<DialogContent>
 				<Box pb={1}>

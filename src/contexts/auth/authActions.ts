@@ -1,5 +1,10 @@
 /* eslint-disable no-undef */
-import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
+import {
+	createAction,
+	createAsyncThunk,
+	isRejectedWithValue,
+	isRejected,
+} from '@reduxjs/toolkit'
 import {
 	AUTH_FETCH_EMAIL_LOGIN,
 	AUTH_FETCH_GOOGLE_LOGIN_VERIFY,
@@ -24,16 +29,36 @@ export const authLogout = createAsyncThunk(AUTH_LOGOUT, async () => {
 
 export const authFetchEmailLogin = createAsyncThunk(
 	AUTH_FETCH_EMAIL_LOGIN,
-	async (request: { email: string; password: string }, { dispatch }) => {
-		const res = await AuthApi.loginWithEmail(request)
-		const { success } = res.metadata
+	(
+		request: {
+			email: string
+			password: string
+		},
+		{ dispatch, rejectWithValue }
+	) => {
 		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
-		if (success) {
-			const { accessToken } = res.data
-			setLocalStorageItem(key, accessToken)
-			dispatch(authLogged())
-		} else removeLocalStorageItem(key)
-		return res
+
+		return AuthApi.loginWithEmail(request)
+			.then(({ data, metadata }) => {
+				if (metadata.success) {
+					const { accessToken } = data
+					setLocalStorageItem(key, accessToken)
+					dispatch(authLogged())
+				} else {
+					removeLocalStorageItem(key)
+					throw isRejectedWithValue(metadata.message || 'An error occurred')
+				}
+
+				return { data, metadata }
+			})
+			.catch((err) => {
+				if (!err.response) {
+					throw err
+				}
+
+				// Using rejectWithValue to handle the rejected promise with a specific value
+				return rejectWithValue(err.response.data)
+			})
 	}
 )
 

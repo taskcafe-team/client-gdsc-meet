@@ -35,7 +35,7 @@ const ConfirmPage: React.FC = () => {
 	}, [feature])
 
 	return (
-		<main className="mt-10vh ">
+		<main className="mt-[10vh] ">
 			<div className="contianer  max-2xl:mt-[20vh] max-sm:mt-[10vh]  px-[53px] max-2xl:px-10  flex  gap-10 max-lg:flex-col-reverse">
 				<div className="content w-[50%] max-2xl:w-full flex flex-col items-start">
 					<div className="Review">

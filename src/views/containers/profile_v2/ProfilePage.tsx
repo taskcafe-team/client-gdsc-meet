@@ -86,9 +86,9 @@ const ProfilePage: React.FC = () => {
 	}, [query])
 
 	return (
-		<main className="mt-[10vh] max-2xl:mt-[20vh] max-sm:mt-[5vh]">
+		<main className="mt-[10vh] max-lg:mt-[10vh] max-sm:mt-[5vh]">
 			<div className="container mx-auto w-full mt-[10vh] px-[53px] max-2xl:px-10  flex gap-10 max-lg:flex-col">
-				<div className="content w-[30%] max-sm:w-full">
+				<div className="content w-[30%] max-lg:w-full">
 					<div className="Review">
 						
 						<motion.h2
@@ -128,7 +128,7 @@ const ProfilePage: React.FC = () => {
 						</div>
 					</motion.div>
 				</div>
-				<div className="form w-[70%]  max-sm:w-full">
+				<div className="form w-[70%]  max-lg:w-full ">
 					{currentComponent && currentComponent.component}
 				</div>
 			</div>

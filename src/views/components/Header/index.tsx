@@ -21,7 +21,7 @@ import ThemeButton from 'components/ThemeButton' // Assuming ThemeButton is a se
 import { useDispatch, useSelector } from 'react-redux' // Import the appropriate Redux hook for your setup.
 // Assuming you have a Redux store configuration.
 
-import Avatar from 'assets/static/images/backgrouds/Saly-1.svg'
+import Avatar from 'assets/static/images/backgrouds/saly.svg'
 import { authDetail, authLoading } from 'contexts/auth/authSelector'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'next-themes'
@@ -164,8 +164,8 @@ const Header: React.FC<HeaderProps> = ({
 						Menu
 					</h2>
 					<div className=" flex gap-6">
-							<ThemeButton />
-						</div>
+						<ThemeButton />
+					</div>
 				</div>
 				{isLogin ? (
 					<div className="flex flex-col p-4 gap-6">
@@ -196,7 +196,6 @@ const Header: React.FC<HeaderProps> = ({
 								<p className=" text-18 transition font-bold">Logout</p>
 							</div>
 						</div>
-					
 					</div>
 				) : (
 					<div className="flex flex-col p-4 gap-6">
