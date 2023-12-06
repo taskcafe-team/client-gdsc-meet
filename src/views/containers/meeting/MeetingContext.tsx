@@ -1,4 +1,10 @@
-import { LocalParticipant, Room, RoomEvent, VideoPresets } from 'livekit-client'
+import {
+	LocalParticipant,
+	ParticipantEvent,
+	Room,
+	RoomEvent,
+	VideoPresets,
+} from 'livekit-client'
 import { createContext } from 'react'
 import {
 	AccessPermissionsStatus,
@@ -6,6 +12,10 @@ import {
 } from 'api/http-rest/participant/participantDtos'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { MeetingApi } from 'api/http-rest'
+import {
+	startSpeechRecognition,
+	stopSpeechRecognition,
+} from 'utils/microsoft-cognitiveservices-speech'
 
 export type ParticipantInfo = ParticipantUsecaseDto
 type MeetingStatus = 'connected_yet' | 'scheduled' | 'inProgress' | 'completed'
@@ -59,6 +69,7 @@ export default function MeetingProvider({
 		useState<MeetingStatus>('connected_yet')
 	const [localParticipant, setLocalParticipant] = useState<_LocalParticipant>()
 	const [roomList, setRoomList] = useState<Map<RoomType, RoomInfo>>(new Map())
+	console.log(roomList)
 
 	const roomListener = (room: Room, roomType: RoomType) => {
 		room.on(RoomEvent.ParticipantConnected, (p) => {
@@ -119,6 +130,17 @@ export default function MeetingProvider({
 				return updatedState
 			})
 		})
+
+		room.localParticipant.on(
+			ParticipantEvent.IsSpeakingChanged,
+			(speaking: boolean) => {
+				speaking
+					? startSpeechRecognition(async (e) => {
+							console.log(e)
+					  })
+					: stopSpeechRecognition()
+			}
+		)
 
 		const remoteParticipant = room.participants
 		setRoomList((prev) => {

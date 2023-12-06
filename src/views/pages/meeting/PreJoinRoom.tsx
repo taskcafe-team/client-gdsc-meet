@@ -28,10 +28,16 @@ export default function PreJoinRoom() {
 
 		await ParticipantApi.getParticipantAccessToken(meetingId, username)
 			.then(async ({ data }) => {
-				ParticipantApi.savePartATToSessionStore(meetingId, data.token)
-				setLocalParticipant({ ...data.participant, status: data.status })
+				console.log(data);
+				
+			 	await ParticipantApi.savePartATToSessionStore(meetingId, data.token)
+				await setLocalParticipant({ ...data.participant, status: data.status })
 			})
-			.catch(() => navigate('/'))
+			.catch((err) => {
+				console.log(err);
+				navigate('/')
+				
+			})
 			.finally(() => setPartLoading(false))
 	}
 
