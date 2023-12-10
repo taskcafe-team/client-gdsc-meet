@@ -5,6 +5,7 @@ export type MeetingTabControl =
 	| 'meeting_chat'
 	| 'participant_control'
 	| 'meeting_setting'
+	| 'summary_keyword'
 
 export type MeetingSideBarState = {
 	hidden: boolean

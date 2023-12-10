@@ -1,17 +1,24 @@
 import { CommonError, CommonState } from '../types';
 
 interface IKeyword {
-	sid: string;
+	endAt: Date;
+	startAt: Date;
 	keywords: string[];
 }
-interface IKeywordClient {
-	clientResult:string,
-}
-export interface KeywordDetailState extends IKeyword,IKeywordClient,CommonState {}
+  
+
+
+export interface KeywordDetailState extends CommonState {
+	value: IKeyword[];
+	Sid: string;
+	length: number;
+  }
 
 export interface KeywordFetch {
 	keyword: string;
   }
+
+
 
 
 

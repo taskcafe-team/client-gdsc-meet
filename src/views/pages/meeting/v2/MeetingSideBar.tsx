@@ -1,5 +1,16 @@
 import GlobalStyles from '@mui/joy/GlobalStyles'
-import { Stack, Sheet, IconButton, Box } from '@mui/joy'
+import {
+	Stack,
+	Sheet,
+	IconButton,
+	Box,
+	Card,
+	CardContent,
+	Typography,
+	CardActions,
+	Tooltip,
+	Chip,
+} from '@mui/joy'
 import MeetingSideBarProvider, {
 	useMeetingSideBar,
 } from './MeetingSideBarProvider'
@@ -12,7 +23,14 @@ import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded'
 import FirstPageRoundedIcon from '@mui/icons-material/FirstPageRounded'
-
+import SummaryTab from './meeting_control_tabs/SummaryTab'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred'
+import { CardHeader } from '@mui/material'
+import NotificationKeyWord from 'views/containers/meeting/components/NotificationKeyWord'
+import useIsMobile from 'hooks/useIsMobile'
 type IMeetingControlTabs = {
 	title: string
 	type: MeetingTabControl
@@ -26,6 +44,7 @@ function MeetingSideBar() {
 	if (!meetingRoom || !localParticipant)
 		throw new Error('MeetingSideBar is not available')
 	const { hidden, setHidden, currentTab, setCurrentTab } = useMeetingSideBar()
+	const isMobile = useIsMobile()
 
 	const handleClickTabIcon = (tab: MeetingTabControl) => {
 		return () => setCurrentTab(tab)
@@ -51,6 +70,12 @@ function MeetingSideBar() {
 				type: 'waiting_chat',
 				roles: [ParticipantRole.HOST],
 				RefComponent: WaitingChatOfHostTab,
+			},
+			{
+				title: 'Summary Keywords',
+				type: 'summary_keyword',
+				roles: [ParticipantRole.HOST],
+				RefComponent: SummaryTab,
 			},
 		]
 
@@ -142,6 +167,21 @@ function MeetingSideBar() {
 					})}
 				</Sheet>
 			</Stack>
+			<Box
+				sx={{
+					position: 'absolute',
+					top: isMobile ? 'auto' : 2,
+					bottom: isMobile ? 10 : 'auto',
+					right: -2,
+					zIndex: isMobile ? 999 : 9,
+					transform: 'translateX(+100%)',
+					padding: 1,
+					maxWidth: '350px',
+					minWidth: '350px',
+				}}
+			>
+				<NotificationKeyWord />
+			</Box>
 		</Stack>
 	)
 }

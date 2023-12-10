@@ -3,18 +3,45 @@ import { KeywordDetailState } from './keywordTypes'
 import { keywordConnectSocket, keywordDisconnectSocket, keywordFetch, keywordPost, keywordReset, keywordSendToSocket } from './keywordActions'
 import { CommonError } from 'contexts/types'
 
-interface IInitState extends KeywordDetailState{
-	lenght: 0,
+interface IInitialState extends KeywordDetailState{
+	clientResult :string;
 }
 
-const initialState: IInitState = {
-	sid: '',
-	clientResult: '',
-	keywords: [],
-	lenght: 0,
+const initialState: IInitialState = {
+	value: [
+		{
+			endAt: new Date(),
+			startAt: new Date(),
+			keywords: ["programming", "software", "web development", "IT", "coding"],
+		  },
+		  {
+			endAt: new Date(),
+			startAt: new Date(),
+			keywords: ["database", "SQL", "backend", "server", "API"],
+		  },
+		  {
+			endAt: new Date(),
+			startAt: new Date(),
+			keywords: ["frontend", "HTML", "CSS", "JavaScript", "framework"],
+		  },
+		  {
+			endAt: new Date(),
+			startAt: new Date(),
+			keywords: ["networking", "security", "protocols", "firewall", "cybersecurity"],
+		  },
+		  {
+			endAt: new Date(),
+			startAt: new Date(),
+			keywords: ["data science", "machine learning", "analytics", "statistics", "AI"],
+		  },
+	],
+	Sid: "",
+	length: 5,
 	loading: false,
 	error: undefined,
-}
+	clientResult:''
+  };
+  
 
 const keywordSlice = createSlice({
 	name: 'keyword',
@@ -23,7 +50,7 @@ const keywordSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(keywordReset, (state) => {
-				state.clientResult = ''
+				// state.clientResult = ''
 			})
 			.addCase(keywordFetch.pending, (state) => {
 				state.loading = true
@@ -31,7 +58,7 @@ const keywordSlice = createSlice({
 			})
 			.addCase(keywordFetch.fulfilled, (state, action) => {
 				state.loading = false
-				state.clientResult += `/n ${action.payload}`
+				
 			})
 			.addCase(keywordFetch.rejected, (state) => {
 				state.loading = false
@@ -73,7 +100,7 @@ const keywordSlice = createSlice({
 				// state.error = action.error?.message || 'Error sending data to the socket';
 			  })
 			 .addCase(keywordPost.fulfilled,(state, action)=>{
-				state.keywords = [...state.keywords,action.payload] 
+			
 			 });
 	},
 })

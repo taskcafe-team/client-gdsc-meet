@@ -18,6 +18,7 @@ import MeetingInfoModal from './MeetingInfoModal'
 import { CreateMeetingModal } from 'views/containers/home/CreateMeetingModal'
 import { MeetingApi } from 'api/http-rest'
 import WikiMediaApi from 'api/http-rest/mediawiki/mediawikiApi'
+import { noitificationKeywordFetch } from 'contexts/notificationKeyword/notificationKeywordAction'
 
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -40,19 +41,7 @@ export function ListMeeting() {
 	useLayoutEffect(() => {
 		if (isLogin) dispatch(meetingFetchMyMeetings())
 	}, [isLogin])
-    useEffect(()=>{
-		try {
-			const fetch = async()=>{
-				const data =  await WikiMediaApi.getPageInfo(8748)
-				console.log(data);
-				return data
-				
-			}
-			fetch()
-		} catch (error) {
-			
-		}
-	},[])
+	
 	const deleteSelected = () => {
 		setShowMeeting(null)
 		setFetching(true)
