@@ -7,6 +7,7 @@ import axios, {
 } from 'axios'
 import Api from '../api'
 import { WikiMediaSearchResult, WikiMediaSummaryResult } from './mediawikiType'
+import { ApiResponse } from '../apiResponses'
 
 interface SearchResult {
 	ns: number
@@ -41,53 +42,27 @@ const headers = {
 class WikiMediaApi extends Api {
 	static defaultEndpoint = '/w/api.php'
 	static summaryEndpoint = '/api/rest_v1/page/summary'
-	// static WikiMediaSearch = async (keyword: string): Promise<any> => {
-	// 	const params = {
-	// 		action: 'query',
-	// 		format: 'json',
-	// 		list: 'search',
-	// 		srlimit: 1,
-	// 		srsearch: keyword,
-	// 	}
-	// 	return await Api.get(this.defaultEndpoint, params, headers)
-	// }
-	// static getPageInfo = async (pageId: number): Promise<any> => {
-	// 	const params = {
-	// 		action: 'parse',
-	// 		format: 'json',
-	// 		pageid: pageId,
-	// 	}
-	// 	return await Api.get(WikiMediaApi.defaultEndpoint, params, headers)
-	// 	// Extract and return relevant information from the response
-	// }
-
-	// static getSummary = async (title) => {
-	// 	const url = `${this.summaryEndpoint}/${encodeURIComponent(title)}`
-	// 	return await Api.get(url, null, headers)
-	// }
 
 	static WikiMediaSearch = async (
 		keyword: string
-	): Promise<WikiMediaSearchResult> => {
-		const params = new URLSearchParams({
+	): Promise<ApiResponse<WikiMediaSearchResult>> => {
+		const params = {
 			action: 'query',
 			format: 'json',
 			list: 'search',
 			srlimit: '10',
 			srsearch: keyword,
-			origin:'*'
-		})
-		const url = `${headers.baseURL}${this.defaultEndpoint}?${params.toString()}`
-		return (await fetch(url)).json()
+			origin: '*',
+		}
+
+		return await Api.get(WikiMediaApi.defaultEndpoint, params, headers)
 	}
 
 	static getSummary = async (
 		title: string
-	): Promise<WikiMediaSummaryResult> => {
-		const url = `${headers.baseURL}${this.summaryEndpoint}/${encodeURIComponent(
-			title
-		)}`
-		return (await fetch(url)).json()
+	): Promise<ApiResponse<WikiMediaSummaryResult>> => {
+		const url = `${this.summaryEndpoint}/${encodeURIComponent(title)}`
+		return await Api.get(url, null, headers)
 	}
 
 	static getPageInfo = async (pageId: number): Promise<any> => {

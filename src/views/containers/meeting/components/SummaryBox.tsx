@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import { motion } from 'framer-motion'
 import { Chat, FavoriteBorder } from '@mui/icons-material'
 import {
 	ListItem,
@@ -32,6 +32,9 @@ import {
 	noitificationKeywordFetch,
 	noitificationKeywordOpen,
 } from 'contexts/notificationKeyword/notificationKeywordAction'
+import { Animate } from 'utils/mockAnimation'
+import { keywordFetch } from 'contexts/keywords'
+
 interface ISummaryBox {
 	title: string
 }
@@ -40,14 +43,17 @@ export const KeywordFlag: React.FC<{
 	title: string
 	content: string
 	onClick?: () => void
-}> = ({ active, content, title, ...rest }) => {
+}> = React.memo(({ active, content, title, ...rest }) => {
 	return (
-		<ListItem {...rest} sx={{
-			padding:1
-		}}>
+		<ListItem
+			{...rest}
+			sx={{
+				padding: 1,
+			}}
+		>
 			<Tooltip title={content} placement="right">
 				<Avatar
-					size='sm'
+					size="sm"
 					sx={{
 						cursor: 'pointer',
 						color: active ? 'white' : '',
@@ -59,11 +65,11 @@ export const KeywordFlag: React.FC<{
 			</Tooltip>
 		</ListItem>
 	)
-}
+})
 
 const Keyword: React.FC<{
 	title: string
-}> = ({ title, ...rest }) => {
+}> = React.memo(({ title, ...rest }) => {
 	const dispatch = useAppDispatch()
 	const [flag, setFlag] = useState<boolean>(false)
 	const handleFetchSumary = useCallback(async () => {
@@ -77,30 +83,34 @@ const Keyword: React.FC<{
 		await setFlag(true)
 	}, [])
 	return (
-		<ListItem
-			{...rest}
-			onClick={handleFetchSumary}
-		>
+		<ListItem {...rest} onClick={handleFetchSumary}>
 			<Tooltip
 				placement="top-end"
 				variant="outlined"
 				arrow
-				title={flag ? 'fetch complete' : 'click fetch now'}
+				title={
+					flag ? (
+						<Chip color="success">Complese</Chip>
+					) : (
+						<Chip color="neutral">Cick view now...</Chip>
+					)
+				}
 			>
 				<ListItemButton sx={{ padding: '4px' }} variant="plain" color="neutral">
 					<Stack>
-						<Box color="neutral">{title}</Box>
+						<Box color={flag ? 'ActiveCaption' : 'GrayText'}>{title}</Box>
 					</Stack>
 				</ListItemButton>
 			</Tooltip>
 		</ListItem>
 	)
-}
+})
 
 const SummaryBox = ({ title }: ISummaryBox) => {
 	const [selectedItem, setSelectedItem] = useState<number | null>(0)
 	const leftSheetRef = useRef<HTMLDivElement | null>(null)
 	const mapKeyworks = useAppSelector((s) => s.keyword.value)
+	const dispatch = useAppDispatch()
 
 	const handleAvatarClick = (index: number) => {
 		setSelectedItem(index)
@@ -116,6 +126,7 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 
 	return (
 		<Stack height={1} width={1} overflow="hidden" spacing={1}>
+			{/* <Button onClick={handleTest}>herhehe</Button> */}
 			<Stack direction="row" spacing={1} alignItems="center">
 				<IconButton size="sm" variant="outlined">
 					<ChromeReaderModeIcon />
@@ -126,7 +137,6 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 				<Grid xs={9}>
 					<Sheet
 						sx={{
-						
 							maxHeight: '89vh',
 							overflowY: 'auto',
 							'&::-webkit-scrollbar': { display: 'none' },
@@ -136,41 +146,46 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 						{mapKeyworks &&
 							mapKeyworks.map((item, index) => {
 								return (
-									<Card
-										key={index}
-										sx={{
-											marginBottom: '4px',
-										}}
+									<motion.div
+										{...Animate.getAnimationValues('opacity', 200)}
+										key={`${item.startAt}__${index}__${item.keywords}`}
 									>
-										<ListItem nested>
-											<ListSubheader
-												sx={{
-													padding: '8px',
-													borderRadius: '2px',
-													color: selectedItem == index ? 'white' : '',
-													backgroundColor:
-														selectedItem == index ? '#3498db' : '',
-													transition: 'all',
-													fontWeight: 'bold',
-												}}
-											>
-												{item.startAt
-													? moment(new Date(item.startAt)).format('HH:mm:ss')
-													: ''}
-											</ListSubheader>
-											<List>
-												{item.keywords &&
-													item.keywords.map((value) => {
-														return (
-															<Keyword
-																title={value.toString()}
-																key={`${value}_${index}`}
-															/>
-														)
-													})}
-											</List>
-										</ListItem>
-									</Card>
+										<Card
+											key={index}
+											sx={{
+												marginBottom: '4px',
+											}}
+										>
+											<ListItem nested>
+												<ListSubheader
+													sx={{
+														padding: '8px',
+														borderRadius: '2px',
+														color: selectedItem == index ? 'white' : '',
+														backgroundColor:
+															selectedItem == index ? '#3498db' : '',
+														transition: 'all',
+														fontWeight: 'bold',
+													}}
+												>
+													{item.startAt
+														? moment(new Date(item.startAt)).format('HH:mm:ss')
+														: ''}
+												</ListSubheader>
+												<List>
+													{item.keywords &&
+														item.keywords.map((value) => {
+															return (
+																<Keyword
+																	title={value.toString()}
+																	key={`${value}_${index}`}
+																/>
+															)
+														})}
+												</List>
+											</ListItem>
+										</Card>
+									</motion.div>
 								)
 							})}
 					</Sheet>
@@ -187,12 +202,11 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 					>
 						<List
 							sx={{
-								display:'flex',
+								display: 'flex',
 								flexDirection: 'column',
 								alignItems: 'center',
 								paddingBottom: '40px',
 							}}
-							
 						>
 							{mapKeyworks &&
 								mapKeyworks.map((item, index) => {

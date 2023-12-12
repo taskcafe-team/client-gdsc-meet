@@ -15,26 +15,12 @@ import {
 	POST_KEYWORD,
 } from './keywordConstants'
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk'
-import { KeywordFetch } from './keywordTypes'
+import { IKeyword, KeywordFetch } from './keywordTypes'
 import { CommonError } from 'contexts/types'
 
 export const keywordReset = createAction(KEYWORD_RESET)
-export const keywordFetch = createAsyncThunk<string, KeywordFetch>(
-	KEYWORD_FETCHING,
-	async (request, { rejectWithValue }) => {
-		const { keyword } = request
+export const keywordFetch = createAction<IKeyword>(KEYWORD_FETCHING);
 
-		if (keyword === '') {
-			const commonError: CommonError = {
-				code: 400,
-				message: 'Can not find value',
-			}
-			return rejectWithValue(commonError)
-		}
-
-		return keyword
-	}
-)
 export const keywordConnectSocket = createAsyncThunk<boolean, void>(
 	KEYWORD_CONNECT_SOCKET,
 	async () => {

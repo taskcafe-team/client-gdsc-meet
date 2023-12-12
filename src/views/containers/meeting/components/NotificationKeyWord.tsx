@@ -135,4 +135,4 @@ const NotificationKeyWord = (props) => {
 
 NotificationKeyWord.propTypes = {}
 
-export default NotificationKeyWord
+export default React.memo(NotificationKeyWord)
