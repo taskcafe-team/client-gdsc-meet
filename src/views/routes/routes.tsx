@@ -8,14 +8,35 @@ import { userFetchMe } from 'contexts/user'
 
 import DefaultLayout from 'views/layouts/DefaultLayout'
 import MeetingLayout from 'views/layouts/MeetingLayout'
-import { getLocalStorageItem } from 'utils/localStorageUtils'
-
+import PublicLayout from 'views/layouts/PublicLayout'
+import { isMobile } from 'utils/mobileDetection'
+import useIsMobile from 'hooks/useIsMobile'
+const ForgotpasswordPage = lazy(
+	() => import('views/desktop/pages/forgotpassword/ForgotpasswordPage')
+)
+const ResetPasswordPage = lazy(
+	() => import('views/desktop/pages/resetPassword/ResetPasswordPage')
+)
 const ConfirmPage = lazy(() => import('views/pages/auth/ConfirmPage'))
+const SignupPage = lazy(() => import('views/pages/auth/SignupPage'))
 const HomePage = lazy(() => import('views/pages/home/HomePage'))
 const LoginPage = lazy(() => import('views/pages/auth/LoginPage_v2'))
-const SignupPage = lazy(() => import('views/pages/auth/SignupPage_v2'))
 const MeetingPage = lazy(() => import('views/pages/meeting/MeetingPage'))
-const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage_v2'))
+const ProfilePage = lazy(() => import('views/pages/profile/ProfilePage'))
+const HomePage_v2 = lazy(() => import('views/desktop/pages/home/HomePage'))
+const SignUpPage_v2 = lazy(
+	() => import('views/desktop/pages/signUp/SignupPage')
+)
+const ProfilePage_v2 = lazy(
+	() => import('views/desktop/pages/profile/ProfilePage')
+)
+const DocumentPage_v2 = lazy(
+	() => import('views/desktop/pages/document/Document')
+)
+const ConfirmPage_v2 = lazy(
+	() => import('views/desktop/pages/confirm/ConfirmPage')
+)
+const LoginPage_v2 = lazy(() => import('views/desktop/pages/Login/LoginPage'))
 
 export const Loading = () => (
 	<div
@@ -47,74 +68,123 @@ export const LayoutLoading = () => (
 
 const getDefaultLayout = (e: ReactNode) => <DefaultLayout>{e}</DefaultLayout>
 const getMeetingLayout = (e: ReactNode) => <MeetingLayout>{e}</MeetingLayout>
+const getDynamicRouter = (
+	deskTop: ReactNode,
+	mobile: ReactNode,
+	isMobile: boolean
+) => <React.Fragment>{isMobile ? mobile : deskTop}</React.Fragment>
 
+export const getPublicLayout = (
+	children: ReactNode,
+	type: 'full' | 'wrapper' = 'full',
+	hidden: 'hidden' | 'full' = 'hidden'
+) => (
+	<PublicLayout type={type} hidden={hidden}>
+		{children}
+	</PublicLayout>
+)
 type CustomRouteProps = RouteProps
 
-const routes: CustomRouteProps[] = [
-	{
-		path: RouterPath.SINGUP_URL,
-		element: <SignupPage />,
-		loader: undefined,
-	},
-	{
-		path: RouterPath.LOGIN_URL,
-		element: <LoginPage />,
-		loader: undefined,
-	},
-	{
-		path: RouterPath.BASE_URL,
-		element: getDefaultLayout(<HomePage />),
-		loader: undefined,
-	},
-]
-
-const privateRoutes: CustomRouteProps[] = [
-	{
-		path: RouterPath.PROFILE_URL,
-		element: getDefaultLayout(<ProfilePage />),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.MEETING_URL,
-		element: getMeetingLayout(<MeetingPage />),
-		loader: undefined,
-	},
-	{
-		path: RouterPath.CONFIRM_URL,
-		element: getDefaultLayout(<ConfirmPage />),
-		loader: undefined,
-	},
-]
-
-export const getRoutes = (isLogin: boolean) => {
-	const r = new Array<CustomRouteProps>()
-	r.push(...routes)
-	if (isLogin) r.push(...privateRoutes)
-	return r.map((p, i) => <Route key={i} {...p} />)
-}
-
-export default function Router() {
-	const dispatch = useAppDispatch()
+export const ManageView = () => {
+	const isMobile = useIsMobile()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
+	const routes: CustomRouteProps[] = useMemo(
+		() => [
+			{
+				path: RouterPath.SINGUP_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<SignUpPage_v2 />, 'wrapper'),
+					getDefaultLayout(<SignupPage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.LOGIN_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<LoginPage_v2 />, 'full'),
+					getDefaultLayout(<LoginPage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.FORGOT_PASSWORD_URL,
+				element: getPublicLayout(<ForgotpasswordPage />, 'wrapper'),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.RESET_PASSWORD_URL,
+				element: getPublicLayout(<ResetPasswordPage />, 'wrapper'),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.BASE_URL,
+				element: getDynamicRouter(
+					getPublicLayout(<HomePage_v2 />, 'wrapper'),
+					getDefaultLayout(<HomePage />),
+					isMobile
+				),
+				loader: undefined,
+			},
+		],
+		[isMobile]
+	)
 
-	const [loading, setLoading] = useState(true)
+	const privateRoutes: CustomRouteProps[] = useMemo(
+		() => [
+			{
+				path: RouterPath.PROFILE_URL,
+				element: getPublicLayout(<ProfilePage_v2 />, 'full'),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.MEETING_URL,
+				element: getMeetingLayout(<MeetingPage />),
+				loader: undefined,
+			},
+			{
+				path: RouterPath.DOCUMENT_URL,
+				element: <DocumentPage_v2 />,
+				loader: undefined,
+			},
+			{
+				path: RouterPath.CONFIRM_URL,
+				element: getPublicLayout(<ConfirmPage_v2 />, 'full'),
+				loader: undefined,
+			},
+		],
+		[]
+	)
 
-	const getMe = useCallback(async () => {
-		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
-		const token = getLocalStorageItem(key)
-		if (!token) return setLoading(false)
-		dispatch(userFetchMe()).finally(() => setLoading(false))
-	}, [dispatch])
-
-	useEffect(() => {
-		getMe()
-	}, [getMe, isLogin])
-
-	if (loading) return <LayoutLoading />
+	const getRoutes = (isLogin: boolean) => {
+		const r = new Array<CustomRouteProps>()
+		r.push(...routes)
+		if (isLogin) r.push(...privateRoutes)
+		return r.map((p, i) => <Route key={i} {...p} />)
+	}
 	return (
 		<Routes>
 			{getRoutes(isLogin)}
 			<Route path="*" element={<Navigate to="/" />} />
 		</Routes>
 	)
+}
+export default function Router() {
+	const dispatch = useAppDispatch()
+
+	const [loading, setLoading] = useState(true)
+
+	const getMe = useCallback(async () => {
+		const token = localStorage.getItem('access_token')
+		if (!token) return setLoading(false)
+		dispatch(userFetchMe()).finally(() => setLoading(false))
+	}, [dispatch])
+
+	useEffect(() => {
+		getMe()
+	}, [getMe])
+
+	if (loading) return <LayoutLoading />
+	return <ManageView />
 }

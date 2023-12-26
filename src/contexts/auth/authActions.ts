@@ -12,6 +12,7 @@ import {
 	setLocalStorageItem,
 } from 'utils/localStorageUtils'
 import AuthApi from 'api/http-rest/auth/authApi'
+import { CommonError } from 'contexts/types'
 
 /*----------- Action -----------*/
 export const authLogged = createAction(AUTH_LOGGED)
@@ -24,16 +25,24 @@ export const authLogout = createAsyncThunk(AUTH_LOGOUT, async () => {
 
 export const authFetchEmailLogin = createAsyncThunk(
 	AUTH_FETCH_EMAIL_LOGIN,
-	async (request: { email: string; password: string }, { dispatch }) => {
-		const res = await AuthApi.loginWithEmail(request)
-		const { success } = res.metadata
-		const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
-		if (success) {
-			const { accessToken } = res.data
-			setLocalStorageItem(key, accessToken)
-			dispatch(authLogged())
-		} else removeLocalStorageItem(key)
-		return res
+	async (
+		request: { email: string; password: string },
+		{ dispatch, rejectWithValue }
+	) => {
+		return await AuthApi.loginWithEmail(request)
+			.then((res) => {
+				const { success } = res?.metadata
+				const key = import.meta.env.API_KEY_STORE_ACCESS_TOKEN
+				if (success) {
+					const { accessToken } = res?.data
+					setLocalStorageItem(key, accessToken)
+					dispatch(authLogged())
+				} else removeLocalStorageItem(key)
+				return res
+			})
+			.catch((error) => {
+				return error?.response.data
+			})
 	}
 )
 

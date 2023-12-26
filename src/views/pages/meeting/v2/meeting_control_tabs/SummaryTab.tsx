@@ -13,9 +13,9 @@ const SummaryKeywords = () => {
 	return <SummaryBox title='Summary Keywords' />
 }
 const SummaryKeywordsIcon = () => {
-	const { unreadWaitingMessges } = useMeetingSideBar()
+	// const { unreadWaitingMessges } = useMeetingSideBar()
 	return (
-		<Badge badgeContent={unreadWaitingMessges} color="primary">
+		<Badge badgeContent={0} color="primary">
 			<ChromeReaderModeIcon />
 		</Badge>
 	)

@@ -1,7 +1,7 @@
 	import * as sdk from 'microsoft-cognitiveservices-speech-sdk'
 
-	const SPEECH_KEY: string = '3ee8ac5bef9c4ba181422b923dce6fa3'
-	const SPEECH_REGION: string = 'southeastasia'
+	const SPEECH_KEY: string = '8413587b5f7a42dcba46239ed25e24ac'
+	const SPEECH_REGION: string = 'eastasia'
 	const speechConfig = sdk.SpeechConfig.fromSubscription(
 		SPEECH_KEY,
 		SPEECH_REGION

@@ -1,6 +1,9 @@
 import {
 	LocalParticipant,
 	ParticipantEvent,
+	RemoteParticipant,
+	RemoteTrack,
+	RemoteTrackPublication,
 	Room,
 	RoomEvent,
 	VideoPresets,
@@ -16,6 +19,9 @@ import {
 	startSpeechRecognition,
 	stopSpeechRecognition,
 } from 'utils/microsoft-cognitiveservices-speech'
+import { useAppDispatch } from 'contexts/hooks'
+import { noitificationRemoveCache } from 'contexts/notificationKeyword/notificationKeywordAction'
+import { useSpeakingParticipants } from '@livekit/components-react'
 
 export type ParticipantInfo = ParticipantUsecaseDto
 type MeetingStatus = 'connected_yet' | 'scheduled' | 'inProgress' | 'completed'
@@ -65,11 +71,11 @@ export default function MeetingProvider({
 	meetingId,
 }: MeetingProviderProps) {
 	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
 	const [meetingStatus, setMeetingStatus] =
 		useState<MeetingStatus>('connected_yet')
 	const [localParticipant, setLocalParticipant] = useState<_LocalParticipant>()
 	const [roomList, setRoomList] = useState<Map<RoomType, RoomInfo>>(new Map())
-	console.log(roomList)
 
 	const roomListener = (room: Room, roomType: RoomType) => {
 		room.on(RoomEvent.ParticipantConnected, (p) => {
@@ -131,6 +137,15 @@ export default function MeetingProvider({
 			})
 		})
 
+		room.on(RoomEvent.TrackUnsubscribed,()=>{
+			console.log("local track published here");	
+		})
+		
+		room.on(ParticipantEvent.TrackUnmuted,(p)=>{
+			console.log("track public");
+			
+		})
+		
 		room.localParticipant.on(
 			ParticipantEvent.IsSpeakingChanged,
 			(speaking: boolean) => {
@@ -141,6 +156,22 @@ export default function MeetingProvider({
 					: stopSpeechRecognition()
 			}
 		)
+		// room.on(RoomEvent.ParticipantConnected, (participant) => {
+		// 	participant.on(ParticipantEvent.TrackSubscribed, (track) => {
+		// 		if (track.kind === 'audio') {
+		// 			console.log(
+		// 				`Participant ${participant.identity} has turned on their mic`
+		// 			)
+		// 		}
+		// 	})
+		// 	participant.on(ParticipantEvent.TrackUnsubscribed, (track) => {
+		// 		if (track.kind === 'audio') {
+		// 			console.log(
+		// 				`Participant ${participant.identity} has turned off their mic`
+		// 			)
+		// 		}
+		// 	})
+		// })
 
 		const remoteParticipant = room.participants
 		setRoomList((prev) => {
@@ -182,6 +213,7 @@ export default function MeetingProvider({
 			roomConnected.state = 'disconnected'
 			return updatedState
 		})
+		dispatch(noitificationRemoveCache())
 	}
 
 	const addRoom = async (roomId: string, roomType: RoomType) => {

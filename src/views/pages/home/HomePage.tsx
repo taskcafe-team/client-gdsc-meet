@@ -17,8 +17,6 @@ import RouterPath from 'views/routes/routesContants'
 import MeetingInfoModal from './MeetingInfoModal'
 import { CreateMeetingModal } from 'views/containers/home/CreateMeetingModal'
 import { MeetingApi } from 'api/http-rest'
-import WikiMediaApi from 'api/http-rest/mediawiki/mediawikiApi'
-import { noitificationKeywordFetch } from 'contexts/notificationKeyword/notificationKeywordAction'
 
 export function ListMeeting() {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
@@ -157,7 +155,7 @@ export default function HomePage() {
 	)
 
 	return (
-		<Box sx={{ my: 2, mx: 2 }}>
+		<Box sx={{ my: 2, mx: 2,mt:'5vh' }}>
 			{openCreateMeetingForm && (
 				<CreateMeetingModal
 					open={openCreateMeetingForm}
@@ -167,17 +165,17 @@ export default function HomePage() {
 			<Box maxWidth="sm" margin="auto">
 				<Box textAlign="center">
 					<img
-						style={{ display: 'inline-block' }}
+						style={{ display: 'inline-block',border:'none' }}
 						alt="Oline Meeting Images"
 						width="300px"
 						src={online_meeting_illustration}
 					/>
-					<Typography level="h2" sx={{ my: 2 }}>
-						Cuộc họp video chất lượng. Giờ đây miễn phí cho tất cả mọi người.
-					</Typography>
-					<Typography sx={{ mb: 4 }}>
-						GDSC Meet - dịch vụ tổ chức cuộc họp kinh doanh với độ bảo mật cao.
-					</Typography>
+					<h2 className='text-32'>
+					<span className='text-primary font-bold'>Quality</span> video meetings. Now <span className='text-primary font-bold'>free</span> for everyone.
+					</h2>
+					<p className='p-2'>
+					GDSC Meet - business meeting organization service with high security.
+					</p>
 				</Box>
 				<Box maxWidth="sm">
 					<Box sx={{ textAlign: 'center', mt: 3 }}>

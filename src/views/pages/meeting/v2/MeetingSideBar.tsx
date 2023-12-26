@@ -74,7 +74,7 @@ function MeetingSideBar() {
 			{
 				title: 'Summary Keywords',
 				type: 'summary_keyword',
-				roles: [ParticipantRole.HOST],
+				roles: [ParticipantRole.HOST, ParticipantRole.PARTICIPANT],
 				RefComponent: SummaryTab,
 			},
 		]
@@ -141,6 +141,10 @@ function MeetingSideBar() {
 							<IconButton
 								key={i}
 								variant={_hidden ? 'soft' : 'solid'}
+								sx={{
+									backgroundColor: _hidden ? '' : '#2870EA',
+									transition: 'all 0.2s',
+								}}
 								onClick={changeTab}
 								children={<item.RefComponent.Icon />}
 							/>

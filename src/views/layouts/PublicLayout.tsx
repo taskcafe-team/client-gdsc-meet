@@ -1,9 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
+import Header from 'components/Header'
 import { styled } from 'styled-components'
 import { Box } from '@mui/material'
-import Header from './Header_v2'
 
-const LayoutWapper = styled(Box)(
+const LayoutWrapper = styled(Box)(
 	() => `
     display: flex;
     flex-direction: column;
@@ -11,21 +11,24 @@ const LayoutWapper = styled(Box)(
   `
 )
 
-type PublicLayoutProps = { children?: ReactNode; type?: 'full' | 'wrapper' }
+export type PublicLayoutProps = {
+	children?: ReactNode
+	type?: 'full' | 'wrapper'
+	hidden?: 'hidden' | 'full'
+}
 
-function PublicLayout({ children, type }: PublicLayoutProps) {
+function PublicLayout({ children, type, hidden }: PublicLayoutProps) {
+	const typeHidden = useMemo(
+		() => (hidden === 'full' ? 'overflow-auto' : 'overflow-hidden'),
+		[hidden]
+	)
+
 	return (
-		<LayoutWapper className="max-h-[100vh] overflow-hidden max-lg:overflow-auto">
-			<Header />
-			<Box flex={1} display="flex" alignItems="stretch">
-				<Box flex={1}>
-					<Box width="1" height="1">
-						{children}
-					</Box>
-				</Box>
-			</Box>
-			{/* <Notification/> */}
-		</LayoutWapper>
+		<div className={`max-h-[100vh] ${typeHidden} max-2xl:overflow-auto`}>
+			<Header type={type} />
+			<div>{children}</div>
+		</div>
 	)
 }
+
 export default PublicLayout

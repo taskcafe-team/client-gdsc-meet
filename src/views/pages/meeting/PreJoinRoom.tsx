@@ -1,6 +1,6 @@
 import '@livekit/components-styles'
 import { LocalUserChoices, PreJoin } from '@livekit/components-react'
-import { Sheet, Stack } from '@mui/joy'
+import { Box, Sheet, Stack } from '@mui/joy'
 import { useAppSelector } from 'contexts/hooks'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { generateName } from 'utils/personalNameUtils'
@@ -8,6 +8,7 @@ import ParticipantApi from 'api/http-rest/participant/participantApi'
 import WaitingRoom from './WaitingRoom'
 import { MeetingApi } from 'api/http-rest'
 import { RoomType } from 'api/webrtc/webRTCTypes'
+import Header from 'components/Header'
 
 export default function PreJoinRoom() {
 	const navigate = useNavigate()
@@ -42,13 +43,11 @@ export default function PreJoinRoom() {
 	}
 
 	return (
-		<Stack
-			width={1}
-			height={1}
-			p={1}
-			justifyContent="center"
-			alignItems="center"
+		<Box
+			
+		className="bg-gray-80 min-h-screen flex items-center justify-center"			
 		>
+			<Header/>
 			<Stack
 				borderRadius="md"
 				overflow="hidden"
@@ -77,6 +76,6 @@ export default function PreJoinRoom() {
 				</Sheet>
 				{localParticipant && <WaitingRoom />}
 			</Stack>
-		</Stack>
+		</Box>
 	)
 }

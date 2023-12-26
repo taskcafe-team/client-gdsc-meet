@@ -13,13 +13,16 @@ import Avatar from '@mui/joy/Avatar'
 import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import RouterPath from 'views/routes/routesContants'
 import { authLogout } from 'contexts/auth'
+import Logo from 'assets/static/images/icons/meet.svg'
 import GroupsIcon from '@mui/icons-material/Groups'
+import { useTheme } from 'next-themes'
 
 export default function Header() {
 	const dispatch = useAppDispatch()
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const user = useAppSelector((s) => s.user)
-
+	const [triggerToggle, setTriggerToggle] = useState(false)
+	const { theme } = useTheme()
 	const fullname = useMemo(() => {
 		const f = user.firstName ?? ''
 		const l = user.lastName ?? ''
@@ -35,10 +38,15 @@ export default function Header() {
 		if (setting === 'profile') navigate(`/${RouterPath.PROFILE_URL}`)
 	}
 
+	console.log(isLogin);
+	console.log(user);
+	
+	
 	return (
 		<Box
 			mx="auto"
 			maxWidth="lg"
+			className=""
 			sx={{
 				display: 'flex',
 				flexDirection: 'row',
@@ -61,15 +69,24 @@ export default function Header() {
 					gap: 1.5,
 				}}
 			>
-				<IconButton onClick={() => navigate('/')} size="sm" variant="soft">
-					<GroupsIcon />
-				</IconButton>
+				<Box onClick={() => navigate('/')}>
+					<img
+						src={Logo}
+						alt="DTUMeet"
+						className="w-[35px] h-[35px] object-fill  max-lg:w-[45px] max-lg:h-[45px] "
+					/>
+				</Box>
 				<Typography component="h1" fontWeight="xl">
 					GDSC MEET
 				</Typography>
 			</Box>
 
-			<Box sx={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
+			<Box
+				sx={{
+					display: 'flex',
+					flexDirection: 'row',
+				}}
+			>
 				{!isLogin ? (
 					<Button variant="outlined" onClick={handleLoginClick}>
 						Login
@@ -82,7 +99,7 @@ export default function Header() {
 							sx={{
 								borderRadius: 40,
 								gap: 1,
-								display: { xs: 'none', sm: 'flex' },
+								display: 'flex',
 								alignItems: 'center',
 							}}
 						>

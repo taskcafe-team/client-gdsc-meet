@@ -57,7 +57,8 @@ export const KeywordFlag: React.FC<{
 					sx={{
 						cursor: 'pointer',
 						color: active ? 'white' : '',
-						backgroundColor: active ? '#3498db' : '',
+						backgroundColor: active ? '#2870EA' : '',
+						transition: 'all 0.2s ',
 					}}
 				>
 					{title}
@@ -80,7 +81,7 @@ const Keyword: React.FC<{
 				keyword: title,
 			})
 		)
-		await setFlag(true)
+		setFlag(true)
 	}, [])
 	return (
 		<ListItem {...rest} onClick={handleFetchSumary}>
@@ -126,7 +127,6 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 
 	return (
 		<Stack height={1} width={1} overflow="hidden" spacing={1}>
-			{/* <Button onClick={handleTest}>herhehe</Button> */}
 			<Stack direction="row" spacing={1} alignItems="center">
 				<IconButton size="sm" variant="outlined">
 					<ChromeReaderModeIcon />
@@ -163,8 +163,8 @@ const SummaryBox = ({ title }: ISummaryBox) => {
 														borderRadius: '2px',
 														color: selectedItem == index ? 'white' : '',
 														backgroundColor:
-															selectedItem == index ? '#3498db' : '',
-														transition: 'all',
+															selectedItem == index ? '#2870EA' : '',
+														transition: 'all 0.2s ',
 														fontWeight: 'bold',
 													}}
 												>

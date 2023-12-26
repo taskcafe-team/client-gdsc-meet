@@ -43,6 +43,9 @@ module.exports = async (env, arg) => {
 				http: require.resolve('stream-http'),
 				buffer: require.resolve('buffer/'),
 				path: require.resolve('path-browserify'),
+				stream: require.resolve("stream-browserify"),
+				querystring: require.resolve("querystring-es3"),
+				net: require.resolve("net-browserify")
 			},
 			preferRelative: true,
 			alias: {

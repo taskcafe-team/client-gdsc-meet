@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit'
 import {
 	CACHE_KEYWORDS,
+	CACHE_REMOVE,
 	FETCH_NOTIFICATION_KEYWORD,
 	NOTIFICATION_KEYWORD_CLOSE,
 	NOTIFICATION_KEYWORD_LOADING,
@@ -21,6 +22,8 @@ import WikiMediaApi from 'api/http-rest/mediawiki/mediawikiApi'
 import { CommonError } from 'contexts/types'
 import { getSessionStorage, setSessionStorage } from 'utils/sessionStorageUtils'
 import { WikiMediaSummaryResult } from 'api/http-rest/mediawiki/mediawikiType'
+import GoogleAiApi from 'api/http-rest/GoogleAi/GoogleAiApi'
+import GoogleAiPrompt from 'api/http-rest/GoogleAi/GoogleAiPrompt'
 
 export const noitificationKeywordLoading = createAction(
 	NOTIFICATION_KEYWORD_LOADING
@@ -35,6 +38,7 @@ export const noitificationKeywordClose = createAction(
 export const noitificationKeywordvisible = createAction(
 	NOTIFICATION_KEYWORD_VISIBLE
 )
+
 export const noitificationKeywordFetch = createAsyncThunk<
 	INotificationKeyword,
 	noitificationKeywordFetchDTO
@@ -47,11 +51,14 @@ export const noitificationKeywordFetch = createAsyncThunk<
 		try {
 			const { keyword } = request
 			// Check cache
-			
+			console.log(request)
+
 			const fetchCache: WikiMediaSummaryResult[] | null | unknown =
 				await getSessionStorage(CACHE_KEYWORDS)
+				console.log("fetch cache:",fetchCache);
+				
 			if (fetchCache && Array.isArray(fetchCache)) {
-				const cachedData = fetchCache.find((item) => item.keyword === keyword)
+				const cachedData = fetchCache.find((item) => item.title === keyword)
 				if (cachedData) {
 					return {
 						title: cachedData.title,
@@ -59,13 +66,23 @@ export const noitificationKeywordFetch = createAsyncThunk<
 					} as INotificationKeyword
 				}
 			}
-			const SearchWiki = await WikiMediaApi.WikiMediaSearch(`${keyword}`)
-			const FetchSummary = await WikiMediaApi.getSummary(
-				SearchWiki.query.search[0].title || ''
-			)
+			console.log(keyword)
 
-			const { title, extract } = FetchSummary
+			const FetchSummary = await GoogleAiApi.generateGemini({
+				prompt: GoogleAiPrompt.getSummaryKeyword(`${keyword}`),
+			})
+			console.log(FetchSummary)
+			console.log(typeof(FetchSummary));
+			
 
+			// const SearchWiki = await WikiMediaApi.WikiMediaSearch(`${keyword}`)
+			// const FetchSummary = await WikiMediaApi.getSummary(
+			// 	SearchWiki.query.search[0].title || ''
+			// )
+
+			// const { title, extract } = FetchSummary
+			const title = keyword
+			const extract = FetchSummary
 			if (!title || !extract) {
 				throw new Error('Invalid response') // Throw an error if the response is invalid
 			}
@@ -74,8 +91,9 @@ export const noitificationKeywordFetch = createAsyncThunk<
 			const updatedCache: WikiMediaSummaryResult[] = [
 				...(fetchCache ?? []),
 				{
-					...FetchSummary,
-					keyword: keyword,
+					title: keyword,
+					extract:FetchSummary
+					
 				},
 			]
 			setSessionStorage(CACHE_KEYWORDS, updatedCache)
@@ -90,3 +108,5 @@ export const noitificationKeywordFetch = createAsyncThunk<
 		}
 	}
 )
+
+export const noitificationRemoveCache = createAction(CACHE_REMOVE)

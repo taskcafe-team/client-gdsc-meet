@@ -2,44 +2,51 @@ import { Box, Stack } from '@mui/joy'
 import React from 'react'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { RoomType } from 'api/webrtc/webRTCTypes'
-import { LiveKitRoom, VideoConference } from '@livekit/components-react'
+import {
+	LiveKitRoom,
+	VideoConference,
+	useTracks,
+	useIsMuted,
+	useSpeakingParticipants,
+} from '@livekit/components-react'
 import { Loading } from 'views/routes/routes'
 import { RoomApi } from 'api/http-rest/room/roomApi'
 import { ParticipantRole } from 'api/http-rest/participant/participantDtos'
+import { Track } from 'livekit-client'
+import {
+	getTrackReferenceId,
+	isLocal,
+	isMobileBrowser,
+} from '@livekit/components-core'
 
 const MeetingSidebar = lazy(() => import('./v2/MeetingSideBar'))
 
 export default function MeetingRoom() {
 	const navigate = useNavigate()
+
 	const { localParticipant, meetingId, roomList } = useMeeting()
 	const meetingRoom = roomList.get(RoomType.MEETING)
 	const waitingRoom = roomList.get(RoomType.WAITING)
 	if (!meetingRoom || !waitingRoom) throw new Error('MeetingRoom error')
 	if (!localParticipant) throw new Error('Local participant is null')
+	//
 
 	const connectRoom = () => {
 		//Connect meeting room
 		RoomApi.getAccessToken(meetingId, meetingRoom.roomId)
 			.then((res) => meetingRoom.connect(res.data.token))
 			.catch(() => navigate('/'))
-
-		//Connect waiting room
-		// RoomApi.getAccessToken(meetingId, waitingRoom.roomId)
-		// 	.then((res) => meetingRoom.connect(res.data.token))
-		// 	.catch(() => navigate('/'))
 	}
 
 	useEffect(() => {
 		connectRoom()
 		return () => {
 			meetingRoom.disconnect()
-			// waitingRoom.disconnect()
 		}
 	}, [])
 
 	if (
 		meetingRoom.state === 'disconnected'
-		// waitingRoom.state === 'disconnected'
 	)
 		return <Loading />
 	return (

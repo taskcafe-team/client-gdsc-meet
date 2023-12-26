@@ -6,7 +6,10 @@ import {
 	noitificationKeywordLoading,
 	noitificationKeywordOpen,
 	noitificationKeywordvisible,
+	noitificationRemoveCache,
 } from './notificationKeywordAction'
+import { removeSessionStorage } from 'utils/sessionStorageUtils'
+import { CACHE_KEYWORDS } from './notificationKeywordConstants'
 
 const initialState: INotificationKeywordState = {
 	extract: '',
@@ -42,6 +45,9 @@ const noitificationKeyword = createSlice({
 			})
 			.addCase(noitificationKeywordFetch.pending, (state, action) => {
 				state.loading = true
+			})
+			.addCase(noitificationRemoveCache,()=>{
+				removeSessionStorage(CACHE_KEYWORDS)
 			})
 	},
 })

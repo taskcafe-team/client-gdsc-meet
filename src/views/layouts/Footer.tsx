@@ -17,24 +17,12 @@ function Copyright() {
 
 export default function Footer() {
 	return (
-		<Box
-			component="footer"
-			sx={{
-				py: 3,
-				px: 2,
-				mt: 'auto',
-				backgroundColor: (theme) =>
-					theme.palette.mode === 'light'
-						? theme.palette.grey[200]
-						: theme.palette.grey[800],
-			}}
-		>
-			<Container maxWidth="xl">
-				<Typography variant="body1">
-					Gdsc Meet footer can be found here.
-				</Typography>
-				<Copyright />
-			</Container>
-		</Box>
-	)
+		<footer className="flex flex-col items-center bg-neutral-900 text-center text-white bg-gray-10 dark:bg-gray-80">
+		  {/* Copyright section */}
+		  <div className="w-full text-center text-black dark:text-white" >
+			© 2023 Copyright:
+			<a className="text-whites" href="https://tw-elements.com/">GDSC meet</a>
+		  </div>
+		</footer>
+	  );
 }

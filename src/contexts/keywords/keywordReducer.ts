@@ -19,7 +19,7 @@ const initialState: IInitialState = {
 		{
 			endAt: new Date(),
 			startAt: new Date(),
-			keywords: ['programming', 'software', 'web development', 'IT', 'coding'],
+			keywords: ['programming', 'software', 'web development', 'IT', 'coding','Tiền lập trình'],
 		},
 		{
 			endAt: new Date(),

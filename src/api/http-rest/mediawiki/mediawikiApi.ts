@@ -37,6 +37,7 @@ const headers = {
 	baseURL: 'https://vi.wikipedia.org',
 	withCredentials: false,
 	mode: 'no-cors',
+	accept: '/'
 }
 
 class WikiMediaApi extends Api {

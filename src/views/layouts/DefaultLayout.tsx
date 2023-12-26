@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import Footer from './Footer'
 import { styled } from 'styled-components'
 import { Box } from '@mui/material'
-import Header from './Header_v2'
+import Header from 'views/components/Header'
 
 const LayoutWapper = styled(Box)(
 	() => `

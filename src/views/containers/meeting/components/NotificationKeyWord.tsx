@@ -40,12 +40,15 @@ const NotificationKeyWord = (props) => {
 			return StateNotificationKeyword.enabled
 		}
 	}, [title, extract, loading, visible])
+
 	const handleCloseNotification = useCallback(async () => {
 		await dispatch(noitificationKeywordClose())
 	}, [])
+
 	if (isDisabled == StateNotificationKeyword.disabled) {
 		return <></>
 	}
+	
 	if (isDisabled == StateNotificationKeyword.loading) {
 		return (
 			<Button loading variant="solid">
@@ -56,7 +59,6 @@ const NotificationKeyWord = (props) => {
 
 	return (
 		<Card
-			
 		>
 			<CardContent>
 				<Stack
@@ -106,29 +108,6 @@ const NotificationKeyWord = (props) => {
 					<Typography level="body-sm">{extract && extract}</Typography>
 				</Box>
 			</CardContent>
-			<CardActions
-				buttonFlex="0 1 120px"
-				sx={{
-					display: 'flex',
-					justifyContent: 'flex-end',
-				}}
-			>
-				<Tooltip placement="top-end" variant="outlined" arrow title="Reports">
-					<IconButton variant="outlined" color="neutral">
-						<ReportGmailerrorredIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip
-					placement="top-end"
-					variant="outlined"
-					arrow
-					title="search to bing"
-				>
-					<IconButton variant="outlined" color="neutral">
-						<RestartAltIcon />
-					</IconButton>
-				</Tooltip>
-			</CardActions>
 		</Card>
 	)
 }
