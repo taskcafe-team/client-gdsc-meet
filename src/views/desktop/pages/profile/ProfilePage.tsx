@@ -30,8 +30,8 @@ const features: IFeature[] = [
 		component: <HistoryMeet historys={meetingRecords} />,
 	},
 	{
-		label: 'Founder',
-		description: 'Keep track of founders and their details.',
+		label: 'Folder',
+		description: 'Keep track of Folders and their details.',
 		component: <FilesMeet></FilesMeet>,
 	},
 	{

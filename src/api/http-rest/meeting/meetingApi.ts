@@ -25,6 +25,8 @@ export class MeetingApi extends Api {
 	}
 
 	static async getMeetingRooms(meetingId: string) {
+		console.log("get meeeting room",meetingId);
+		
 		const token = ParticipantApi.getPartATFromSessionStore(meetingId)
 		const key = 'meeting-api-token'
 		const config: AxiosRequestConfig = { headers: { [key]: token } }

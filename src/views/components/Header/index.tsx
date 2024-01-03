@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({
 					<img
 						src={Logo}
 						alt="DTUMeet"
-						className="w-[55px] h-[55px] object-fill  max-lg:w-[45px] max-lg:h-[45px]"
+						className="w-[70px] h-[70px] object-fill  max-lg:w-[45px] max-lg:h-[45px]"
 					/>
 					<h1 className="text-gray-70  opacity-100 text-[45px] max-lg:text-24 font-bold">
 						GDSC Meet

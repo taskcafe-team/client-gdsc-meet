@@ -68,8 +68,8 @@ const FormInfomation = ({ lable, ...rest }: FormInfomationProps) => {
 				lastName: lastName || undefined,
 				avatar: avatar || undefined,
 			})
-		).then((e)=>{
-			dispatch(userFetchMe())
+		).then(async(e)=>{
+			await dispatch(userFetchMe())
 			toast({
 				content:'submit success',
 				type:'success'

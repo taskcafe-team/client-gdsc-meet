@@ -1,9 +1,6 @@
 import {
 	LocalParticipant,
 	ParticipantEvent,
-	RemoteParticipant,
-	RemoteTrack,
-	RemoteTrackPublication,
 	Room,
 	RoomEvent,
 	VideoPresets,
@@ -19,9 +16,6 @@ import {
 	startSpeechRecognition,
 	stopSpeechRecognition,
 } from 'utils/microsoft-cognitiveservices-speech'
-import { useAppDispatch } from 'contexts/hooks'
-import { noitificationRemoveCache } from 'contexts/notificationKeyword/notificationKeywordAction'
-import { useSpeakingParticipants } from '@livekit/components-react'
 
 export type ParticipantInfo = ParticipantUsecaseDto
 type MeetingStatus = 'connected_yet' | 'scheduled' | 'inProgress' | 'completed'
@@ -71,7 +65,6 @@ export default function MeetingProvider({
 	meetingId,
 }: MeetingProviderProps) {
 	const navigate = useNavigate()
-	const dispatch = useAppDispatch()
 	const [meetingStatus, setMeetingStatus] =
 		useState<MeetingStatus>('connected_yet')
 	const [localParticipant, setLocalParticipant] = useState<_LocalParticipant>()
@@ -88,6 +81,17 @@ export default function MeetingProvider({
 				return updatedState
 			})
 		})
+
+		room.localParticipant.on(
+			ParticipantEvent.IsSpeakingChanged,
+			(speaking: boolean) => {
+				speaking
+					? startSpeechRecognition(async (e) => {
+							console.log(e)
+					  })
+					: stopSpeechRecognition()
+			}
+		)
 
 		room.on(RoomEvent.ParticipantDisconnected, (p) => {
 			setRoomList((prev) => {
@@ -137,42 +141,6 @@ export default function MeetingProvider({
 			})
 		})
 
-		room.on(RoomEvent.TrackUnsubscribed,()=>{
-			console.log("local track published here");	
-		})
-		
-		room.on(ParticipantEvent.TrackUnmuted,(p)=>{
-			console.log("track public");
-			
-		})
-		
-		room.localParticipant.on(
-			ParticipantEvent.IsSpeakingChanged,
-			(speaking: boolean) => {
-				speaking
-					? startSpeechRecognition(async (e) => {
-							console.log(e)
-					  })
-					: stopSpeechRecognition()
-			}
-		)
-		// room.on(RoomEvent.ParticipantConnected, (participant) => {
-		// 	participant.on(ParticipantEvent.TrackSubscribed, (track) => {
-		// 		if (track.kind === 'audio') {
-		// 			console.log(
-		// 				`Participant ${participant.identity} has turned on their mic`
-		// 			)
-		// 		}
-		// 	})
-		// 	participant.on(ParticipantEvent.TrackUnsubscribed, (track) => {
-		// 		if (track.kind === 'audio') {
-		// 			console.log(
-		// 				`Participant ${participant.identity} has turned off their mic`
-		// 			)
-		// 		}
-		// 	})
-		// })
-
 		const remoteParticipant = room.participants
 		setRoomList((prev) => {
 			const updatedState = new Map(prev)
@@ -213,7 +181,6 @@ export default function MeetingProvider({
 			roomConnected.state = 'disconnected'
 			return updatedState
 		})
-		dispatch(noitificationRemoveCache())
 	}
 
 	const addRoom = async (roomId: string, roomType: RoomType) => {
@@ -281,16 +248,24 @@ export default function MeetingProvider({
 	}
 
 	const fetchGetRooms = () => {
-		return MeetingApi.getMeetingRooms(meetingId).then((res) => {
-			const { waitingRoom, meetingRoom } = res.data
-			addRoom(waitingRoom.id, RoomType.WAITING)
-			addRoom(meetingRoom.id, RoomType.MEETING)
-		})
+		return MeetingApi.getMeetingRooms(meetingId)
+			.then(async (res) => {
+				console.log(res)
+
+				const { waitingRoom, meetingRoom } = res.data
+				await addRoom(waitingRoom.id, RoomType.WAITING)
+				await addRoom(meetingRoom.id, RoomType.MEETING)
+			})
+			.catch((e) => {
+				console.log(e)
+			})
 	}
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		connectMeeting()
-			.then(() => fetchGetRooms())
+			.then(async () => {
+				return await fetchGetRooms()
+			})
 			.catch(() => navigate('/'))
 		return () => {
 			setMeetingStatus('connected_yet')

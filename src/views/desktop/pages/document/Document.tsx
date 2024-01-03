@@ -5,15 +5,19 @@ import { Animate } from 'utils/mockAnimation'
 import { motion } from 'framer-motion'
 import { saveAs } from 'file-saver'
 import ImageErr from 'assets/static/images/backgrouds/Error TV 1.svg'
+import FileApi from 'api/http-rest/document/file/fileApi'
 const Document = () => {
 	const [fileData, setFileData] = useState<any>(null)
+
+	const { document } = useParams()
 
 	useEffect(() => {
 		const fetchFileData = async () => {
 			try {
 				const response = await fetch(
-					'http://localhost:8080/files/03ffe459-1daa-42fd-8580-ae447548e98c'
+					`http://localhost:5000/api/files/${document}`
 				)
+
 				const blob = await response.blob()
 				setFileData(blob)
 			} catch (error) {
@@ -30,11 +34,13 @@ const Document = () => {
 		await setFileData(file)
 	}
 
-	
-
 	return (
 		<div>
-			<Header className="relative" handleFileChange={handleFileChange} file={fileData}/>
+			<Header
+				className="relative"
+				handleFileChange={handleFileChange}
+				file={fileData}
+			/>
 
 			{fileData ? (
 				<div className=" mt-[10px] 80vh overflow-auto">

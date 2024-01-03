@@ -7,7 +7,6 @@ import ImageFouder from 'assets/static/images/backgrouds/Fouder.svg'
 import { Animate } from 'utils/mockAnimation'
 import {
 	IFile,
-	IFolder,
 	getFilesByFouderID,
 	getFilesByUserId,
 	getFoldersByUserId,
@@ -15,6 +14,11 @@ import {
 import Tag from 'components/Tag/Tag'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import RouterPath from 'views/routes/routesContants'
+import FolderApi from 'api/http-rest/document/folder/folderApi'
+import { useAppSelector } from 'contexts/hooks'
+import { IFolder } from 'api/http-rest/document/folder/folderType'
+import FileApi from 'api/http-rest/document/file/fileApi'
+import useToastily from 'hooks/useToastily'
 
 interface FilesMeetProps {}
 
@@ -27,17 +31,40 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 		filterFouder: false,
 	})
 	const [historyFouder, setHistoryFouder] = useState<boolean>(false)
-	const handleFouder = useCallback((parent_folder_id) => {
-		// Xử lý khi click vào thư mục
-		const files = getFilesByFouderID(parent_folder_id)
-		setHistoryFouder(true)
-		setFile(files)
+	const userId = useAppSelector((s) => s.user.id)
+	const toast = useToastily()
+	const handleFouder = useCallback(async (folder_id) => {
+		return await FileApi.getAllFileByFouderId({
+			folder: folder_id,
+		})
+			.then((e) => {
+				console.log(e)
+
+				setFile(e as any)
+				setHistoryFouder(true)
+				setFile(e as any)
+			})
+			.catch((err) => {
+				toast({
+					type:'error',
+					content:'get file error'
+				})
+			})
 	}, [])
 
 	const handleFile = useCallback((fileId: string) => {
 		// Xử lý khi click vào tệp
 		// window.open(`${RouterPath.DOCUMENT_URL}/${fileId}`, '_blank');
 	}, [])
+
+	useEffect(() => {
+		const fetch = async () => {
+			return await FolderApi.getFolderByUserId({ userId }).then((e) => {
+				setFouder(e as any)
+			})
+		}
+		fetch()
+	}, [userId])
 
 	const handleReset = useCallback(() => {
 		setHistoryFouder(false)
@@ -46,7 +73,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 	const Firter = useMemo(() => {
 		return [
 			{
-				lable: 'My Fouder',
+				lable: 'My Folder',
 				active: Boolean(historyFouder == false),
 				className: `${Boolean(historyFouder == false) ? 'flex' : 'hidden'}`,
 			},
@@ -57,11 +84,6 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 			},
 		]
 	}, [filterState, historyFouder])
-
-	useLayoutEffect(() => {
-		const userFolders = getFoldersByUserId(userIdToRetrieve)
-		setFouder(userFolders)
-	}, [])
 
 	return (
 		<div className="FilesMeet">
@@ -77,7 +99,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 				)}
 				<div className="flex items-center gap-4 overflow-y-visible">
 					{Firter &&
-						Firter.map((tag,item) => (
+						Firter.map((tag, item) => (
 							<Tag
 								key={`FileMeet__${item}`}
 								active={tag.active}
@@ -116,7 +138,7 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 				{file &&
 					historyFouder == true &&
 					file.map((file: IFile, index) => (
-						<a href={`/${RouterPath.getDocumentPath(file.id)}`} target="_blank">
+						<a className='block relative group' href={`/${RouterPath.getDocumentPath(file.id)}`} target="_blank">
 							<motion.div
 								{...Animate.getAnimationValues('opacity', 1000)}
 								key={index}
@@ -130,10 +152,13 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 								/>
 								<motion.p
 									{...Animate.getAnimationValues('opacity', 2000)}
-									className="max-w-[200px] line-clamp-1 max-lg:max-w-[300px] px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]"
+									className="overflow-hidden max-w-[100px] line-clamp-3 max-lg:max-w-[300px] px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]"
 								>
 									{file.name}
 								</motion.p>
+								<div className='absolute bg-white shadow-2420 rounded-sm  hidden top-[100%] translate-x-[50%] right-0 group-hover:block  px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]'>
+								{file.name}
+								</div>
 							</motion.div>
 						</a>
 					))}

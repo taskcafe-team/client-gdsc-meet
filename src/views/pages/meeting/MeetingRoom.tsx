@@ -29,7 +29,6 @@ export default function MeetingRoom() {
 	const waitingRoom = roomList.get(RoomType.WAITING)
 	if (!meetingRoom || !waitingRoom) throw new Error('MeetingRoom error')
 	if (!localParticipant) throw new Error('Local participant is null')
-	//
 
 	const connectRoom = () => {
 		//Connect meeting room
@@ -41,14 +40,11 @@ export default function MeetingRoom() {
 	useEffect(() => {
 		connectRoom()
 		return () => {
+			// Todo: bug join room
 			meetingRoom.disconnect()
 		}
 	}, [])
-
-	if (
-		meetingRoom.state === 'disconnected'
-	)
-		return <Loading />
+	if (meetingRoom.state === 'disconnected') return <Loading />
 	return (
 		<Box sx={{ display: 'flex', minHeight: '100dvh' }} bgcolor={'black'}>
 			<MeetingSidebar />
@@ -80,4 +76,55 @@ export default function MeetingRoom() {
 			</Box>
 		</Box>
 	)
+
+	// if (!meetingRoom || !waitingRoom) throw new Error('MeetingRoom error')
+	// if (!localParticipant) throw new Error('Local participant is null')
+
+	// const connectRoom = () => {
+	// 	//Connect meeting room
+	// 	RoomApi.getAccessToken(meetingId, meetingRoom.roomId)
+	// 		.then((res) => meetingRoom.connect(res.data.token))
+	// 		.catch(() => navigate('/'))
+	// }
+
+	// useEffect(() => {
+	// 	connectRoom()
+	// 	return () => {
+	// 		// Todo: bug join room
+	// 		meetingRoom.disconnect()
+	// 	}
+	// }, [])
+
+	// if (meetingRoom.state === 'disconnected') return <Loading />
+	// return (
+	// 	<Box sx={{ display: 'flex', minHeight: '100dvh' }} bgcolor={'black'}>
+	// 		<MeetingSidebar />
+	// 		<Box
+	// 			width={1}
+	// 			height={1}
+	// 			component="main"
+	// 			className="MainContent"
+	// 			sx={{ flex: 1 }}
+	// 		>
+	// 			<Stack
+	// 				width={1}
+	// 				height={1}
+	// 				overflow="hidden"
+	// 				sx={{ '& button.lk-chat-toggle': { display: 'none' } }}
+	// 			>
+	// 				<LiveKitRoom
+	// 					style={{ width: '100%', height: '100%' }}
+	// 					data-lk-theme="default"
+	// 					room={meetingRoom.originalRoom}
+	// 					onDisconnected={() => navigate('/')}
+	// 					connectOptions={{ autoSubscribe: false }}
+	// 					token={undefined}
+	// 					serverUrl={undefined}
+	// 				>
+	// 					<VideoConference />
+	// 				</LiveKitRoom>
+	// 			</Stack>
+	// 		</Box>
+	// 	</Box>
+	// )
 }

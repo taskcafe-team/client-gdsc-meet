@@ -51,13 +51,13 @@ export default function CreateMeetingFormDialog({
 		await setMeetingTitle(initTitle)
 		return initTitle
 	}, [opinion])
-	
+
 	useEffect(() => {
 		handleTitle()
 	}, [opinion])
 
 	const handleSubmitCreateMeeting = useCallback(async () => {
-		setFetching(true)
+		await setFetching(true)
 		dispatch(
 			meetingFetchCreateInstant({
 				title: meetingTitle || undefined,
@@ -67,15 +67,19 @@ export default function CreateMeetingFormDialog({
 		)
 			.then((result) => {
 				const data = result.payload as ApiResponse<ResponseMeetingDto>
-				console.log(data);
-				
 				if (data.metadata.success)
 					navigate(RouterPath.getPreMeetingPath(data.data.id))
 				else if (data.metadata.error)
 					toast({ content: data.metadata.error.message, type: 'error' })
 			})
+			.catch(() => {
+				toast({ content: 'Creater meeting error!', type: 'error' })
+			})
 
-			.finally(() => setFetching(false))
+			.finally(() => {
+				setFetching(false)
+				setOpen(false)
+			})
 	}, [meetingTitle, meetingDescription, isLook])
 
 	return (

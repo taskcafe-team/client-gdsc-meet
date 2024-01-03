@@ -28,8 +28,7 @@ import BgDarkBottom from 'assets/static/images/backgrouds/HomeDarkBr.svg'
 import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
-import { listRoom } from 'utils/mockNameRoom'
-import Tag from 'components/Tag/Tag'
+import ListMeeting from 'views/containers/home/ListMeeting'
 
 export const DEFAUFT = 'Defauft'
 
@@ -109,9 +108,12 @@ export default function HomePage() {
 								damping: 60,
 							}}
 						>
-							<h2 className="select-none max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px]">
+							<Typography
+								level="h1"
+								className="mb-4 select-none max-w-[600px] text-46 my-[20px] max-md:max-w-none text-start leading-tight py-2 max-sm:text-[25px] dark:text-white "
+							>
 								Meetings and video calling for everyone.
-							</h2>
+							</Typography>
 							<p className="select-none max-w-[800px] max-lg:max-w-[600px] max-sm:hidden px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
 								GDSC Meet is a versatile video conferencing and meeting service
 								that offers secure and high-quality video calling and
@@ -167,22 +169,7 @@ export default function HomePage() {
 								damping: 80,
 							}}
 						>
-							<h2 className="select-none max-w-[600px] text-46 my-[20px] max-2xl:my-10 max-md:max-w-none text-left max-lg:text-center leading-tight py-2 max-sm:text-[25px]">
-								Meeting opinions
-							</h2>
-							<div className="rounded-md dark:bg-[#3b3b3b] max-w-[650px] mt-10 p-10  ">
-								<div className="Tabinfo-room__body flex flex-wrap justify-start max-2xl:justify-center gap-6 border-gray-300 dark:border-none  p-4 border shadow-sm max-h-[25vh] max-w-[650px] overflow-hidden scroll-auto">
-									{listRoom &&
-										listRoom.map((item, index) => (
-											<Tag
-												label={item.lable}
-												active={opinion === item.lable}
-												key={`tag_${index}`}
-												onClick={() => setOpinion(item.lable)}
-											/>
-										))}
-								</div>
-							</div>
+							<ListMeeting />
 						</motion.div>
 					</div>
 				</div>
