@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({
 	}
 	return (
 		<header
-			className={`fixed max-2xl:bg-white dark:max-2xl:bg-gray-80 z-50 top-0 left-0 right-0 bg-transparent px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px] ${withSize} `}
+			className={`fixed bg-white dark:bg-gray-80 z-50 top-0 left-0 right-0 bg-transparent px-[53px] py-[16px] flex  items-center justify-between ${className} max-sm:py-[10px] max-sm:px-[10px] ${withSize} `}
 			{...rest}
 		>
 			{/*  Desktop  */}

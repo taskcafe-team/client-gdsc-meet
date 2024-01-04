@@ -39,7 +39,6 @@ const HistoryMeet: React.FC<IHistoryMeet> = ({ ...rest }) => {
 	const isLogin = useAppSelector((s) => s.auth.isLogin)
 	const meetings = useAppSelector((state) => state.meeting.meetings)
 	const dispatch = useAppDispatch()
-	console.log(meetings)
 
 	useLayoutEffect(() => {
 		if (isLogin) dispatch(meetingFetchMyMeetings())
@@ -102,7 +101,10 @@ const HistoryMeet: React.FC<IHistoryMeet> = ({ ...rest }) => {
 
 	return (
 		<div className="HistoryMeet">
-			<Box className="HistoryMeet__body p-10 flex gap-6 flex-wrap w-full max-h-[80vh] overflow-y-auto" sx={{	'&::-webkit-scrollbar': { display: 'none' }}} >
+			<Box
+				className="HistoryMeet__body p-10 flex gap-6 flex-wrap w-full max-h-[80vh] overflow-y-auto"
+				sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
+			>
 				{meetings.length != 0 ? (
 					meetings.map((meeting, index) => (
 						<Meeting history={meeting} key={`Meeting_${index}`} />
@@ -157,7 +159,7 @@ const Meeting = ({ history, ...rest }) => {
 								background: 'white',
 								cursor: 'pointer',
 								'& > .MuiSvgIcon-root': {
-									color: '#2870EA', 
+									color: '#2870EA',
 								},
 								'& .MuiChip-label': {
 									display: 'block',
@@ -179,39 +181,38 @@ const Meeting = ({ history, ...rest }) => {
 						/>
 					</div>
 					<div
-					className=""
-					onClick={() => handleRemoveMeeting(history?.id || '')}
-				>
-					<Chip
-						sx={{
-							height: 'auto',
-							color: '#D70015',
-							background: 'white',
-							cursor: 'pointer',
-							'& > .MuiSvgIcon-root': {
+						className=""
+						onClick={() => handleRemoveMeeting(history?.id || '')}
+					>
+						<Chip
+							sx={{
+								height: 'auto',
 								color: '#D70015',
-							},
-							'& .MuiChip-label': {
-								display: 'block',
-								whiteSpace: 'normal',
-								transition: 'all',
-								fontSize: '14px',
-							},
-							'&:hover': {
-								background: 'rgba(255, 255, 255, 1)',
-								color: '#20B845',
-								transition: 'all',
+								background: 'white',
+								cursor: 'pointer',
 								'& > .MuiSvgIcon-root': {
-									color: '#20B845',
+									color: '#D70015',
 								},
-							},
-						}}
-						label="Close"
-						icon={<DoNotDisturb />}
-					/>
+								'& .MuiChip-label': {
+									display: 'block',
+									whiteSpace: 'normal',
+									transition: 'all',
+									fontSize: '14px',
+								},
+								'&:hover': {
+									background: 'rgba(255, 255, 255, 1)',
+									color: '#20B845',
+									transition: 'all',
+									'& > .MuiSvgIcon-root': {
+										color: '#20B845',
+									},
+								},
+							}}
+							label="Close"
+							icon={<DoNotDisturb />}
+						/>
+					</div>
 				</div>
-				</div>
-				
 			</div>
 			{/* ... other parts of your component */}
 			<div className="card__body flex flex-col justify-between flex-1 px-20 py-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">

@@ -11,7 +11,8 @@ import {
 import { CommonError } from 'contexts/types'
 
 interface IInitialState extends KeywordDetailState {
-	clientResult: string
+	clientResult: string,
+	socket:null|any
 }
 
 const initialState: IInitialState = {
@@ -59,6 +60,7 @@ const initialState: IInitialState = {
 	loading: false,
 	error: undefined,
 	clientResult: '',
+	socket:null
 }
 
 const keywordSlice = createSlice({

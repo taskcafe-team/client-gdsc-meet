@@ -1,10 +1,4 @@
-import {
-	LocalParticipant,
-	ParticipantEvent,
-	Room,
-	RoomEvent,
-	VideoPresets,
-} from 'livekit-client'
+import { LocalParticipant, ParticipantEvent, Room, RoomEvent, VideoPresets } from 'livekit-client'
 import { createContext } from 'react'
 import {
 	AccessPermissionsStatus,
@@ -12,10 +6,10 @@ import {
 } from 'api/http-rest/participant/participantDtos'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import { MeetingApi } from 'api/http-rest'
-import {
-	startSpeechRecognition,
-	stopSpeechRecognition,
-} from 'utils/microsoft-cognitiveservices-speech'
+import { useAppSelector } from 'contexts/hooks'
+import { getSessionStorage } from 'utils/sessionStorageUtils'
+import { startSpeechRecognition, stopSpeechRecognition } from 'utils/microsoft-cognitiveservices-speech'
+import SocketIOManager from 'contexts/keywords/socket'
 
 export type ParticipantInfo = ParticipantUsecaseDto
 type MeetingStatus = 'connected_yet' | 'scheduled' | 'inProgress' | 'completed'
@@ -69,8 +63,46 @@ export default function MeetingProvider({
 		useState<MeetingStatus>('connected_yet')
 	const [localParticipant, setLocalParticipant] = useState<_LocalParticipant>()
 	const [roomList, setRoomList] = useState<Map<RoomType, RoomInfo>>(new Map())
+	const getRoleRef:any = useRef(getSessionStorage(`HOST-${meetingId}`));
+	useEffect(() => {
+		getRoleRef.current = getSessionStorage(`HOST-${meetingId}`);
+	  }, [meetingId]);
 
 	const roomListener = (room: Room, roomType: RoomType) => {
+		
+		const isOpen = Boolean(getRoleRef && getRoleRef?.current?.role == 'HOST')
+
+		// console.log(isOpen);
+		room.localParticipant.on(
+			ParticipantEvent.IsSpeakingChanged,
+			(speaking: boolean) => {
+				speaking
+					? startSpeechRecognition(async (e) => {
+							SocketIOManager.getSocket.emit('send_data', e)
+							SocketIOManager.getSocket.on('send_data_success', (re)=>{
+							console.log(re);
+							})
+					  })
+					: stopSpeechRecognition()
+			}
+		)
+		// room.localParticipant.on(
+		// 	ParticipantEvent.IsSpeakingChanged,
+		// 	(speaking: boolean) => {
+		// 		speaking
+		// 			? startSpeechRecognition(async (e) => {
+		// 					console.log(e)
+
+		// 					// SocketIOManager.getSocket.emit('send_data', e)
+		// 					// SocketIOManager.getSocket.on('send_data_success', (re)=>{
+		// 					// 	console.log(re);
+
+		// 					// })
+		// 			  })
+		// 			: stopSpeechRecognition()
+		// 	}
+		// )
+		
 		room.on(RoomEvent.ParticipantConnected, (p) => {
 			setRoomList((prev) => {
 				const updatedState = new Map(prev)
@@ -81,17 +113,6 @@ export default function MeetingProvider({
 				return updatedState
 			})
 		})
-
-		room.localParticipant.on(
-			ParticipantEvent.IsSpeakingChanged,
-			(speaking: boolean) => {
-				speaking
-					? startSpeechRecognition(async (e) => {
-							console.log(e)
-					  })
-					: stopSpeechRecognition()
-			}
-		)
 
 		room.on(RoomEvent.ParticipantDisconnected, (p) => {
 			setRoomList((prev) => {
@@ -156,7 +177,6 @@ export default function MeetingProvider({
 
 	const connect = async (roomType: RoomType, token: string) => {
 		const room = roomList.get(roomType)
-		console.log('room', room)
 		if (!room) return
 		const webrtcURL = import.meta.env.API_WEBRTC_SOCKET_URL
 		await room.originalRoom.connect(webrtcURL, token)
@@ -248,24 +268,16 @@ export default function MeetingProvider({
 	}
 
 	const fetchGetRooms = () => {
-		return MeetingApi.getMeetingRooms(meetingId)
-			.then(async (res) => {
-				console.log(res)
-
-				const { waitingRoom, meetingRoom } = res.data
-				await addRoom(waitingRoom.id, RoomType.WAITING)
-				await addRoom(meetingRoom.id, RoomType.MEETING)
-			})
-			.catch((e) => {
-				console.log(e)
-			})
+		return MeetingApi.getMeetingRooms(meetingId).then((res) => {
+			const { waitingRoom, meetingRoom } = res.data
+			addRoom(waitingRoom.id, RoomType.WAITING)
+			addRoom(meetingRoom.id, RoomType.MEETING)
+		})
 	}
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		connectMeeting()
-			.then(async () => {
-				return await fetchGetRooms()
-			})
+			.then(() => fetchGetRooms())
 			.catch(() => navigate('/'))
 		return () => {
 			setMeetingStatus('connected_yet')

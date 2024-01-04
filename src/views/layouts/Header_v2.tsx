@@ -38,10 +38,6 @@ export default function Header() {
 		if (setting === 'profile') navigate(`/${RouterPath.PROFILE_URL}`)
 	}
 
-	console.log(isLogin);
-	console.log(user);
-	
-	
 	return (
 		<Box
 			mx="auto"

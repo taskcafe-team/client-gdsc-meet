@@ -19,7 +19,7 @@ const apiRequestConfig: CreateAxiosDefaults<unknown> = {
 	baseURL: `${import.meta.env.API_BASE_URL}`,
 	timeout: REQUEST_TIMEOUT_MS,
 	headers: { 'Content-Type': 'application/json' },
-	withCredentials: true,
+	withCredentials: false,
 	httpAgent: new Agent({ rejectUnauthorized: false }),
 }
 

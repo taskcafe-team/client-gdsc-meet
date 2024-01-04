@@ -97,9 +97,6 @@ export default function ConfirmPage() {
 
 	const [canUpload, setCanUpload] = useState(false)
 	const [previewImage, setPreviewImage] = useState<string | null>()
-	console.log(avatar)
-	console.log(canUpload)
-	console.log(previewImage)
 
 	const fullname = useMemo(
 		() => firstName + ' ' + lastName,
@@ -173,7 +170,6 @@ export default function ConfirmPage() {
 		validationSchema: validationSchema,
 		onSubmit(values) {
 			setSaving(true)
-			console.log(values)
 
 			dispatch(
 				userFetchUpdateMe({

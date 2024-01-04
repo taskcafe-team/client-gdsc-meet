@@ -18,7 +18,7 @@ interface Env {
     API_ACCESS_TOKEN_HEADER:    string;
     API_KEY_STORE_ACCESS_TOKEN: string;
     API_MEETING_TOKEN_HEADER:   string;
+    API_BASE_URL:               string;
     API_LOGIN_GOOGLE_URL:       string;
     API_WEBRTC_SOCKET_URL:      string;
-    API_BASE_URL:               string;
 }

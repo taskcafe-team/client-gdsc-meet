@@ -29,6 +29,7 @@ import { motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { BiDialpad, BiMeteor } from 'react-icons/bi'
 import ListMeeting from 'views/containers/home/ListMeeting'
+import SocketIOManager from 'contexts/keywords/socket'
 
 export const DEFAUFT = 'Defauft'
 
@@ -50,6 +51,8 @@ export default function HomePage() {
 		if (validationLogin() && meetingId)
 			navigate(RouterPath.getPreMeetingPath(meetingId))
 	}, [meetingId])
+
+	
 
 	return (
 		<Box>

@@ -38,16 +38,14 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 			folder: folder_id,
 		})
 			.then((e) => {
-				console.log(e)
-
 				setFile(e as any)
 				setHistoryFouder(true)
 				setFile(e as any)
 			})
 			.catch((err) => {
 				toast({
-					type:'error',
-					content:'get file error'
+					type: 'error',
+					content: 'get file error',
 				})
 			})
 	}, [])
@@ -138,7 +136,11 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 				{file &&
 					historyFouder == true &&
 					file.map((file: IFile, index) => (
-						<a className='block relative group' href={`/${RouterPath.getDocumentPath(file.id)}`} target="_blank">
+						<a
+							className="block relative group"
+							href={`/${RouterPath.getDocumentPath(file.id)}`}
+							target="_blank"
+						>
 							<motion.div
 								{...Animate.getAnimationValues('opacity', 1000)}
 								key={index}
@@ -156,8 +158,8 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 								>
 									{file.name}
 								</motion.p>
-								<div className='absolute bg-white shadow-2420 rounded-sm  hidden top-[100%] translate-x-[50%] right-0 group-hover:block  px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]'>
-								{file.name}
+								<div className="absolute bg-white shadow-2420 rounded-sm  hidden top-[100%] translate-x-[50%] right-0 group-hover:block  px-10 text-gray-700 text-[20px] font-normal text-gray-70 dark:text-white max-sm:text-[18px]">
+									{file.name}
 								</div>
 							</motion.div>
 						</a>

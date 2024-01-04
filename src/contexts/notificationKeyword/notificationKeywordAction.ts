@@ -50,13 +50,10 @@ export const noitificationKeywordFetch = createAsyncThunk<
 	) => {
 		try {
 			const { keyword } = request
-			// Check cache
-			console.log(request)
 
 			const fetchCache: WikiMediaSummaryResult[] | null | unknown =
 				await getSessionStorage(CACHE_KEYWORDS)
-				console.log("fetch cache:",fetchCache);
-				
+
 			if (fetchCache && Array.isArray(fetchCache)) {
 				const cachedData = fetchCache.find((item) => item.title === keyword)
 				if (cachedData) {
@@ -66,37 +63,29 @@ export const noitificationKeywordFetch = createAsyncThunk<
 					} as INotificationKeyword
 				}
 			}
-			console.log(keyword)
 
-			const FetchSummary = await GoogleAiApi.generateGemini({
+			const fetchSummary = await GoogleAiApi.generateGemini({
 				prompt: GoogleAiPrompt.getSummaryKeyword(`${keyword}`),
 			})
-			console.log(FetchSummary)
-			console.log(typeof(FetchSummary));
-			
 
-			// const SearchWiki = await WikiMediaApi.WikiMediaSearch(`${keyword}`)
-			// const FetchSummary = await WikiMediaApi.getSummary(
-			// 	SearchWiki.query.search[0].title || ''
-			// )
+			const title: string = keyword
+			const extract: any = fetchSummary
 
-			// const { title, extract } = FetchSummary
-			const title = keyword
-			const extract = FetchSummary
 			if (!title || !extract) {
 				throw new Error('Invalid response') // Throw an error if the response is invalid
 			}
 
+			const mapCache: any = fetchCache || []
+
 			// Update cache
-			const updatedCache: WikiMediaSummaryResult[] = [
-				...(fetchCache ?? []),
+			const updatedCache = [
+				...mapCache,
 				{
 					title: keyword,
-					extract:FetchSummary
-					
+					extract: fetchSummary,
 				},
 			]
-			setSessionStorage(CACHE_KEYWORDS, updatedCache)
+			setSessionStorage('CACHE_KEYWORDS', updatedCache)
 
 			return { title, extract } as INotificationKeyword
 		} catch (error) {

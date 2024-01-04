@@ -1,7 +1,7 @@
 import '@livekit/components-styles'
 import { LocalUserChoices, PreJoin } from '@livekit/components-react'
 import { Box, Sheet, Stack } from '@mui/joy'
-import { useAppSelector } from 'contexts/hooks'
+import { useAppDispatch, useAppSelector } from 'contexts/hooks'
 import { useMeeting } from 'views/containers/meeting/MeetingContext'
 import { generateName } from 'utils/personalNameUtils'
 import ParticipantApi from 'api/http-rest/participant/participantApi'
@@ -10,25 +10,25 @@ import { MeetingApi } from 'api/http-rest'
 import { RoomType } from 'api/webrtc/webRTCTypes'
 import Header from 'components/Header'
 import { Loading } from 'views/routes/routes'
+import { setSessionStorage } from 'utils/sessionStorageUtils'
+import SocketIOManager from 'contexts/keywords/socket'
 
 export default function PreJoinRoom() {
 	const navigate = useNavigate()
 	const user = useAppSelector((s) => s.user)
-
+	const dispatch = useAppDispatch()
 	const { meetingId, localParticipant, setLocalParticipant, roomList } =
 		useMeeting()
 	const meetingRoom = roomList.get(RoomType.MEETING)
 	const waitingRoom = roomList.get(RoomType.WAITING)
-	console.log(meetingRoom);
-	
+	console.log(meetingRoom)
+
 	const loaded = useMemo(() => Boolean(localParticipant), [localParticipant])
 	const [partLoading, setPartLoading] = useState(false)
 	const fullname = useMemo(() => {
 		const name = (user.firstName ?? '') + ' ' + (user.lastName ?? '')
 		return name.trim().length > 0 ? name.trim() : generateName()
 	}, [user.firstName, user.lastName])
-
-	
 
 	const handleSubmitJoin = async (values: LocalUserChoices) => {
 		if (partLoading || loaded) return
@@ -37,17 +37,25 @@ export default function PreJoinRoom() {
 
 		await ParticipantApi.getParticipantAccessToken(meetingId, username)
 			.then(async ({ data }) => {
-				console.log('true', data)
-
+				const user_info = {
+					TOKEN: data.token,
+					ID: data.participant.id,
+					NAME: data.participant.name,
+					USERID: data.participant.userId,
+					ROLE: data.participant.role,
+					MEETINGID: data.participant.meetingId
+				}
+				// setSessionStorage(`HOST-${meetingId}`,data.participant)
 				await ParticipantApi.savePartATToSessionStore(meetingId, data.token)
-				console.log("lof",{ ...data.participant, status: data.status });
-				
 				await setLocalParticipant({ ...data.participant, status: data.status })
+				// todo socket connect
+				await SocketIOManager.connect()		
+				await SocketIOManager?.getSocket.emit('send_user_info',user_info);
+				await SocketIOManager?.getSocket.on('send_data_success',(re)=>{
+					console.log(re);
+				});	
 			})
 			.catch((err) => {
-				console.log('err')
-
-				console.log(err)
 				navigate('/')
 			})
 			.finally(() => setPartLoading(false))
@@ -55,7 +63,7 @@ export default function PreJoinRoom() {
 	if (!meetingRoom || !waitingRoom) return <Loading />
 	return (
 		<Box className="bg-gray-80 min-h-screen flex items-center justify-center">
-			<Header /> 
+			<Header />
 			<Stack
 				borderRadius="md"
 				overflow="hidden"
