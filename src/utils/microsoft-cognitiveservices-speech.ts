@@ -26,16 +26,9 @@ const startSpeechRecognition = (onResult) => {
 		interimResults += ` ${finalResult}`
 		resultCallback(event.result.text)
 	}
-	setInterval(()=>{
-		if(interimResults){
-			resultCallback(interimResults)
-			SocketIOManager.getSocket.emit('send_data', interimResults)
-		}
-	}, 5*1000 )
-	SocketIOManager.getSocket.on('speechToKeywords', (rs)=>{
-		console.log(rs)
-	}
-	)
+
+	
+	
 	recognizer.startContinuousRecognitionAsync(
 		() => {},
 		(error) => {

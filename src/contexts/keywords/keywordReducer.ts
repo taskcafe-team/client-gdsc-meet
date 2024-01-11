@@ -124,7 +124,9 @@ const keywordSlice = createSlice({
 				// Handle errors or update state as needed
 				// state.error = action.error?.message || 'Error sending data to the socket';
 			})
-			.addCase(keywordPost.fulfilled, (state, action) => {})
+			.addCase(keywordPost.fulfilled, (state, action) => {
+				// state.value =  [...state.value,action.payload]
+			})
 	},
 })
 

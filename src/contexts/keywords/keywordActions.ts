@@ -53,7 +53,7 @@ export const keywordSendToSocket = createAsyncThunk<void, string>(
 	}
 )
 
-export const keywordPost = createAsyncThunk<any, string[]>(
+export const keywordPost = createAsyncThunk(
 	POST_KEYWORD,
 	async (data, { rejectWithValue, dispatch }) => {
 		try {

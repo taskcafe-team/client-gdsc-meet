@@ -41,7 +41,9 @@ export default function HomePage() {
 	const { theme } = useTheme()
 	const [meetingId, setMeetingId] = useState('')
 	const [opinion, setOpinion] = useState(DEFAUFT)
-
+	const user = useAppSelector(s=>s.user.id)
+	console.log(user);
+	
 	const validationLogin = useCallback(() => {
 		if (!isLogin) toast({ content: 'Please login!', type: 'warning' })
 		return isLogin

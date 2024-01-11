@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 class SocketIOManager {
-    static readonly URL = 'https://huge-seasnail-visually.ngrok-free.app'; // Define the socket.io URL
+    static readonly URL = 'http://192.168.253.210'; // Define the socket.io URL
 
     private static socket = io(SocketIOManager.URL, {
         autoConnect: false,

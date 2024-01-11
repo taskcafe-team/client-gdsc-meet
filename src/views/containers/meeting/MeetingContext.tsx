@@ -8,7 +8,6 @@ import { RoomType } from 'api/webrtc/webRTCTypes'
 import { MeetingApi } from 'api/http-rest'
 import { useAppSelector } from 'contexts/hooks'
 import { getSessionStorage } from 'utils/sessionStorageUtils'
-import { startSpeechRecognition, stopSpeechRecognition } from 'utils/microsoft-cognitiveservices-speech'
 import SocketIOManager from 'contexts/keywords/socket'
 
 export type ParticipantInfo = ParticipantUsecaseDto
@@ -73,19 +72,7 @@ export default function MeetingProvider({
 		const isOpen = Boolean(getRoleRef && getRoleRef?.current?.role == 'HOST')
 
 		// console.log(isOpen);
-		room.localParticipant.on(
-			ParticipantEvent.IsSpeakingChanged,
-			(speaking: boolean) => {
-				speaking
-					? startSpeechRecognition(async (e) => {
-							SocketIOManager.getSocket.emit('send_data', e)
-							SocketIOManager.getSocket.on('send_data_success', (re)=>{
-							console.log(re);
-							})
-					  })
-					: stopSpeechRecognition()
-			}
-		)
+		
 		// room.localParticipant.on(
 		// 	ParticipantEvent.IsSpeakingChanged,
 		// 	(speaking: boolean) => {

@@ -61,7 +61,9 @@ const FilesMeet: React.FC<FilesMeetProps> = (props) => {
 				setFouder(e as any)
 			})
 		}
-		fetch()
+		fetch().catch((err)=>{
+			console.log(err);	
+		})
 	}, [userId])
 
 	const handleReset = useCallback(() => {

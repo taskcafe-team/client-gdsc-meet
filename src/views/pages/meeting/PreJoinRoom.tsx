@@ -21,7 +21,7 @@ export default function PreJoinRoom() {
 		useMeeting()
 	const meetingRoom = roomList.get(RoomType.MEETING)
 	const waitingRoom = roomList.get(RoomType.WAITING)
-	console.log(meetingRoom)
+	console.log(localParticipant)
 
 	const loaded = useMemo(() => Boolean(localParticipant), [localParticipant])
 	const [partLoading, setPartLoading] = useState(false)
@@ -37,23 +37,9 @@ export default function PreJoinRoom() {
 
 		await ParticipantApi.getParticipantAccessToken(meetingId, username)
 			.then(async ({ data }) => {
-				const user_info = {
-					TOKEN: data.token,
-					ID: data.participant.id,
-					NAME: data.participant.name,
-					USERID: data.participant.userId,
-					ROLE: data.participant.role,
-					MEETINGID: data.participant.meetingId
-				}
 				// setSessionStorage(`HOST-${meetingId}`,data.participant)
 				await ParticipantApi.savePartATToSessionStore(meetingId, data.token)
 				await setLocalParticipant({ ...data.participant, status: data.status })
-				// todo socket connect
-				await SocketIOManager.connect()		
-				await SocketIOManager?.getSocket.emit('send_user_info',user_info);
-				await SocketIOManager?.getSocket.on('send_data_success',(re)=>{
-					console.log(re);
-				});	
 			})
 			.catch((err) => {
 				navigate('/')
